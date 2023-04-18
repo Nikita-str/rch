@@ -1,0 +1,15 @@
+:root {
+    --center-width:56vw;
+}
+
+#center {
+    /* position:fixed; */
+    /* position:fixed; */
+    width: var(--center-width);
+    /* overflow-y:scroll; */
+    top: 0;
+    /* margin-top: 0%; */
+    margin-left: calc((100vw - var(--center-width)) / 2);
+    /* background-color: blue; */
+    background-color: var(--r-col-transparent-dbg);
+}

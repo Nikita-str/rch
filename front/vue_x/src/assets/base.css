@@ -1,5 +1,15 @@
 /* color palette from <https://github.com/vuejs/theme> */
 :root {
+  --r-col-transparent-dbg: #0001;
+  --r-col-transparent: #0000;
+
+  --r-col-crab-light: #F74C00;
+  --r-col-crab-slightly-dark: #E43A25;
+  --r-col-crab-dark: #8F1F1D;
+  --r-col-blue: #01346B;
+
+  --r-col-bg: #EEE;
+
   --vt-c-white: #ffffff;
   --vt-c-white-soft: #f8f8f8;
   --vt-c-white-mute: #f2f2f2;
@@ -60,7 +70,6 @@
 }
 
 body {
-  min-height: 100vh;
   color: var(--color-text);
   background: var(--color-background);
   transition: color 0.5s, background-color 0.5s;
