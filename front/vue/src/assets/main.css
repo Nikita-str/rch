@@ -1,0 +1,55 @@
+@import './base.css';
+@import './center.css';
+/* #app {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 2rem;
+
+  font-weight: normal;
+} */
+
+.main-header {  
+  font-weight: bolder;
+}
+
+a,
+.main-header {
+  text-decoration: none;
+  color: var(--r-col-crab-light);
+  /* color: var(--r-col-crab-slightly-dark); */
+  /* color: var(--r-col-crab-dark);  */
+  /* transition: 0.2s; */
+}
+
+@media (hover: hover) {
+  a:hover {
+    background-color: var(--r-col-blue);
+  }
+}
+body {
+  display: flex;
+  place-items: center;
+  background-color: var(--r-col-bg);
+  overflow-y:scroll;
+}
+
+#app {
+  display: flex;
+  width: 0px;
+  height: 0px;  
+  /* grid-template-columns: 1fr 1fr;
+  padding: 0 2rem; */
+}
+/* @media (min-width: 1024px) { 
+  body {
+    display: flex;
+    place-items: center;
+  }
+
+  #app {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    padding: 0 2rem;
+  }
+}
+*/
