@@ -4,12 +4,10 @@ export default {
     // components: {
     //     BoldX
     // },
-    props: {
-        val: {
-            type: Object,
-            default: () => {}
-        }
-  },
+    props: ['val'],
+    // props: {
+    //     val: Object,
+    // },
 }
 </script>
 

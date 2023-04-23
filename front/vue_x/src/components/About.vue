@@ -1,5 +1,33 @@
 <script setup>
-    defineProps({
+    // defineProps({
+    //     msg: {
+    //         type: String,
+    //         required: true,
+    //     },
+    //     open_boards: {
+    //         type: Number,
+    //         required: true,
+    //     },
+    //     posting_speed: {
+    //         type: Number,
+    //         required: true,
+    //     },
+    //     total_post: {
+    //         type: Number,
+    //         required: true,
+    //     },
+    // })
+
+
+function Bnum(x) {
+  return `<span style="font-weight:bold;">${x}</span>`
+}
+</script>
+
+<script>
+import BoldX from './micro/BoldX.vue'
+export default {
+    props: {
         msg: {
             type: String,
             required: true,
@@ -16,17 +44,7 @@
             type: Number,
             required: true,
         },
-    })
-
-
-function Bnum(x) {
-  return `<span style="font-weight:bold;">${x}</span>`
-}
-</script>
-
-<script>
-import BoldX from './micro/BoldX.vue'
-export default {
+    },
     components: {
         BoldX
     }

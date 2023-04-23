@@ -11,7 +11,7 @@ defineProps({
   <div class="greetings">
     <div style="height: calc(0.75vh + 4px);"></div>
     <div id="main-header-title">
-      <h1 class="main-header"><font color="#000">R</font>ch</h1>
+      <h1 class="main-header"><span style="color:#000">R</span>ch</h1>
       <h3> {{ msg }} </h3>
     </div>
     <h4> {{ msg }} </h4>
@@ -20,7 +20,7 @@ defineProps({
 </template>
 
 <style scoped>
-h1, h1>font {
+h1, h1>span {
   font-weight: 900;
   font-size: 7.4rem;
   top: -1rem;
