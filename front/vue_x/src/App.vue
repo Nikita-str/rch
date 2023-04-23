@@ -1,12 +1,21 @@
 <script>
 
 export default {
+  methods: {
+    upd(){
+      this.$store.dispatch('updCommonInfo')
+    }
+  },
+  mounted(){
+    console.log('[MNT] Component has been created!');
+    this.upd();
+  },
   data(){
     return{
       openB: 42,
       total_post: this.$store.getters.getTotalPost,
     }
-  }
+  },
 }
 </script>
 
