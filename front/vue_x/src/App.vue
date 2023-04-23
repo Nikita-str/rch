@@ -4,6 +4,7 @@ export default {
   data(){
     return{
       openB: 42,
+      total_post: this.$store.getters.getTotalPost,
     }
   }
 }
@@ -20,7 +21,8 @@ import About from './components/About.vue'
     <div style="height: 100%;">
       <div id="center">
         <HelloWorld msg="Незабывайте спать" />
-        <About :open_boards="openB" :posting_speed="0" :total_post="0" msg="Ура-ура общение!" />
+        <About msg="Ура-ура общение!" :open_boards="openB" :posting_speed="0" :total_post="total_post" />
+        <router-link to="/tmp">X</router-link>
       </div>
     </div>
   </div>
