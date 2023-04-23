@@ -16,11 +16,11 @@ export default createStore({
                 axios({
                     url: state.port + '/common/all',
                     method: 'get', 
-                  }).then(res => {
+                }).then(res => {
                     state.total_post = res.data
-                  }).catch(err => {
+                }).catch(err => {
                     console.log(err.response);
-                  });
+                });
             })
         }
     },

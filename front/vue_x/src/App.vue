@@ -1,14 +1,17 @@
 <script>
-
 export default {
   methods: {
     upd(){
       this.$store.dispatch('updCommonInfo')
     }
   },
-  mounted(){
-    console.log('[MNT] Component has been created!');
-    this.upd();
+  computed: {
+    calcedTotalPost: {
+      get() {
+        this.upd()
+        return this.$store.getters.getTotalPost
+      },
+    },
   },
   data(){
     return{
@@ -30,7 +33,7 @@ import About from './components/About.vue'
     <div style="height: 100%;">
       <div id="center">
         <HelloWorld msg="Незабывайте спать" />
-        <About msg="Ура-ура общение!" :open_boards="openB" :posting_speed="0" :total_post="total_post" />
+        <About msg="Ура-ура общение!" :open_boards="openB" :posting_speed="0" :total_post="calcedTotalPost" />
         <router-link to="/tmp">X</router-link>
       </div>
     </div>
