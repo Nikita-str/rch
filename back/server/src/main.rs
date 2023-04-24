@@ -5,13 +5,18 @@ use tower_http::cors::CorsLayer;
 
 const VUE_DIST_PATH: &str = "../../front/vue_x/dist";
 
+pub fn delay() {
+    std::thread::sleep(std::time::Duration::from_millis(1_500));
+}
+
 #[tokio::main]
 async fn main() {
     let cors = CorsLayer::new().allow_methods([Method::GET]);
 
     let router_common_all = Router::new().route("/common/all", get(|| async {
-        println!("HERE#01"); 
-        "1337" 
+        println!("HERE#01");
+        delay();
+        "1338"
     }));
 
     let index_file = ServeFile::new(format!("{}/index.html", VUE_DIST_PATH));
