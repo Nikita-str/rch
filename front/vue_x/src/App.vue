@@ -1,29 +1,34 @@
 <script>
+import { mapActions } from 'vuex'
+
 export default {
   data(){
     return{
-      _updCaled: false,
       openB: 42,
-      total_post: this.$store.getters.getTotalPost,
+      totalPost: this.$store.getters.getTotalPost,
     }
   },
   methods: {
+    ...mapActions({
+      updx: 'updCommonInfo'
+    }),
     upd(){
-      console.log("upd")
-      this.$store.dispatch('updCommonInfo')
-    },
-    calcTotalPostFn() {
-        console.log("upd by fn")
-        this.upd()
-        return this.$store.getters.getTotalPost
-    },
+      console.log("upd called")
+      this.updx().then(() => {
+        this.totalPost = this.$store.getters.getTotalPost
+        console.log("after updx")
+      })
+    }
   },
-  computed: {
-    calcTotalPost() {
-        console.log("upd by computed")
-        this.upd()
-        return this.$store.getters.getTotalPost
-    },
+  // computed: {
+  //   calcTotalPost() {
+  //       console.log("upd by computed")
+  //       this.upd()
+  //       return this.$store.getters.getTotalPost
+  //   },
+  // },
+  mounted() {
+    this.upd()
   },
 }
 </script>
@@ -38,7 +43,7 @@ import About from './components/About.vue'
     <div style="height: 100%;">
       <div id="center">
         <HelloWorld msg="Незабывайте спать" />
-        <About msg="Ура-ура общение!" :open_boards="openB" :posting_speed="0" :total_post="calcTotalPostFn()" />
+        <About msg="Ура-ура общение!" :open_boards="openB" :posting_speed="0" :total_post="totalPost" />
         <router-link to="/tmp">X</router-link>
       </div>
     </div>
