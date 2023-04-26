@@ -11,9 +11,9 @@ export default createStore({
     state: {
         port: "/api",
 
-        total_post: -1,
-        open_board: -2,
-        speed_post: -3,
+        total_post: null,
+        open_board: null,
+        speed_post: null,
     },
 
 
