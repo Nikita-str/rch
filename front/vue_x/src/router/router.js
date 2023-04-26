@@ -1,6 +1,7 @@
 import { createRouter, createWebHashHistory } from 'vue-router'
 import App from '../App.vue'
 import Tmp from '../Tmp.vue'
+import PageNotFound from '../components/PageNotFound.vue'
 
 const routes = [
     { 
@@ -18,6 +19,11 @@ const routes = [
           title: "TMPch",
         },
         component: Tmp 
+    },
+    
+    { 
+      path: '/:pathMatch(.*)*', 
+      component: PageNotFound,
     },
 ]
 
