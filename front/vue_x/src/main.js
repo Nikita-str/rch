@@ -1,7 +1,7 @@
 import { createApp, h } from 'vue'
 
-import store from './store/store'
-import router from './router/router'
+import store from './js/store'
+import router from './js/router'
 
 import Render from "./Render.vue"
 
