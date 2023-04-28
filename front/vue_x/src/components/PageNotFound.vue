@@ -1,7 +1,11 @@
 
 <script setup>
-import pnf01 from '@/assets/img/page_not_found_01.png';
-</script>
+// // this work but we need import all images and always load them ... bad decision
+// // #tags: #static #load #img
+// import pnf01 from '@/assets/img/page_not_found_01.png';
+
+import { i_rand, pad } from '../js/fns'; 
+</script> 
 
 <template>
     <main>
@@ -10,7 +14,7 @@ import pnf01 from '@/assets/img/page_not_found_01.png';
             <div class="corn"></div>
             <div class="pnf-inner" style="">
                 <div class="pnf-text">???</div>
-                <img class="pnf-img" :src="pnf01" />
+                <img class="pnf-img" :src="'/imgs/pnf/' + pad(i_rand(1, 3), 2) + '.png'" />
                 <div class="pnf-text">Не-не-не, страница не найдена</div>
                 <router-link class="pnf-text" to="/">возвращаемся...</router-link>
             </div>

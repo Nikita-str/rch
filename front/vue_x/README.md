@@ -27,3 +27,11 @@ npm run dev
 ```sh
 npm run build
 ```
+
+# Used abbreviations
+
+
+| abbreviation | full phrase / word | 
+| ------------ | ------------------ |
+| pnf          | `page not found`   |
+| fn           | `function`         |
