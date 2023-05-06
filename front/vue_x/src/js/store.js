@@ -14,6 +14,8 @@ export default createStore({
         total_post: null,
         open_board: null,
         speed_post: null,
+
+        pop_boards: null,
     },
 
 
@@ -23,6 +25,8 @@ export default createStore({
         getTotalPost: state => state.total_post,
         getOpenBoardAmount: state => state.open_board,
         getSpeedPost: state => state.speed_post,
+
+        getPopBoards: state => state.pop_boards,
     },
 
 
@@ -32,6 +36,10 @@ export default createStore({
             console.log(obj)
             setPropsByName(state, obj, ['total_post', 'open_board', 'speed_post'])
             console.log("HERE#updCommonAll:END")
+        },
+        updPopBoards(state, obj) {
+            console.log("pop boards obj", obj)
+            state.pop_boards = obj
         }
     },
 
@@ -44,6 +52,14 @@ export default createStore({
             }).then(res => {
                 commit('updCommonAll', res.data)
             }).catch(err => { console.log(err.response) });
-        }
+        },
+        updPopBards({ getters, commit }) {
+            return axios({
+                url: getters.getPort + '/common/pop_boards',
+                method: 'get',
+            }).then(res => {
+                commit('updPopBoards', res.data)
+            }).catch(err => { console.log(err.response) });
+        },
     },
 })
