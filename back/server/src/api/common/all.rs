@@ -1,11 +1,9 @@
-use axum::{routing, Router,http::Method, Json};
-use serde::Serialize;
-use axum::extract::State;
-use std::sync::{Arc, RwLock};
+use crate::api::header_use::*;
 use crate::app_state::CommonInfoState;
 
-pub type HandlerState = Arc<RwLock<CommonInfoState>>;
+
 pub const REQ_METHOD: Method = Method::GET;
+pub type HandlerState = Arc<RwLock<CommonInfoState>>;
 
 #[derive(Serialize, Debug)]
 pub struct ResultOk {

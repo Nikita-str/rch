@@ -38,9 +38,56 @@ mod fns {
     }
 
     pub async fn server() {
-        let init_total_post = 42;
+        let deleted_board_post = 42;
         let dt_sec = 60;
-        let state_all = app_state::CommonInfoState::new(init_total_post, 0, dt_sec, 2);
+        let open_boards = {
+            let mut open_boards = crate::app_state::OpenBoards::new();
+            let tag = crate::app_state::open_boards::BoardTag { tag: "Разное".into() };
+            open_boards.add_board(
+                crate::app_state::open_boards::Board{
+                    url: "b".into(),
+                    name: "Бред".into(),
+                    descr: "Бредим вместе!".into(),
+                    post_qty: 243,
+                },
+                Some(tag.clone()),
+            );
+            open_boards.add_board(
+                crate::app_state::open_boards::Board{
+                    url: "soc".into(),
+                    name: "Общение".into(),
+                    descr: "бла-бла-бла и подобное".into(),
+                    post_qty: 107,
+                },
+                Some(tag.clone()),
+            );
+
+            let tag = crate::app_state::open_boards::BoardTag { tag: "IT".into() };
+            open_boards.add_board(
+                crate::app_state::open_boards::Board{
+                    url: "pr".into(),
+                    name: "Погроммммирование".into(),
+                    descr: "Сидим. Кодим".into(),
+                    post_qty: 23,
+                },
+                Some(tag.clone()),
+            );
+
+            open_boards.add_board(
+                crate::app_state::open_boards::Board{
+                    url: "touhou".into(),
+                    name: "Touhou".into(),
+                    descr: "Выесняем ~~baaaka~~ ли Сырник?".into(),
+                    post_qty: 2,
+                },
+                None,
+            );
+
+            open_boards
+        };
+        let speed_post = crate::app_state::SpeedPost::new(dt_sec, 0);
+        let state_all = app_state::CommonInfoState::new(deleted_board_post, open_boards, speed_post);
+
         let state_all = Arc::new(RwLock::new(state_all));
 
         let index_file = ServeFile::new(format!("{}/index.html", VUE_DIST_PATH));

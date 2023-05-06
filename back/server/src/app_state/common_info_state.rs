@@ -1,22 +1,20 @@
-use super::SpeedPost;
+use super::{SpeedPost, OpenBoards};
+use super::open_boards::{Board, BoardTag};
 
-// pub struct CommonInfoState<'a> {
-//     total_post: &'a std::sync::atomic::AtomicU64,
-//     open_board: &'a std::sync::atomic::AtomicU32,
-//     speed_post: &'a std::sync::atomic::AtomicU32,
-// }
 pub struct CommonInfoState {
     total_post: u64,
-    open_board: u32,
+    open_boards: OpenBoards,
     speed_post: SpeedPost,
 }
 
 impl CommonInfoState {
-    pub fn new(total_post: u64, speed_post: u32, speed_post_dt_sec: u32, open_board: u32) -> Self {
+    /// # params
+    /// * `deleted_board_post`: qty of posts that was on board that already deleted 
+    pub fn new(deleted_board_post: u64, open_boards: OpenBoards, speed_post: SpeedPost) -> Self {
         Self {
-            total_post,
-            open_board,
-            speed_post: SpeedPost::new(speed_post_dt_sec, speed_post),
+            total_post: open_boards.x_post_qty() + deleted_board_post,
+            open_boards,
+            speed_post,
         }
     }
 
@@ -27,17 +25,21 @@ impl CommonInfoState {
         self.speed_post.speed_post()
     }
     pub fn open_board_qty(&self) -> u32 {
-        self.open_board
+        self.open_boards.open_boards_qty()
     }
 
     pub fn inc_post(&mut self) {
         self.speed_post.inc_post();
         self.total_post += 1;
     }
-    pub fn open_new_board(&mut self) {
-        self.open_board += 1;
-    }
     pub fn upd_speed_post(&mut self) {
         self.speed_post.upd_speed_post()
+    }
+    
+    pub fn mut_open_boards(&mut self) -> &mut OpenBoards {
+        &mut self.open_boards
+    }
+    pub fn open_boards(&self) -> &OpenBoards {
+        &self.open_boards
     }
 }
