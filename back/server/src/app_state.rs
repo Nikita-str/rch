@@ -39,6 +39,9 @@ impl CommonInfoState {
     pub fn open_new_board(&mut self) {
         self.open_board += 1;
     }
+    pub fn upd_speed_post(&mut self) {
+        self.speed_post.upd_speed_post()
+    }
 }
 
 
@@ -50,6 +53,7 @@ pub struct SpeedPost {
     dt_sec: u32,
 }
 impl SpeedPost {
+    /// for test use: `const H_TO_SEC: u32 = 60;`
     const H_TO_SEC: u32 = 60 * 60;
     const MIN_DT_SEC: u32 = 10;
 
@@ -61,16 +65,16 @@ impl SpeedPost {
             max_post_times_len + 1
         } else {
             max_post_times_len
-        };
+        } as usize;
 
-        let mut post_times = VecDeque::new();
+        let mut post_times = VecDeque::with_capacity(max_post_times_len + 4 /*1*/);
         if speed_post != 0 {
             post_times.push_back((std::time::SystemTime::now(), speed_post));
         }
 
         Self {
             post_times,
-            max_post_times_len: ((Self::H_TO_SEC / dt_sec) + 1) as usize, 
+            max_post_times_len: max_post_times_len, 
             speed_post,
             dt_sec,
         }
