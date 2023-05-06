@@ -4,7 +4,45 @@
 // // #tags: #static #load #img
 // import pnf01 from '@/assets/img/page_not_found_01.png';
 
-import { i_rand, pad } from '../js/fns'; 
+import { rand_n_arr, pad } from '../js/fns'; 
+</script> 
+
+<script> 
+export const PNF_IMG = 3; 
+
+export default {
+  data(){
+    return{
+      postN: () => {
+        const ARR_KEY = "pnf_pseudo_rand";
+        const INDEX_KEY = "pnf_pseudo_rand:index";
+
+        let arr;
+        let storage_value = sessionStorage.getItem(ARR_KEY);
+        if (storage_value) {
+            arr = JSON.parse(storage_value);
+        } else {
+            arr = rand_n_arr(PNF_IMG, 1);
+            sessionStorage.setItem(ARR_KEY, JSON.stringify((rand_n_arr(PNF_IMG, 1))));
+        };
+
+        let ret = 0;
+        let arr_index = sessionStorage.getItem(INDEX_KEY);
+        if (arr_index) {
+            ret = JSON.parse(arr_index);
+            ret += 1;
+            if (ret == arr.length) {
+                ret = 0;
+            }
+        }
+        
+        sessionStorage.setItem(INDEX_KEY, JSON.stringify(ret));
+        // console.log(arr, ret)
+        return arr[ret]
+      },
+    }
+  },
+}
 </script> 
 
 <template>
@@ -14,7 +52,7 @@ import { i_rand, pad } from '../js/fns';
             <div class="corn"></div>
             <div class="pnf-inner" style="">
                 <div class="pnf-text">???</div>
-                <img class="pnf-img" :src="'/imgs/pnf/' + pad(i_rand(1, 3), 2) + '.png'" />
+                <img class="pnf-img" :src="'/imgs/pnf/' + pad(postN(), 2) + '.png'" />
                 <div class="pnf-text">Не-не-не, страница не найдена</div>
                 <router-link class="pnf-text" to="/">возвращаемся...</router-link>
             </div>
