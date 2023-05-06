@@ -8,7 +8,8 @@ import { rand_n_arr, pad } from '../js/fns';
 </script> 
 
 <script> 
-export const PNF_IMG = 3; 
+const PNF_IMG = 3; 
+const PNF_ZEROS = 2; 
 
 export default {
   data(){
@@ -52,7 +53,7 @@ export default {
             <div class="corn"></div>
             <div class="pnf-inner" style="">
                 <div class="pnf-text">???</div>
-                <img class="pnf-img" :src="'/imgs/pnf/' + pad(postN(), 2) + '.png'" />
+                <img class="pnf-img" :src="'/imgs/pnf/' + pad(postN(), PNF_ZEROS) + '.png'" />
                 <div class="pnf-text">Не-не-не, страница не найдена</div>
                 <router-link class="pnf-text" to="/">возвращаемся...</router-link>
             </div>
