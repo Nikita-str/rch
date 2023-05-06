@@ -35,3 +35,5 @@ npm run build
 | ------------ | ------------------ |
 | pnf          | `page not found`   |
 | fn           | `function`         |
+| dt           | `delta time`       |
+| qty          | `quantity`         |
