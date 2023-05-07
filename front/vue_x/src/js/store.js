@@ -38,6 +38,7 @@ export default createStore({
             console.log("HERE#updCommonAll:END")
         },
         updPopBoards(state, obj) {
+            obj.sort((a, b) => (a.boards.length == b.boards.length) ? a.tag.localeCompare(b.tag) : b.boards.length - a.boards.length)
             console.log("pop boards obj", obj)
             state.pop_boards = obj
         }

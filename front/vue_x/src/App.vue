@@ -48,6 +48,7 @@ import PopBoards from './components/PopBoards.vue'
       <div id="center">
         <HelloWorld msg="Незабывайте спать" />
         <About msg="Ура-ура общение!" :open_boards="openBoard" :posting_speed="speedPost" :total_post="totalPost" />
+        <br/>
         <PopBoards />
         <router-link to="/tmp">X</router-link>
       </div>
