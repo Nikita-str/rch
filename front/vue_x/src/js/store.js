@@ -16,6 +16,9 @@ export default createStore({
         speed_post: null,
 
         pop_boards: null,
+
+        existed_boards: new Set(),
+        unexisted_boards: new Set(),
     },
 
 
@@ -26,7 +29,11 @@ export default createStore({
         getOpenBoardAmount: state => state.open_board,
         getSpeedPost: state => state.speed_post,
 
-        getPopBoards: state => state.pop_boards,
+        getPopBoards: (state) => (board_url) => {
+            if (state.existed_boards.has(board_url)) { return true }
+            if (state.unexisted_boards.has(board_url)) { return false }
+            return null
+        },
     },
 
 
@@ -41,7 +48,11 @@ export default createStore({
             obj.sort((a, b) => (a.boards.length == b.boards.length) ? a.tag.localeCompare(b.tag) : b.boards.length - a.boards.length)
             console.log("pop boards obj", obj)
             state.pop_boards = obj
-        }
+        },
+        addExistenceBoard(state, { board_url, is_exist }) {
+            if (is_exist) { state.existed_boards.add(board_url) }
+            else { state.unexisted_boards.add(board_url) }
+        },
     },
 
 
@@ -60,6 +71,18 @@ export default createStore({
                 method: 'get',
             }).then(res => {
                 commit('updPopBoards', res.data)
+            }).catch(err => { console.log(err.response) });
+        },
+        getIsBoardExist({ getters, commit }, board_url) {
+            let params = new URLSearchParams([['board_url', board_url]])
+            return axios({
+                url: getters.getPort + '/board/is_exist',
+                method: 'get',
+                params,
+            }).then(res => {
+                const is_exist = res.data
+                commit('addExistenceBoard', { board_url, is_exist, })
+                return res.data
             }).catch(err => { console.log(err.response) });
         },
     },

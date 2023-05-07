@@ -29,3 +29,13 @@ export function rand_n_arr(n, shift = 0) {
       }
     return arr
 }
+
+export function trim(s, c) {
+    let start = 0; 
+    let end = s.length;
+
+    while(start < end && s[start] === c) start++;
+    while(end > start && s[end - 1] === c) end--;
+
+    return s.substring(start, end);
+}
