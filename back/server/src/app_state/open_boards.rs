@@ -1,5 +1,7 @@
-use std::collections::HashMap;
+use std::collections::{HashMap, HashSet};
 pub use serde::Serialize;
+
+// TODO: maybe: arrayvec::ArrayString<16> for url ?
 
 #[derive(Serialize, Debug, Clone)]
 pub struct PopBoardInfo {
@@ -30,6 +32,7 @@ pub struct BoardTag {
 pub struct OpenBoards {
     tagged_boards: HashMap<BoardTag, Vec<Board>>,
     other_boards: Vec<Board>,
+    used_urls: HashSet<String>,
     board_qty: u32,
     pop_board_qty: u32,
 }
@@ -39,6 +42,7 @@ impl OpenBoards {
         Self {
             tagged_boards: HashMap::new(),
             other_boards: Vec::new(),
+            used_urls: HashSet::new(),
             board_qty: 0,
             pop_board_qty: 0,
         }
@@ -80,8 +84,15 @@ impl OpenBoards {
         ret
     }
 
-    pub fn add_board(&mut self, board: Board, tag: Option<BoardTag>)
+    #[must_use]
+    /// # Return value
+    /// * `true` => sucessfully added
+    /// * `false` => url already used for other board 
+    pub fn add_board(&mut self, board: Board, tag: Option<BoardTag>) -> bool
     {
+        if self.used_urls.contains(&board.url) { return false }
+        self.used_urls.insert(board.url.clone());
+        
         if let Some(tag) = tag {
             if let Some(boards) = self.tagged_boards.get_mut(&tag) {
                 boards.push(board);
@@ -94,5 +105,10 @@ impl OpenBoards {
         }
 
         self.board_qty += 1;
+        return true
+    }
+
+    pub fn is_board_exist(&self, board_url: &str) -> bool {
+        self.used_urls.contains(board_url)
     }
 }

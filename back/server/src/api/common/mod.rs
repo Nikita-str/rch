@@ -8,10 +8,10 @@ mod fns {
     use axum::http::Method;
     use std::collections::HashSet;
 
-    pub fn router(state_all: &all::HandlerState) -> Router {
+    pub fn router(common_info_state: &all::HandlerState) -> Router {
         let router = Router::new();
-        let router = router.merge(all::router(state_all));
-        let router = router.merge(pop_boards::router(state_all));
+        let router = router.merge(all::router(common_info_state));
+        let router = router.merge(pop_boards::router(common_info_state));
         let router = Router::new().nest("/common", router);
         router
     }
