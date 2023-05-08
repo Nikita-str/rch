@@ -40,6 +40,7 @@ mod fns {
     pub async fn server() {
         let deleted_board_post = 42;
         let dt_sec = 60;
+        #[allow(unused_must_use)]
         let open_boards = {
             let mut open_boards = crate::app_state::OpenBoards::new();
             let tag = crate::app_state::open_boards::BoardTag { tag: "Разное".into() };
@@ -68,6 +69,95 @@ mod fns {
                     url: "pr".into(),
                     name: "Погроммммирование".into(),
                     descr: "Сидим. Кодим".into(),
+                    post_qty: 23,
+                },
+                Some(tag.clone()),
+            );
+
+            let tag = crate::app_state::open_boards::BoardTag { tag: "Игры".into() };
+            open_boards.add_board(
+                crate::app_state::open_boards::Board{
+                    url: "bg".into(),
+                    name: "Настольные игры".into(),
+                    descr: "Игры на столе o_O?".into(),
+                    post_qty: 6,
+                },
+                Some(tag.clone()),
+            );
+            open_boards.add_board(
+                crate::app_state::open_boards::Board{
+                    url: "vn".into(),
+                    name: "Визуальные новеллы".into(),
+                    descr: "*> baka\n*> ...".into(),
+                    post_qty: 7,
+                },
+                Some(tag.clone()),
+            );
+            
+            let tag = crate::app_state::open_boards::BoardTag { tag: "Всякое".into() };
+            open_boards.add_board(
+                crate::app_state::open_boards::Board{
+                    url: "car".into(),
+                    name: "Автомобили".into(),
+                    descr: "авто<s>боты</s>мобили".into(),
+                    post_qty: 4,
+                },
+                Some(tag.clone()),
+            );
+            open_boards.add_board(
+                crate::app_state::open_boards::Board{
+                    url: "bik".into(),
+                    name: "Велосипеды".into(),
+                    descr: "А чо тут сказать? Ну пидали крутим.".into(),
+                    post_qty: 18,
+                },
+                Some(tag.clone()),
+            );
+            open_boards.add_board(
+                crate::app_state::open_boards::Board{
+                    url: "sp".into(),
+                    name: "Спорт".into(),
+                    descr: "Делай 200 отжиманий раз прочитал".into(),
+                    post_qty: 18,
+                },
+                Some(tag.clone()),
+            );
+            
+            let tag = crate::app_state::open_boards::BoardTag { tag: "Япония".into() };
+            open_boards.add_board(
+                crate::app_state::open_boards::Board{
+                    url: "a".into(),
+                    name: "Аниме".into(),
+                    descr: "Японская анимация(мультики(для детей(детские)))\n( ´ ▽ ` )".into(),
+                    post_qty: 29,
+                },
+                Some(tag.clone()),
+            );
+            open_boards.add_board(
+                crate::app_state::open_boards::Board{
+                    url: "ma".into(),
+                    name: "Манга".into(),
+                    descr: "Серьезное чтиво\n(；⌣̀_⌣́)".into(),
+                    post_qty: 18,
+                },
+                Some(tag.clone()),
+            );
+            open_boards.add_board(
+                crate::app_state::open_boards::Board{
+                    url: "ja".into(),
+                    name: "Японская культура".into(),
+                    descr: "Школьницы школьницы школьницы".into(),
+                    post_qty: 18,
+                },
+                Some(tag.clone()),
+            );
+
+            let tag = crate::app_state::open_boards::BoardTag { tag: "Политика".into() };
+            open_boards.add_board(
+                crate::app_state::open_boards::Board{
+                    url: "po".into(),
+                    name: "П<s>о</s>лит<s>и</s>ка".into(),
+                    descr: "Перекладываем".into(),
                     post_qty: 23,
                 },
                 Some(tag.clone()),
@@ -115,3 +205,20 @@ mod fns {
         };
     }
 }
+
+macro_rules! define_id {
+    ($name:ident) => {
+        #[derive(Clone, Copy, Hash, PartialEq, Eq)]
+        pub(in crate) struct $name(usize);
+        impl $name {
+            fn first() -> Self { Self(1) }
+            fn next(self) -> Self { Self(self.0 + 1) }
+            fn inc(&mut self) -> Self { 
+                let ret = *self; 
+                *self = self.next(); 
+                ret 
+            }
+        }
+    }
+}
+pub(crate) use define_id;

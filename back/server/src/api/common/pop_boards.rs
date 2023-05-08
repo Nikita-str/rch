@@ -35,7 +35,7 @@ pub async fn handler(State(state): State<HandlerState>) -> Json<ResultOk> {
         // println!("TODO:DEL: upd open boards ... :(   {}", state.pop_boards_qty);
         state.memo = {
             let w_state = state.state.write().unwrap();
-            w_state.open_boards().pop_boards()
+            w_state.open_boards().popular_boards()
         };
         state.pop_boards_qty = pop_boards_qty;
     }

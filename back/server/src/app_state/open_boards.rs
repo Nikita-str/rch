@@ -1,8 +1,9 @@
-use std::collections::{HashMap, HashSet};
+use std::collections::{HashMap, };
 pub use serde::Serialize;
 
-// TODO: maybe: arrayvec::ArrayString<16> for url ?
+crate::define_id!(BoardId);
 
+// TODO: maybe: arrayvec::ArrayString<16> for url ?
 #[derive(Serialize, Debug, Clone)]
 pub struct PopBoardInfo {
     pub url: String,
@@ -30,9 +31,10 @@ pub struct BoardTag {
 }
 
 pub struct OpenBoards {
-    tagged_boards: HashMap<BoardTag, Vec<Board>>,
-    other_boards: Vec<Board>,
-    used_urls: HashSet<String>,
+    boards: HashMap<BoardId, Board>,
+    board_tags: HashMap<Option<BoardTag>, Vec<BoardId>>,
+    board_urls: HashMap<String, BoardId>,
+    next_board_id: BoardId,    
     board_qty: u32,
     pop_board_qty: u32,
 }
@@ -40,9 +42,10 @@ pub struct OpenBoards {
 impl OpenBoards {
     pub fn new() -> Self {
         Self {
-            tagged_boards: HashMap::new(),
-            other_boards: Vec::new(),
-            used_urls: HashSet::new(),
+            boards: HashMap::new(),
+            board_tags: HashMap::new(),
+            board_urls: HashMap::new(),
+            next_board_id: BoardId::first(),
             board_qty: 0,
             pop_board_qty: 0,
         }
@@ -51,12 +54,7 @@ impl OpenBoards {
     /// # WARNING
     /// use only for init
     pub(in super) fn x_post_qty(&self) -> u64 {
-        let mut ret = 0;
-        for (_, bs) in &self.tagged_boards {
-            bs.iter().for_each(|b|ret += b.post_qty);
-        }
-        self.other_boards.iter().for_each(|b|ret += b.post_qty);
-        ret
+        self.boards.iter().fold(0, |ret, (_, b)|ret + b.post_qty)
     }
 
     pub fn open_boards_qty(&self) -> u32 {
@@ -68,47 +66,52 @@ impl OpenBoards {
 
     /// # WARNING
     /// memorize result value! (until there no changes in `pop_boards_qty`)
-    pub fn pop_boards(&self) -> Vec<PopBoardsTagInfo> {
-        let mut ret = Vec::with_capacity(self.tagged_boards.len());
-        for (tag, boards) in &self.tagged_boards {
-            let boards = boards.iter().map(|b|PopBoardInfo{ 
-                url: b.url.clone(), 
-                name: b.name.clone(),
-            }).collect();
+    pub fn popular_boards(&self) -> Vec<PopBoardsTagInfo> {
+        let mut ret = Vec::with_capacity(self.pop_board_qty as usize);
+        for (tag, boards) in self.board_tags.iter() {
+            if let Some(tag) = tag { 
+                let boards = boards.iter().map(|id|self.boards.get(id).map(|x|PopBoardInfo{
+                    url: x.url.clone(), 
+                    name: x.name.clone(),
+                }).unwrap()).collect();
 
-            ret.push(PopBoardsTagInfo {
-                tag: tag.tag.clone(),
-                boards,
-            })
+                ret.push(PopBoardsTagInfo {
+                    tag: tag.tag.clone(),
+                    boards,
+                })
+            }
         }
         ret
     }
 
+    // TODO: return Result<_, ..>
     #[must_use]
     /// # Return value
     /// * `true` => sucessfully added
     /// * `false` => url already used for other board 
     pub fn add_board(&mut self, board: Board, tag: Option<BoardTag>) -> bool
     {
-        if self.used_urls.contains(&board.url) { return false }
-        self.used_urls.insert(board.url.clone());
-        
-        if let Some(tag) = tag {
-            if let Some(boards) = self.tagged_boards.get_mut(&tag) {
-                boards.push(board);
-            } else {
-                self.tagged_boards.insert(tag, vec![board]);
-            }
-            self.pop_board_qty += 1;
-        } else {
-            self.other_boards.push(board);
-        }
+        const MAX_URL_LEN: usize = 16;
+        if self.board_urls.contains_key(&board.url) { return false }
+        if board.url.len() > MAX_URL_LEN { return false }
 
         self.board_qty += 1;
+        if tag.is_some() { self.pop_board_qty += 1; }
+
+        let id = self.next_board_id.inc();
+        self.board_urls.insert(board.url.clone(), id);
+
+        if let Some(boards) = self.board_tags.get_mut(&tag) {
+            boards.push(id);
+        } else {
+            self.board_tags.insert(tag, vec![id]);
+        }
+
+        self.boards.insert(id, board);
         return true
     }
 
     pub fn is_board_exist(&self, board_url: &str) -> bool {
-        self.used_urls.contains(board_url)
+        self.board_urls.contains_key(board_url)
     }
 }

@@ -1,5 +1,4 @@
 use super::{SpeedPost, OpenBoards};
-use super::open_boards::{Board, BoardTag};
 
 pub struct CommonInfoState {
     total_post: u64,
