@@ -29,7 +29,9 @@ export default createStore({
         getOpenBoardAmount: state => state.open_board,
         getSpeedPost: state => state.speed_post,
 
-        getPopBoards: (state) => (board_url) => {
+        getPopBoards: state => state.pop_boards,
+
+        isBoardExist: (state) => (board_url) => {
             if (state.existed_boards.has(board_url)) { return true }
             if (state.unexisted_boards.has(board_url)) { return false }
             return null

@@ -20,7 +20,7 @@ import { mapActions } from 'vuex'
             ...mapActions({ getIsBoardExist: 'getIsBoardExist', }),
             upd(new_path) {
                 this.boardUrl = trim(new_path, '/')
-                this.boardExist = this.$store.getters.getPopBoards(this.boardUrl)
+                this.boardExist = this.$store.getters.isBoardExist(this.boardUrl)
                 if (this.boardExist === null) {
                     this.getIsBoardExist(this.boardUrl).then(res => {
                         this.boardExist = res
