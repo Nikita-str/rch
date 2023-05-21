@@ -10,3 +10,9 @@ pub struct Post {
     n: u64,
     poster: Poster,
 }
+
+impl Post {
+    pub fn text(&self) -> &str {
+        &self.text
+    }
+}

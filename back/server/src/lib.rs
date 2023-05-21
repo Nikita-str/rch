@@ -1,6 +1,7 @@
 mod app_state;
 mod post;
 mod api;
+mod thread;
 
 const VUE_DIST_PATH: &str = "../../front/vue_x/dist";
 
@@ -8,6 +9,7 @@ const VUE_DIST_PATH: &str = "../../front/vue_x/dist";
 #[allow(unused)] use fns::{delay, delay_ms};
 pub use fns::{server};
 mod fns {
+    use crate::app_state::open_boards::Board;
     use super::{api, app_state, VUE_DIST_PATH};
     use axum::{Server, Router};
     use tower_http::services::{ServeDir, ServeFile};
@@ -44,132 +46,119 @@ mod fns {
         let open_boards = {
             let mut open_boards = crate::app_state::OpenBoards::new();
             let tag = crate::app_state::open_boards::BoardTag { tag: "Разное".into() };
+            let url = "b".into();
+            let name = "Бред".into();
+            let descr = "Бредим вместе!".into();
+            let post_qty = 243;
             open_boards.add_board(
-                crate::app_state::open_boards::Board{
-                    url: "b".into(),
-                    name: "Бред".into(),
-                    descr: "Бредим вместе!".into(),
-                    post_qty: 243,
-                },
+                Board::new(url, name, descr, post_qty),
                 Some(tag.clone()),
             );
+            let url = "soc".into();
+            let name = "Общение".into();
+            let descr = "бла-бла-бла и подобное".into();
+            let post_qty = 107;
             open_boards.add_board(
-                crate::app_state::open_boards::Board{
-                    url: "soc".into(),
-                    name: "Общение".into(),
-                    descr: "бла-бла-бла и подобное".into(),
-                    post_qty: 107,
-                },
+                Board::new(url, name, descr, post_qty),
                 Some(tag.clone()),
             );
 
             let tag = crate::app_state::open_boards::BoardTag { tag: "IT".into() };
+            let url = "pr".into();
+            let name = "Погроммммирование".into();
+            let descr = "Сидим. Кодим".into();
+            let post_qty = 23;
             open_boards.add_board(
-                crate::app_state::open_boards::Board{
-                    url: "pr".into(),
-                    name: "Погроммммирование".into(),
-                    descr: "Сидим. Кодим".into(),
-                    post_qty: 23,
-                },
+                Board::new(url, name, descr, post_qty),
                 Some(tag.clone()),
             );
 
             let tag = crate::app_state::open_boards::BoardTag { tag: "Игры".into() };
+            let url = "bg".into();
+            let name = "Настольные игры".into();
+            let descr = "Игры на столе o_O?".into();
+            let post_qty = 6;
             open_boards.add_board(
-                crate::app_state::open_boards::Board{
-                    url: "bg".into(),
-                    name: "Настольные игры".into(),
-                    descr: "Игры на столе o_O?".into(),
-                    post_qty: 6,
-                },
+                Board::new(url, name, descr, post_qty),
                 Some(tag.clone()),
             );
+            let url = "vn".into();
+            let name = "Визуальные новеллы".into();
+            let descr = "*> baka\n*> ...".into();
+            let post_qty = 7;
             open_boards.add_board(
-                crate::app_state::open_boards::Board{
-                    url: "vn".into(),
-                    name: "Визуальные новеллы".into(),
-                    descr: "*> baka\n*> ...".into(),
-                    post_qty: 7,
-                },
+                Board::new(url, name, descr, post_qty),
                 Some(tag.clone()),
             );
             
             let tag = crate::app_state::open_boards::BoardTag { tag: "Всякое".into() };
+            let url = "car".into();
+            let name = "Автомобили".into();
+            let descr = "авто<s>боты</s>мобили".into();
+            let post_qty = 4;
             open_boards.add_board(
-                crate::app_state::open_boards::Board{
-                    url: "car".into(),
-                    name: "Автомобили".into(),
-                    descr: "авто<s>боты</s>мобили".into(),
-                    post_qty: 4,
-                },
+                Board::new(url, name, descr, post_qty),
                 Some(tag.clone()),
             );
+            let url = "bik".into();
+            let name = "Велосипеды".into();
+            let descr = "А чо тут сказать? Ну педали крутим.".into();
+            let post_qty = 18;
             open_boards.add_board(
-                crate::app_state::open_boards::Board{
-                    url: "bik".into(),
-                    name: "Велосипеды".into(),
-                    descr: "А чо тут сказать? Ну пидали крутим.".into(),
-                    post_qty: 18,
-                },
+                Board::new(url, name, descr, post_qty),
                 Some(tag.clone()),
             );
+            let url = "sp".into();
+            let name = "Спорт".into();
+            let descr = "Делай 200 отжиманий раз прочитал".into();
+            let post_qty = 18;
             open_boards.add_board(
-                crate::app_state::open_boards::Board{
-                    url: "sp".into(),
-                    name: "Спорт".into(),
-                    descr: "Делай 200 отжиманий раз прочитал".into(),
-                    post_qty: 18,
-                },
+                Board::new(url, name, descr, post_qty),
                 Some(tag.clone()),
             );
             
             let tag = crate::app_state::open_boards::BoardTag { tag: "Япония".into() };
+            let url = "a".into();
+            let name = "Аниме".into();
+            let descr = "Японская анимация(мультики(для детей(детские)))\n( ´ ▽ ` )".into();
+            let post_qty = 29;
             open_boards.add_board(
-                crate::app_state::open_boards::Board{
-                    url: "a".into(),
-                    name: "Аниме".into(),
-                    descr: "Японская анимация(мультики(для детей(детские)))\n( ´ ▽ ` )".into(),
-                    post_qty: 29,
-                },
+                Board::new(url, name, descr, post_qty),
                 Some(tag.clone()),
             );
+            let url = "ma".into();
+            let name = "Манга".into();
+            let descr = "Серьезное чтиво\n(；⌣̀_⌣́)".into();
+            let post_qty = 18;
             open_boards.add_board(
-                crate::app_state::open_boards::Board{
-                    url: "ma".into(),
-                    name: "Манга".into(),
-                    descr: "Серьезное чтиво\n(；⌣̀_⌣́)".into(),
-                    post_qty: 18,
-                },
+                Board::new(url, name, descr, post_qty),
                 Some(tag.clone()),
             );
+            let url = "ja".into();
+            let name = "Японская культура".into();
+            let descr = "Школьницы школьницы школьницы".into();
+            let post_qty = 18;
             open_boards.add_board(
-                crate::app_state::open_boards::Board{
-                    url: "ja".into(),
-                    name: "Японская культура".into(),
-                    descr: "Школьницы школьницы школьницы".into(),
-                    post_qty: 18,
-                },
+                Board::new(url, name, descr, post_qty),
                 Some(tag.clone()),
             );
 
             let tag = crate::app_state::open_boards::BoardTag { tag: "Политика".into() };
+            let url = "po".into();
+            let name = "П<s>о</s>лит<s>и</s>ка".into();
+            let descr = "Перекладываем".into();
+            let post_qty = 23;
             open_boards.add_board(
-                crate::app_state::open_boards::Board{
-                    url: "po".into(),
-                    name: "П<s>о</s>лит<s>и</s>ка".into(),
-                    descr: "Перекладываем".into(),
-                    post_qty: 23,
-                },
+                Board::new(url, name, descr, post_qty),
                 Some(tag.clone()),
             );
 
+            let url = "touhou".into();
+            let name = "Touhou".into();
+            let descr = "Выясняем ~~baaaka~~ ли Сырник?".into();
+            let post_qty = 2;
             open_boards.add_board(
-                crate::app_state::open_boards::Board{
-                    url: "touhou".into(),
-                    name: "Touhou".into(),
-                    descr: "Выесняем ~~baaaka~~ ли Сырник?".into(),
-                    post_qty: 2,
-                },
+                Board::new(url, name, descr, post_qty),
                 None,
             );
 

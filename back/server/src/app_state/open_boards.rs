@@ -1,7 +1,11 @@
-use std::collections::{HashMap, };
+use std::collections::{HashMap, VecDeque};
 pub use serde::Serialize;
+use crate::post::Post;
+use crate::thread::{Thread, ThreadId};
 
 crate::define_id!(BoardId);
+
+// TODO: wrap some fields in ~`Arc<RwLock<...>>` for non blocking operations
 
 // TODO: maybe: arrayvec::ArrayString<16> for url ?
 #[derive(Serialize, Debug, Clone)]
@@ -16,13 +20,25 @@ pub struct PopBoardsTagInfo {
     pub boards: Vec<PopBoardInfo>,
 }
 
-
 pub struct Board {
     pub url: String,
     pub name: String,
     pub descr: String,
     pub post_qty: u64,
     // TODO:MAYBE: SpeedPost
+    threads: HashMap<ThreadId, Thread>,
+}
+
+impl Board {
+    pub fn new(url: String, name: String, descr: String, post_qty: u64) -> Self {
+        Self {
+            url,
+            name,
+            descr,
+            post_qty,
+            threads: HashMap::new(),
+        }
+    }
 }
 
 #[derive(Hash, PartialEq, Eq, Clone)]
