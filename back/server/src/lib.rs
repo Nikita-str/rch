@@ -204,9 +204,9 @@ macro_rules! define_id {
         #[derive(Clone, Copy, Hash, PartialEq, Eq)]
         pub(in crate) struct $name(usize);
         impl $name {
-            fn first() -> Self { Self(1) }
-            fn next(self) -> Self { Self(self.0 + 1) }
-            fn inc(&mut self) -> Self { 
+            pub fn first() -> Self { Self(1) }
+            pub fn next(self) -> Self { Self(self.0 + 1) }
+            pub fn inc(&mut self) -> Self { 
                 let ret = *self; 
                 *self = self.next(); 
                 ret 

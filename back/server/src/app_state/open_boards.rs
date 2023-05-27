@@ -26,18 +26,26 @@ pub struct Board {
     pub name: String,
     pub descr: String,
     pub post_qty: u64,
+
     // TODO:MAYBE: SpeedPost
+    cur_thr_id: ThreadId,
     thrs: HashMap<ThreadId, Thread>,
     thrs_usage: ThreadUsageRate, 
 }
 
 impl Board {
+    pub fn next_post_n(&mut self) -> u64 {
+        self.post_qty += 1;
+        self.post_qty
+    }
+
     pub fn new(url: String, name: String, descr: String, post_qty: u64, max_thr_qty: usize) -> Self {
         Self {
             url,
             name,
             descr,
             post_qty,
+            cur_thr_id: ThreadId::first(),
             thrs: HashMap::new(),
             thrs_usage: ThreadUsageRate::new(max_thr_qty),
         }
@@ -45,6 +53,13 @@ impl Board {
 
     pub fn top_thr_by_usage_n(&self, n: usize) -> Option<&Thread> {
         self.thrs_usage.top_n(n).map(|id|self.thrs.get(&id).unwrap())
+    }
+
+    pub fn new_thr(&mut self, header: Option<String>, mut op_post: Post, infinity: bool) {
+        op_post.upd_n(self.next_post_n());
+        let id = self.cur_thr_id.inc();
+        assert!(self.thrs.insert(id, Thread::new(header, op_post, infinity)).is_none());
+        self.thrs_usage.add_new(id);
     }
 }
 
@@ -140,5 +155,9 @@ impl OpenBoards {
 
     pub fn board(&self, board_url: &str) -> Option<&Board> {
         self.board_urls.get(board_url).map(|id|self.boards.get(id).unwrap())
+    }
+    
+    pub fn board_mut(&mut self, board_url: &str) -> Option<&mut Board> {
+        self.board_urls.get(board_url).map(|id|self.boards.get_mut(id).unwrap())
     }
 }

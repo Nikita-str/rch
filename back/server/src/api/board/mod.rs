@@ -1,5 +1,6 @@
 pub mod is_exist;
 pub mod thrs_load;
+pub mod thr_new;
 
 pub use fns::{router, upd_allow_methods};
 mod fns {
@@ -12,6 +13,7 @@ mod fns {
         let router = Router::new();
         let router = router.merge(is_exist::router(common_info_state));
         let router = router.merge(thrs_load::router(common_info_state));
+        let router = router.merge(thr_new::router(common_info_state));
         let router = Router::new().nest("/board", router);
         router
     }
@@ -19,6 +21,7 @@ mod fns {
     pub fn upd_allow_methods(methods: &mut HashSet<Method>) {
         methods.insert(is_exist::REQ_METHOD);
         methods.insert(thrs_load::REQ_METHOD);
+        methods.insert(thr_new::REQ_METHOD);
     }
 }
 
