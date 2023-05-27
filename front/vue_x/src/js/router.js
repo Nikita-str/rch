@@ -2,6 +2,7 @@ import { createRouter, createWebHashHistory } from 'vue-router'
 import App from '../App.vue'
 import Tmp from '../Tmp.vue'
 import PageNotFound from '../components/PageNotFound.vue'
+import PageAwait from '../components/PageAwait.vue'
 import Board from '../components/Board.vue'
 
 const maxBoardNameLen = 16;
@@ -27,6 +28,11 @@ const routes = [
     {
       path: '/:pathMatch([a-z]{1,' + maxBoardNameLen + '})/',
       component: Board,
+    },
+
+    { 
+      path: '/~~page~~/await', 
+      component: PageAwait,
     },
 
     { 

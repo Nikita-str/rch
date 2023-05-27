@@ -1,5 +1,6 @@
 <script setup>
 import PageNotFound from '../components/PageNotFound.vue'
+import PageAwait from '../components/PageAwait.vue'
 import { mapActions } from 'vuex'
 </script>
 
@@ -38,7 +39,7 @@ import { mapActions } from 'vuex'
 </script>
 
 <template>
-    <div v-if="boardExist === null"> ??? + ({{ boardUrl }})</div>
+     <PageAwait v-if="boardExist === null" :msg="'когда поймем что с `' + boardUrl + '`'" />
     <div v-else-if="boardExist === true"> !!! </div>
     <PageNotFound v-else />
 </template>
