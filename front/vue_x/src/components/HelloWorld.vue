@@ -14,7 +14,7 @@ defineProps({
       <h1 class="main-header"><span style="color:#000">R</span>ch</h1>
       <h3> {{ msg }} </h3>
     </div>
-    <h4> {{ msg }} </h4>
+    <h4 style="margin-left: 1%;"> {{ msg }} </h4>
     <span v-for="n in 50"><h3>{{ n }}</h3></span>
   </div>
 </template>

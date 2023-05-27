@@ -35,8 +35,9 @@ body {
 
 #app {
   display: flex;
-  width: 0px;
-  height: 0px;  
+  /* width: 0px;
+  height: 0px;   */
+
   /* grid-template-columns: 1fr 1fr;
   padding: 0 2rem; */
 }

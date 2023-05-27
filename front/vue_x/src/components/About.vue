@@ -26,7 +26,7 @@ export default {
 </script>
 
 <template>
-    <p> {{ msg }} </p>
+    <p style="margin-left: 1%;"> {{ msg }} </p>
     <p style="margin-left: 5%;">Сейчас открыто аж <BoldX :val=open_boards /> досок!</p>
     <!-- <p style="margin-left: 10%;">Скорость постинга всего-то <Bnum posting_speed>{{  }}</Bnum>, поднажмем!</p> -->
     <p style="margin-left: 10%;">Скорость постинга всего-то <BoldX :val=posting_speed />, поднажмем!</p>

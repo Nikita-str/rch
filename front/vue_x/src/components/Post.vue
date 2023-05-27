@@ -1,0 +1,98 @@
+
+<script> 
+export default {
+  props: {
+    msg: {
+      type: String,
+      required: true,
+    },
+    msgDate: {
+      type: String,
+      required: true,
+    },
+    msgBoardN: {
+      type: Number,
+      required: true,
+    },
+    msgThrN: {
+      type: Number,
+      required: true,
+    },
+    msgWho: {
+      type: String,
+      required: true,
+    },
+    msgPic: {
+      type: String,
+      required: false,
+    },
+    msgReplies: {
+      type: Array,
+      required: false,
+    },
+  },
+}
+</script> 
+
+<template>
+    <div class="post">
+        <div class="post-header">
+            <span class="post-who" v-html="msgWho"></span>
+            <span class="post-date">{{ msgDate }}</span>
+            <span class="post-board-n">#<a href="#">{{ msgBoardN }}</a></span>
+            <span class="post-thr-n">{{ msgThrN }}</span>
+        </div>
+        <div class="post-inner">
+            <span v-if="msgPic" class="post-img">TODO</span>
+            <span class="post-text" v-html="msg"></span>
+        </div>
+        <template v-if="msgReplies">
+            <div class="post-replies">
+                <template v-for="reply in msgReplies">
+                    <a class="post-reply" href="#"> >>{{reply}}</a>
+                </template>
+            </div>
+        </template>
+    </div>
+</template>
+
+<style>
+.post {
+    max-width: 70vw;
+    background-color: var(--r-col-transparent-dbg);
+    border-style: solid;
+    border-width: 1px;
+    border-radius: 0;
+    border-color: var(--r-col-blue);
+    padding: 0.3em 1em 1.2em 0.6em;
+}
+
+.post-header {
+    white-space: nowrap;
+}
+.post-header > span + span {
+    margin-left: 0.8em;
+}
+.post-thr-n {
+    color: var(--r-col-blue);
+}
+
+.post-inner {
+    padding: 0em 0.2em 0em 1.5em;
+}
+
+.post-replies {
+    top: 0.5em;
+    left: 1.5em;
+    /* max-width: 90%; */
+    overflow: auto;
+    overflow-wrap: break-word;
+}
+.post-replies > a + a {
+    margin-left: 0.8em;
+}
+.post-reply {
+    font-size: 0.8em;
+}
+</style>
+
