@@ -2,6 +2,7 @@ use std::collections::{HashMap, VecDeque};
 pub use serde::Serialize;
 use crate::post::Post;
 use crate::thread::{Thread, ThreadId};
+use crate::thread_usage_rate::ThreadUsageRate;
 
 crate::define_id!(BoardId);
 
@@ -26,18 +27,24 @@ pub struct Board {
     pub descr: String,
     pub post_qty: u64,
     // TODO:MAYBE: SpeedPost
-    threads: HashMap<ThreadId, Thread>,
+    thrs: HashMap<ThreadId, Thread>,
+    thrs_usage: ThreadUsageRate, 
 }
 
 impl Board {
-    pub fn new(url: String, name: String, descr: String, post_qty: u64) -> Self {
+    pub fn new(url: String, name: String, descr: String, post_qty: u64, max_thr_qty: usize) -> Self {
         Self {
             url,
             name,
             descr,
             post_qty,
-            threads: HashMap::new(),
+            thrs: HashMap::new(),
+            thrs_usage: ThreadUsageRate::new(max_thr_qty),
         }
+    }
+
+    pub fn top_thr_by_usage_n(&self, n: usize) -> Option<&Thread> {
+        self.thrs_usage.top_n(n).map(|id|self.thrs.get(&id).unwrap())
     }
 }
 
@@ -129,5 +136,9 @@ impl OpenBoards {
 
     pub fn is_board_exist(&self, board_url: &str) -> bool {
         self.board_urls.contains_key(board_url)
+    }
+
+    pub fn board(&self, board_url: &str) -> Option<&Board> {
+        self.board_urls.get(board_url).map(|id|self.boards.get(id).unwrap())
     }
 }

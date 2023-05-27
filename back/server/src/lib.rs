@@ -2,6 +2,7 @@ mod app_state;
 mod post;
 mod api;
 mod thread;
+mod thread_usage_rate;
 
 const VUE_DIST_PATH: &str = "../../front/vue_x/dist";
 
@@ -44,6 +45,9 @@ mod fns {
         let dt_sec = 60;
         #[allow(unused_must_use)]
         let open_boards = {
+            let std_thr_qty = 100;
+            let small_thr_qty = 20;
+
             let mut open_boards = crate::app_state::OpenBoards::new();
             let tag = crate::app_state::open_boards::BoardTag { tag: "Разное".into() };
             let url = "b".into();
@@ -51,7 +55,7 @@ mod fns {
             let descr = "Бредим вместе!".into();
             let post_qty = 243;
             open_boards.add_board(
-                Board::new(url, name, descr, post_qty),
+                Board::new(url, name, descr, post_qty, std_thr_qty),
                 Some(tag.clone()),
             );
             let url = "soc".into();
@@ -59,7 +63,7 @@ mod fns {
             let descr = "бла-бла-бла и подобное".into();
             let post_qty = 107;
             open_boards.add_board(
-                Board::new(url, name, descr, post_qty),
+                Board::new(url, name, descr, post_qty, std_thr_qty),
                 Some(tag.clone()),
             );
 
@@ -69,7 +73,7 @@ mod fns {
             let descr = "Сидим. Кодим".into();
             let post_qty = 23;
             open_boards.add_board(
-                Board::new(url, name, descr, post_qty),
+                Board::new(url, name, descr, post_qty, std_thr_qty),
                 Some(tag.clone()),
             );
 
@@ -79,7 +83,7 @@ mod fns {
             let descr = "Игры на столе o_O?".into();
             let post_qty = 6;
             open_boards.add_board(
-                Board::new(url, name, descr, post_qty),
+                Board::new(url, name, descr, post_qty, small_thr_qty),
                 Some(tag.clone()),
             );
             let url = "vn".into();
@@ -87,7 +91,7 @@ mod fns {
             let descr = "*> baka\n*> ...".into();
             let post_qty = 7;
             open_boards.add_board(
-                Board::new(url, name, descr, post_qty),
+                Board::new(url, name, descr, post_qty, small_thr_qty),
                 Some(tag.clone()),
             );
             
@@ -97,7 +101,7 @@ mod fns {
             let descr = "авто<s>боты</s>мобили".into();
             let post_qty = 4;
             open_boards.add_board(
-                Board::new(url, name, descr, post_qty),
+                Board::new(url, name, descr, post_qty, small_thr_qty),
                 Some(tag.clone()),
             );
             let url = "bik".into();
@@ -105,7 +109,7 @@ mod fns {
             let descr = "А чо тут сказать? Ну педали крутим.".into();
             let post_qty = 18;
             open_boards.add_board(
-                Board::new(url, name, descr, post_qty),
+                Board::new(url, name, descr, post_qty, small_thr_qty),
                 Some(tag.clone()),
             );
             let url = "sp".into();
@@ -113,7 +117,7 @@ mod fns {
             let descr = "Делай 200 отжиманий раз прочитал".into();
             let post_qty = 18;
             open_boards.add_board(
-                Board::new(url, name, descr, post_qty),
+                Board::new(url, name, descr, post_qty, small_thr_qty),
                 Some(tag.clone()),
             );
             
@@ -123,7 +127,7 @@ mod fns {
             let descr = "Японская анимация(мультики(для детей(детские)))\n( ´ ▽ ` )".into();
             let post_qty = 29;
             open_boards.add_board(
-                Board::new(url, name, descr, post_qty),
+                Board::new(url, name, descr, post_qty, std_thr_qty),
                 Some(tag.clone()),
             );
             let url = "ma".into();
@@ -131,7 +135,7 @@ mod fns {
             let descr = "Серьезное чтиво\n(；⌣̀_⌣́)".into();
             let post_qty = 18;
             open_boards.add_board(
-                Board::new(url, name, descr, post_qty),
+                Board::new(url, name, descr, post_qty, small_thr_qty),
                 Some(tag.clone()),
             );
             let url = "ja".into();
@@ -139,7 +143,7 @@ mod fns {
             let descr = "Школьницы школьницы школьницы".into();
             let post_qty = 18;
             open_boards.add_board(
-                Board::new(url, name, descr, post_qty),
+                Board::new(url, name, descr, post_qty, small_thr_qty),
                 Some(tag.clone()),
             );
 
@@ -149,7 +153,7 @@ mod fns {
             let descr = "Перекладываем".into();
             let post_qty = 23;
             open_boards.add_board(
-                Board::new(url, name, descr, post_qty),
+                Board::new(url, name, descr, post_qty, std_thr_qty),
                 Some(tag.clone()),
             );
 
@@ -158,7 +162,7 @@ mod fns {
             let descr = "Выясняем ~~baaaka~~ ли Сырник?".into();
             let post_qty = 2;
             open_boards.add_board(
-                Board::new(url, name, descr, post_qty),
+                Board::new(url, name, descr, post_qty, small_thr_qty),
                 None,
             );
 
@@ -206,6 +210,11 @@ macro_rules! define_id {
                 let ret = *self; 
                 *self = self.next(); 
                 ret 
+            }
+        }
+        impl std::fmt::Debug for $name {
+            fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+                write!(f, "#{}", self.0)
             }
         }
     }
