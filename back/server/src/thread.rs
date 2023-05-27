@@ -61,11 +61,17 @@ impl Thread {
     pub fn add_post(&mut self, post: Post) {
         if self.infinity {
             if self.posts.len() == BUMP_LIMIT {
-                self.posts.pop_front();
+                // self.posts.pop_front();
+                // save open post:
+                self.posts.swap_remove_front(1);
             }
         }
         
         self.posts.push_back(post)
+    }
+
+    pub fn post(&self, n: usize) -> Option<&Post> {
+        self.posts.get(n)
     }
 
     pub fn is_bump_limit_reached(&self) -> bool {
