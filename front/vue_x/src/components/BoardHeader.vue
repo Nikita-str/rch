@@ -4,6 +4,13 @@
 </script> 
 
 <script>
+
+function dataRecalc(new_path) {
+    return {
+        boardUrl: trim(new_path, "/").split('/')[0],
+    }
+}
+
 export default {
     props: {
         boardName: {
@@ -11,9 +18,15 @@ export default {
             required: true,
         }
     },
-    data(){
-        return{
-            boardUrl: trim(this.$route.path, "/").split('/')[0],
+    data(){ return dataRecalc(this.$route.path) },
+    methods: {
+        dataRecalc(new_path) {
+            Object.assign(this.$data, dataRecalc(new_path))
+        },
+    },
+    watch: {
+        '$route' (to, _) {
+            this.dataRecalc(to.path)
         }
     },
 }

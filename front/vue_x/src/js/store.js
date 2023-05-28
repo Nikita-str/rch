@@ -100,7 +100,7 @@ export default createStore({
             }).catch(err => { console.log(err.response) });
         },
         */
-        getReqBoardName({ getters, commit }, board_url) {
+        getReq_Board_Name({ getters, commit }, board_url) {
             let params = new URLSearchParams([['board_url', board_url]])
             return axios({
                 url: getters.getPort + '/board/name',
@@ -112,6 +112,17 @@ export default createStore({
                 let ret = Object.create(boardName)
                 ret.name = res.data
                 return ret
+            }).catch(err => { console.log(err.response) });
+        },
+        
+        getReq_Board_ThrsLoad({ getters }, {board_url, from, to}) {
+            let params = new URLSearchParams([['board_url', board_url], ['from', from], ['to', to]])
+            return axios({
+                url: getters.getPort + '/board/thrs_load',
+                method: 'get',
+                params,
+            }).then(res => {
+                return res.data
             }).catch(err => { console.log(err.response) });
         },
     },

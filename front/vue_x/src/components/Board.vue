@@ -18,21 +18,23 @@
         this.upd(this.$route.path);
     },
     methods: {
-        ...mapActions({ getReqBoardName: "getReqBoardName", }),
+        ...mapActions({ getReq_Board_Name: "getReq_Board_Name", }),
         upd(new_path) {
             this.boardUrl = trim(new_path, "/");
             this.boardExist = this.$store.getters.getBoardName(this.boardUrl);
             if (this.boardExist === null) {
-                this.getReqBoardName(this.boardUrl).then(res => {
+                this.getReq_Board_Name(this.boardUrl).then(res => {
                     this.boardExist = res;
                 });
             }
         },
     },
-    beforeRouteUpdate(to, from, next) {
+    beforeRouteUpdate(to, from) {
         if (to.path != from.path) {
-            this.upd(to.path);
-            next();
+            this.upd(to.path)
+            return true
+        } else {
+            return false
         }
     },
 }
