@@ -1,6 +1,7 @@
 
 <script setup>
     import BoardHeader from './BoardHeader.vue'
+    import ThreadView from './ThreadView.vue'
     import { trim } from '../js/fns'
     import { mapActions } from 'vuex'
 </script> 
@@ -35,7 +36,8 @@ export default {
             let from = (this.thrs === null) ? 0 : this.thrs.length;
             let to = from + THR_CHUNK_LOAD;
 
-            this.getReq_Board_ThrsLoad({board_url, from, to}).then(res => {
+            this.getReq_Board_ThrsLoad({board_url, from, to}).then(res_x => {
+                let res = res_x.thrs
                 if (this.thrs === null) {
                     this.thrs = res
                 } else {
@@ -62,6 +64,12 @@ export default {
 <template>
     <div class="board-inner">
         <BoardHeader :boardName="boardName" />
+
+        <div v-if="thrs === null">...</div>
+        <div v-else-if="thrs.length == 0">с доски украли все треды!!!</div>
+        <template v-else>
+            <ThreadView v-for="thr in thrs" :posts="thr" />
+        </template>
     </div>
 </template>
 

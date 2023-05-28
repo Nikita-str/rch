@@ -1,3 +1,6 @@
+<script setup>
+    import { pad } from '../js/fns'
+</script>
 
 <script> 
 export default {
@@ -7,7 +10,7 @@ export default {
       required: true,
     },
     msgDate: {
-      type: String,
+      type: Number | String,
       required: true,
     },
     msgBoardN: {
@@ -31,6 +34,24 @@ export default {
       required: false,
     },
   },
+  computed: {
+    msgDateX() {
+        if (typeof(this.msgDate) == 'string') { return this.msgDate }
+        
+        let date_time = new Date(this.msgDate * 1000);
+        let hours = pad(date_time.getHours(), 2);
+        let minutes = pad(date_time.getMinutes(), 2);
+        let seconds = pad(date_time.getSeconds(), 2);
+        let time = hours + ':' + minutes + ':' + seconds;
+
+        let day = pad(date_time.getDate(), 2);
+        let month = pad(date_time.getMonth(), 2);
+        let year = pad(date_time.getFullYear(), 2);
+        let date = day + '.' + month + '.' + year;
+
+        return time + ' ' + date
+    }
+  }
 }
 </script> 
 
@@ -38,7 +59,7 @@ export default {
     <div class="post">
         <div class="post-header">
             <span class="post-who" v-html="msgWho"></span>
-            <span class="post-date">{{ msgDate }}</span>
+            <span class="post-date">{{ msgDateX }}</span>
             <span class="post-board-n">#<a href="#">{{ msgBoardN }}</a></span>
             <span class="post-thr-n">{{ msgThrN }}</span>
         </div>
