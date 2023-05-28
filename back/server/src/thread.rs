@@ -75,6 +75,10 @@ impl Thread {
         self.posts.get(n)
     }
 
+    pub fn post_qty(&self) -> usize {
+        self.posts.len()
+    }
+
     pub fn is_bump_limit_reached(&self) -> bool {
         if self.infinity { false } 
         else { self.posts.len() >= BUMP_LIMIT }

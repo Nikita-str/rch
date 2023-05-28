@@ -15,7 +15,15 @@ pub struct HandlerParams{
 
 #[derive(Serialize, Debug)]
 pub struct ResultOk {
-    thrs: Vec<Vec<Post>>,
+    thrs: Vec<SingleThreadView>,
+}
+
+#[derive(Serialize, Debug)]
+struct SingleThreadView {
+    /// inner form: `[OP, last - n, last - (n - 1), ..., last - 1, last]` 
+    posts: Vec<Post>,
+    posts_qty: usize,
+    // TODO: hidden_imgs_qty
 }
 
 pub async fn handler(
@@ -41,13 +49,26 @@ pub async fn handler(
             for thr_n in from..=to {
                 let Some(thr) = board.top_thr_by_usage_n(thr_n) else { break };
 
-                let mut first_posts = Vec::with_capacity(THR_FIRST_POSTS_QTY + 1);
-                for post_n in 0..=THR_FIRST_POSTS_QTY {
-                    let Some(post) = thr.post(post_n) else { break };
-                    first_posts.push(post.clone())
+                let mut posts = Vec::with_capacity(THR_FIRST_POSTS_QTY + 1);
+                let posts_qty = thr.post_qty();
+
+                if let Some(op_post) = thr.post(0) {
+                    posts.push(op_post.clone())
+                } else {
+                    println!("WARN: ALGO ERROR: THREAD WO OP")
                 }
 
-                thrs.push(first_posts)
+                let from = if posts_qty > THR_FIRST_POSTS_QTY { posts_qty - THR_FIRST_POSTS_QTY } else { 1 };
+                let to = posts_qty.min(from + THR_FIRST_POSTS_QTY);
+                for post_n in from..to {
+                    let Some(post) = thr.post(post_n) else { break };
+                    posts.push(post.clone())
+                }
+                
+                thrs.push(SingleThreadView{
+                    posts,
+                    posts_qty,
+                })
             }
         }
         Json(ResultOk { thrs })

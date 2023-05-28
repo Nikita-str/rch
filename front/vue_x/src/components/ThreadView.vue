@@ -10,7 +10,11 @@ export default {
         posts: {
             type: Array,
             required: true,
-        }
+        },
+        post_qty: {
+            type: Number,
+            required: true,
+        },
     },
 }
 </script> 
@@ -26,9 +30,10 @@ export default {
                     :msg="posts[post_index].text" 
                     :msgDate="posts[post_index].time" 
                     :msgBoardN="posts[post_index].n" 
-                    :msgThrN="999" 
+                    :msgThrN="post_qty - (posts.length - 1) + post_index"
                     :msgWho="posts[post_index].poster"
                 />
+                <!-- :msgThrN="999" for `msgThrN` padding test -->
             </div>
         </div>
         <hr class="thr-view-horiz" />

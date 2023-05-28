@@ -72,7 +72,7 @@ export default {
         </div>
         <div v-else-if="thrs.length == 0" class="board-sad-text">с доски украли все треды!!!</div>
         <template v-else>
-            <ThreadView v-for="thr in thrs" :posts="thr" />
+            <ThreadView v-for="thr in thrs" :posts="thr.posts" :post_qty="thr.posts_qty" />
         </template>
     </div>
 </template>
