@@ -65,8 +65,12 @@ export default {
     <div class="board-inner">
         <BoardHeader :boardName="boardName" />
 
-        <div v-if="thrs === null">...</div>
-        <div v-else-if="thrs.length == 0">с доски украли все треды!!!</div>
+        <div v-if="/* true || */ thrs === null" class="board-sad-text">
+            <span class="board-await" style="animation-delay: 0s;">.</span>
+            <span class="board-await" style="animation-delay: 1s;">.</span>
+            <span class="board-await" style="animation-delay: 2s;">.</span>
+        </div>
+        <div v-else-if="thrs.length == 0" class="board-sad-text">с доски украли все треды!!!</div>
         <template v-else>
             <ThreadView v-for="thr in thrs" :posts="thr" />
         </template>
@@ -77,5 +81,29 @@ export default {
 <style scoped>
 .board-inner {
     width: 100vw;
+}
+
+.board-sad-text {
+    text-align: center;
+    font-size: 1.9em;
+    padding-top: 0.35em;
+    color: var(--r-col-blue);
+    font-weight: 900;
+}
+
+
+
+@keyframes animx-await-change-color {
+  from { color: var(--r-col-blue); }
+  20%   { color: var(--r-col-transparent-dbg); }
+  40%  { color: var(--r-col-transparent-dbg); }
+  60%  { color: var(--r-col-blue); }
+  to   { }
+}
+.board-await {
+    animation-name: animx-await-change-color;
+    animation-duration: 4s;
+    animation-iteration-count: infinite;
+    animation-direction: normal;
 }
 </style>

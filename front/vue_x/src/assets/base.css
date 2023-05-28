@@ -66,7 +66,7 @@
   box-sizing: border-box;
   margin: 0;
   position: relative;
-  font-weight: normal;
+  /* font-weight: normal; */
 }
 
 body {

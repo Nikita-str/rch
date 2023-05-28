@@ -28,6 +28,10 @@ h1, h1>span {
   /* background-color: #0001; */
 }
 
+h3, h4 {
+  font-weight: normal;
+}
+
 h3 {
   font-size: 1.2rem;
   /* background-color: #0001; */
