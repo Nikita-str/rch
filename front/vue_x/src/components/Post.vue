@@ -33,6 +33,11 @@ export default {
       type: Array,
       required: false,
     },
+    isOP: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
   },
   computed: {
     msgDateX() {
@@ -72,7 +77,7 @@ export default {
 </script> 
 
 <template>
-    <div class="post">
+    <div class="post" :class="{ 'post--not-op': !isOP }">
         <div class="post-header">
             <span class="post-who" v-html="msgWho"></span>
             <span class="post-date">{{ msgDateX }}</span>
@@ -96,12 +101,14 @@ export default {
 <style>
 .post {
     max-width: 70vw;
-    background-color: var(--r-col-transparent-dbg);
-    border-style: solid;
     border-width: 1px;
     border-radius: 0;
-    border-color: var(--r-col-blue);
     padding: 0.3em 1em 1.2em 0.6em;
+}
+.post--not-op {
+    border-style: solid;
+    background-color: var(--r-col-transparent-dbg);
+    border-color: var(--r-col-blue);    
 }
 
 .post-header {

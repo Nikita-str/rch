@@ -33,7 +33,7 @@ export default {
         <div>
             <div v-if="header" style="padding-left: 1.2em; color: var(--r-col-blue); font-weight: 700;">{{ header }}</div>
             <div style="display: flex; padding-left: 1.2em;">
-                <Post :msg="posts[0].text" :msgDate="posts[0].time" :msgBoardN="posts[0].n" :msgThrN="1" :msgWho="posts[0].poster" />
+                <Post :msg="posts[0].text" :msgDate="posts[0].time" :msgBoardN="posts[0].n" :msgThrN="1" :msgWho="posts[0].poster" :isOP="true" />
             </div>
             <div v-if="posts_qty > posts.length" class="thr-view-skip-info">пропущено постов: {{ posts_qty - posts.length }}</div>
             <div v-for="post_index in /*from 1 to*/ (posts.length - 1)" class="thr-view-reply">
