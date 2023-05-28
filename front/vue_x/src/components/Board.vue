@@ -18,12 +18,12 @@
         this.upd(this.$route.path);
     },
     methods: {
-        ...mapActions({ getIsBoardExist: "getIsBoardExist", }),
+        ...mapActions({ getReqBoardName: "getReqBoardName", }),
         upd(new_path) {
             this.boardUrl = trim(new_path, "/");
-            this.boardExist = this.$store.getters.isBoardExist(this.boardUrl);
+            this.boardExist = this.$store.getters.getBoardName(this.boardUrl);
             if (this.boardExist === null) {
-                this.getIsBoardExist(this.boardUrl).then(res => {
+                this.getReqBoardName(this.boardUrl).then(res => {
                     this.boardExist = res;
                 });
             }
@@ -40,7 +40,7 @@
 
 <template>
     <PageAwait v-if="boardExist === null" :msg="'когда поймем что с /' + boardUrl + '/'" />
-    <BoardLoaded v-else-if="boardExist === true" :boardName="'todo-pass-valid-name'" />
+    <BoardLoaded v-else-if="boardExist.name" :boardName="boardExist.name" />
     <PageNotFound v-else />
 </template>
 

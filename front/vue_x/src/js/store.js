@@ -7,6 +7,10 @@ function setPropsByName(to, from, props) {
       }
 }
 
+const boardName = {
+    name: null,
+};
+
 export default createStore({
     state: {
         port: "/api",
@@ -17,7 +21,7 @@ export default createStore({
 
         pop_boards: null,
 
-        existed_boards: new Set(),
+        existed_boards_name: new Map(),
         unexisted_boards: new Set(),
     },
 
@@ -31,9 +35,16 @@ export default createStore({
 
         getPopBoards: state => state.pop_boards,
 
-        isBoardExist: (state) => (board_url) => {
-            if (state.existed_boards.has(board_url)) { return true }
-            if (state.unexisted_boards.has(board_url)) { return false }
+        getBoardName: (state) => (board_url) => {
+            let board_name = state.existed_boards_name.get(board_url);
+            if (board_name) { 
+                var ret = Object.create(boardName)
+                ret.name = board_name
+                return ret
+            }
+            if (state.unexisted_boards.has(board_url)) {
+                return Object.create(boardName)
+            }
             return null
         },
     },
@@ -51,8 +62,8 @@ export default createStore({
             console.log("pop boards obj", obj)
             state.pop_boards = obj
         },
-        addExistenceBoard(state, { board_url, is_exist }) {
-            if (is_exist) { state.existed_boards.add(board_url) }
+        addExistenceBoard(state, { board_url, board_name }) {
+            if (board_name) { state.existed_boards_name.set(board_url, board_name) }
             else { state.unexisted_boards.add(board_url) }
         },
     },
@@ -75,6 +86,7 @@ export default createStore({
                 commit('updPopBoards', res.data)
             }).catch(err => { console.log(err.response) });
         },
+        /*
         getIsBoardExist({ getters, commit }, board_url) {
             let params = new URLSearchParams([['board_url', board_url]])
             return axios({
@@ -85,6 +97,21 @@ export default createStore({
                 const is_exist = res.data
                 commit('addExistenceBoard', { board_url, is_exist, })
                 return res.data
+            }).catch(err => { console.log(err.response) });
+        },
+        */
+        getReqBoardName({ getters, commit }, board_url) {
+            let params = new URLSearchParams([['board_url', board_url]])
+            return axios({
+                url: getters.getPort + '/board/name',
+                method: 'get',
+                params,
+            }).then(res => {
+                const board_name = res.data
+                commit('addExistenceBoard', { board_url, board_name, })
+                let ret = Object.create(boardName)
+                ret.name = res.data
+                return ret
             }).catch(err => { console.log(err.response) });
         },
     },
