@@ -24,6 +24,7 @@ struct SingleThreadView {
     posts: Vec<Post>,
     posts_qty: usize,
     // TODO: hidden_imgs_qty
+    header: String,
 }
 
 pub async fn handler(
@@ -68,6 +69,7 @@ pub async fn handler(
                 thrs.push(SingleThreadView{
                     posts,
                     posts_qty,
+                    header: thr.header().into(),
                 })
             }
         }

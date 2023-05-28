@@ -78,6 +78,10 @@ impl Thread {
     pub fn post_qty(&self) -> usize {
         self.posts.len()
     }
+    
+    pub fn header(&self) -> &str {
+        &self.header
+    }
 
     pub fn is_bump_limit_reached(&self) -> bool {
         if self.infinity { false } 
