@@ -11,9 +11,14 @@ export default {
             type: Array,
             required: true,
         },
-        post_qty: {
+        posts_qty: {
             type: Number,
             required: true,
+        },
+    },
+    computed: {
+        msgThrNumHelper() {
+            return this.posts_qty - (this.posts.length - 1)
         },
     },
 }
@@ -25,12 +30,13 @@ export default {
             <div style="display: flex; padding-left: 1.2em;">
                 <Post :msg="posts[0].text" :msgDate="posts[0].time" :msgBoardN="posts[0].n" :msgThrN="1" :msgWho="posts[0].poster" />
             </div>
+            <div v-if="posts_qty > posts.length" class="thr-view-skip-info">пропущено постов: {{ posts_qty - posts.length }}</div>
             <div v-for="post_index in /*from 1 to*/ (posts.length - 1)" class="thr-view-reply">
                 <Post 
                     :msg="posts[post_index].text" 
                     :msgDate="posts[post_index].time" 
                     :msgBoardN="posts[post_index].n" 
-                    :msgThrN="post_qty - (posts.length - 1) + post_index"
+                    :msgThrN="msgThrNumHelper + post_index"
                     :msgWho="posts[post_index].poster"
                 />
                 <!-- :msgThrN="999" for `msgThrN` padding test -->
@@ -57,5 +63,11 @@ export default {
     display: flex;
     padding-left: 2.4em;
     margin-top: 0.3em;
+}
+
+.thr-view-skip-info {
+    padding-left: 1.2em;
+    color: var(--r-col-blue);
+    opacity: 0.75;
 }
 </style>

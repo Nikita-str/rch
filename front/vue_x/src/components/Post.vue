@@ -132,5 +132,9 @@ export default {
 .post-reply {
     font-size: 0.8em;
 }
+
+.post-text {
+    word-wrap: break-word;
+}
 </style>
 
