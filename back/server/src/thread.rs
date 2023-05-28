@@ -1,5 +1,6 @@
 use std::collections::VecDeque;
 use crate::post::Post;
+use super::thread_usage_rate::post_rate;
 
 crate::define_id!(ThreadId);
 
@@ -77,5 +78,15 @@ impl Thread {
     pub fn is_bump_limit_reached(&self) -> bool {
         if self.infinity { false } 
         else { self.posts.len() >= BUMP_LIMIT }
+    }
+
+    pub fn last_post_rate(&self) -> f32 {
+        let post_n = self.posts.len() - 1;
+        let mut iter = self.posts.iter();
+        let post = iter.next_back().unwrap();
+        let Some(prev_post) = iter.next_back() else { return post_rate(post_n, 0.) };
+        
+        let dt_sec = post.dt(prev_post);
+        post_rate(post_n, dt_sec)
     }
 }

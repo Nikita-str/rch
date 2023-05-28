@@ -29,6 +29,7 @@ pub struct Board {
 
     // TODO:MAYBE: SpeedPost
     cur_thr_id: ThreadId,
+    op_post_n_to_id: HashMap<u64, ThreadId>,
     thrs: HashMap<ThreadId, Thread>,
     thrs_usage: ThreadUsageRate, 
 }
@@ -45,7 +46,9 @@ impl Board {
             name,
             descr,
             post_qty,
+
             cur_thr_id: ThreadId::first(),
+            op_post_n_to_id: HashMap::new(),
             thrs: HashMap::new(),
             thrs_usage: ThreadUsageRate::new(max_thr_qty),
         }
@@ -58,8 +61,29 @@ impl Board {
     pub fn new_thr(&mut self, header: Option<String>, mut op_post: Post, infinity: bool) {
         op_post.upd_n(self.next_post_n());
         let id = self.cur_thr_id.inc();
+        assert!(self.op_post_n_to_id.insert(op_post.n(), id).is_none());
         assert!(self.thrs.insert(id, Thread::new(header, op_post, infinity)).is_none());
         self.thrs_usage.add_new(id);
+    }
+
+    pub(in crate) fn thread_mut_with_id(&mut self, op_post_n: u64) -> Option<(&mut Thread, ThreadId)> {
+        self.op_post_n_to_id.get(&op_post_n).map(|id|(self.thrs.get_mut(id).unwrap(), *id))
+    }
+
+    pub fn thread_mut(&mut self, op_post_n: u64) -> Option<&mut Thread> {
+        self.op_post_n_to_id.get(&op_post_n).map(|id|self.thrs.get_mut(id).unwrap())
+    }
+
+    pub fn add_post(&mut self, op_post_n: u64, mut post: Post) /* TODO: ret Result */ {
+        post.upd_n(self.next_post_n());
+
+        if let Some((thr, id)) = self.thread_mut_with_id(op_post_n) {
+            thr.add_post(post);
+            if !thr.is_bump_limit_reached() {
+                let post_rate = thr.last_post_rate();
+                self.thrs_usage.upd_rates(id, post_rate)
+            }
+        };
     }
 }
 

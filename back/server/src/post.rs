@@ -36,4 +36,12 @@ impl Post {
     pub fn text(&self) -> &str {
         &self.text
     }
+
+    pub fn n(&self) -> u64 {
+        self.n
+    }
+
+    pub fn dt(&self, prev: &Self) -> f32 {
+        (prev.time - self.time) as f32
+    }
 }
