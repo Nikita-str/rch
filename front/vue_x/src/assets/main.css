@@ -35,6 +35,8 @@ body {
 
 #app {
   display: flex;
+  margin: 0;
+  position: relative;
   /* width: 0px;
   height: 0px;   */
 

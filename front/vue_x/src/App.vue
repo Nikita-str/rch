@@ -43,15 +43,13 @@ import PopBoards from './components/PopBoards.vue'
 </script>
 
 <template>
-  <div>
-    <div style="height: 100%;">
-      <div id="center">
-        <HelloWorld msg="Незабывайте спать" />
-        <About msg="Ура-ура общение!" :open_boards="openBoard" :posting_speed="speedPost" :total_post="totalPost" />
-        <br/>
-        <PopBoards />
-        <router-link to="/tmp/">X</router-link>
-      </div>
+  <div style="height: 100%;">
+    <div id="center">
+      <HelloWorld msg="Незабывайте спать" />
+      <About msg="Ура-ура общение!" :open_boards="openBoard" :posting_speed="speedPost" :total_post="totalPost" />
+      <br/>
+      <PopBoards />
+      <router-link to="/tmp/">X</router-link>
     </div>
   </div>
 </template>
