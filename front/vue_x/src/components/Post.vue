@@ -50,7 +50,23 @@ export default {
         let date = day + '.' + month + '.' + year;
 
         return time + ' ' + date
-    }
+    },
+    xCssThrNumPaddingLeft() {
+        let pad = (this.msgThrN > 99) ? 0 : ((this.msgThrN > 9) ? 1 : 2);
+        return pad + "ch"
+    },
+    // msgThrNumX() {
+    //     const PREFIX = '<span style="opacity:0;">' 
+    //     const POSTFIX = '</span>' 
+    //     let s = String(this.msgThrN);
+    //     if (this.msgThrN > 99) {
+    //         return s
+    //     } else if (this.msgThrN > 9) {
+    //         return PREFIX + '0' + POSTFIX + s
+    //     } else {
+    //         return PREFIX + '00' + POSTFIX + s
+    //     }
+    // }
   }
 }
 </script> 
@@ -96,6 +112,7 @@ export default {
 }
 .post-thr-n {
     color: var(--r-col-blue);
+    padding-left: v-bind(xCssThrNumPaddingLeft);
 }
 
 .post-inner {
