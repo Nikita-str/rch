@@ -8,7 +8,7 @@ mod fns {
     use axum::http::Method;
     use std::collections::HashSet;
 
-    pub fn router(common_info_state: &all::HandlerState) -> Router {
+    pub fn router(common_info_state: &crate::api::header_use::HandlerStateCommon) -> Router {
         let router = Router::new();
         let router = router.merge(all::router(common_info_state));
         let router = router.merge(pop_boards::router(common_info_state));

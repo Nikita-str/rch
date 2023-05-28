@@ -8,7 +8,7 @@ mod fns {
     use axum::http::Method;
     use std::collections::HashSet;
 
-    pub fn router(common_info_state: &common::all::HandlerState) -> Router {
+    pub fn router(common_info_state: &crate::api::header_use::HandlerStateCommon) -> Router {
         let router = Router::new();
         let router = router.merge(common::router(common_info_state));
         let router = router.merge(board::router(common_info_state));
@@ -26,4 +26,6 @@ mod header_use {
     pub use serde::{Serialize, Deserialize};
     pub use axum::extract::{State, Query};
     pub use std::sync::{Arc, RwLock, Mutex};
+
+    pub type HandlerStateCommon = Arc<RwLock<crate::app_state::CommonInfoState>>;
 }

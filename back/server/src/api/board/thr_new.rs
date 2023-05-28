@@ -1,12 +1,10 @@
 use crate::api::header_use::*;
-use crate::app_state::CommonInfoState;
 use crate::post::Post;
 
 // http://127.0.0.1:5173/api/board/thr_new?board_url=b&header=Post%20Header&post_text=tuturu
 
 pub const REQ_METHOD: Method = Method::POST;
-
-pub type HandlerState = Arc<RwLock<CommonInfoState>>;
+pub type HandlerState = HandlerStateCommon;
 
 #[derive(Deserialize, Debug)]
 pub struct HandlerParams{

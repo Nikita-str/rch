@@ -1,9 +1,7 @@
 use crate::api::header_use::*;
-use crate::app_state::CommonInfoState;
-
 
 pub const REQ_METHOD: Method = Method::GET;
-pub type HandlerState = Arc<RwLock<CommonInfoState>>;
+pub type HandlerState = HandlerStateCommon;
 
 #[derive(Serialize, Debug)]
 pub struct ResultOk {

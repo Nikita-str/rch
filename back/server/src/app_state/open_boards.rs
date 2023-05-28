@@ -152,6 +152,10 @@ impl OpenBoards {
     pub fn is_board_exist(&self, board_url: &str) -> bool {
         self.board_urls.contains_key(board_url)
     }
+    
+    pub fn board_name(&self, board_url: &str) -> Option<&str> {
+        self.board(board_url).map(|b|b.name.as_str())
+    }
 
     pub fn board(&self, board_url: &str) -> Option<&Board> {
         self.board_urls.get(board_url).map(|id|self.boards.get(id).unwrap())

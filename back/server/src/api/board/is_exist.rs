@@ -1,10 +1,7 @@
 use crate::api::header_use::*;
-use crate::app_state::CommonInfoState;
-
 
 pub const REQ_METHOD: Method = Method::GET;
-
-pub type HandlerState = Arc<RwLock<CommonInfoState>>;
+pub type HandlerState = HandlerStateCommon;
 
 #[derive(Deserialize, Debug)]
 pub struct HandlerParams{
@@ -17,7 +14,7 @@ pub async fn handler(
     Query(params): Query<HandlerParams>,
     State(state): State<HandlerState>,
 ) -> Json<ResultOk> {
-    crate::delay_ms(300);
+    crate::delay_ms(1_000);
 
     let exist = {
         let r_state = state.read().unwrap();
