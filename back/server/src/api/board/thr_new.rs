@@ -20,8 +20,9 @@ pub struct ResultOk {
 }
 
 pub async fn handler(
-    Query(params): Query<HandlerParams>,
+    // Query(params): Query<HandlerParams>,
     State(state): State<HandlerState>,
+    Form(params): Form<HandlerParams>,
 ) -> Json<()>
 {
     crate::delay_ms(300);

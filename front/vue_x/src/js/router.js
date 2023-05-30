@@ -5,6 +5,7 @@ import PageNotFound from '../components/PageNotFound.vue'
 import PageAwait from '../components/PageAwait.vue'
 import Board from '../components/Board.vue'
 import Post from '../components/Post.vue'
+import PostingForm from '../components/PostingForm.vue'
 
 const POST_LONG_MSG = 'The characters allowed in a URI are either reserved or unreserved'
 +' (or a percent character as part of a percent-encoding).'
@@ -121,6 +122,18 @@ const routes = [
         msgThrN: '2',
         msgWho: 'Анон',
       }
+    },
+
+
+
+    
+    { 
+      path: '/~~page~~/posting-form/', 
+      component: PostingForm,
+      props: {
+        boardUrl: 'b',
+        isNewThr: true,
+      },
     },
 
 
