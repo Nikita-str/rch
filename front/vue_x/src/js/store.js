@@ -1,5 +1,6 @@
 import { createStore } from 'vuex'
 import axios from 'axios'
+import { trim } from './fns'
 
 function setPropsByName(to, from, props) {
     for (const prop of props) {
@@ -124,6 +125,22 @@ export default createStore({
             }).then(res => {
                 return res.data
             }).catch(err => { console.log(err.response) });
+        },
+          
+        postReq_Board_ThrNew({ getters }, data) {
+            if (data.post_header !== null) {
+                data.post_header = trim(data.post_header, ' ')
+                if (data.post_header.length == 0) {
+                    data.post_header = null
+                }
+            }
+            return axios({
+                url: getters.getPort + '/board/thr_new',
+                method: 'post',
+                data,
+            }).then(res => {
+                return res.data
+            }).catch(err => { console.log('POST board/thr_new', err.response) });
         },
     },
 })
