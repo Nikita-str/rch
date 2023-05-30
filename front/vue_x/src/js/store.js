@@ -142,5 +142,19 @@ export default createStore({
                 return res.data
             }).catch(err => { console.log('POST board/thr_new', err.response) });
         },
+        postReq_Thread_PostNew({ getters }, data) {
+            if (data.post_header !== null) {
+                console.log('[WARN][POST:thread/post_new]: post_header isnt empty', data.post_header)
+            }
+            data.post_header = null
+
+            return axios({
+                url: getters.getPort + '/thread/post_new',
+                method: 'post',
+                data,
+            }).then(res => {
+                return res.data
+            }).catch(err => { console.log('POST:thread/post_new', err.response) });
+        },
     },
 })

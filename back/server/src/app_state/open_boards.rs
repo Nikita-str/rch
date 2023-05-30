@@ -58,12 +58,14 @@ impl Board {
         self.thrs_usage.top_n(n).map(|id|self.thrs.get(&id).unwrap())
     }
 
-    pub fn new_thr(&mut self, header: Option<String>, mut op_post: Post, infinity: bool) {
+    pub fn new_thr(&mut self, header: Option<String>, mut op_post: Post, infinity: bool) -> u64 {
         op_post.upd_n(self.next_post_n());
+        let op_post_n = op_post.n();
         let id = self.cur_thr_id.inc();
-        assert!(self.op_post_n_to_id.insert(op_post.n(), id).is_none());
+        assert!(self.op_post_n_to_id.insert(op_post_n, id).is_none());
         assert!(self.thrs.insert(id, Thread::new(header, op_post, infinity)).is_none());
         self.thrs_usage.add_new(id);
+        op_post_n
     }
 
     pub(in crate) fn thread_mut_with_id(&mut self, op_post_n: u64) -> Option<(&mut Thread, ThreadId)> {

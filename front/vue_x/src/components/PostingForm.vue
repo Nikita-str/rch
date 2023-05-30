@@ -27,21 +27,27 @@ export default {
     },
   },
   computed: {
-    formAction() {
-        return 'api/' + (this.isNewThr ? "board/thr_new" : "thread/post_new");
-    },
+    // formAction() { return 'api/' + (this.isNewThr ? "board/thr_new" : "thread/post_new"); },
     needSubj() { return this.isNewThr },
   },
   methods: {
         ...mapActions({ postReq_Board_ThrNew: "postReq_Board_ThrNew", }),
+        ...mapActions({ postReq_Thread_PostNew: "postReq_Thread_PostNew", }),
         onSubmit(x) {
             // this.$refs.formSubmit.submit()
             let data = toRaw(postingForm.value);
             postingForm.value = newPostingFormContent();
             data.board_url = this.boardUrl;
-            this.postReq_Board_ThrNew(data).then(res => {
-                console.log('[post req maded]', res)
-            });
+            if (this.isNewThr) {
+                this.postReq_Board_ThrNew(data).then(n => {
+                    if (this.isNewThr && n !== null) {
+                        this.$router.push('/' + this.boardUrl + "/" + n + '/')
+                    } 
+                });
+            } else {
+                this.postReq_Thread_PostNew(data)
+            }
+            
             // x.target.reset()
         }
     },
@@ -49,7 +55,7 @@ export default {
 </script>
 
 <template>
-    <form id="posting-from" ref="formSubmit" :action="formAction" method="post" v-on:submit.prevent="onSubmit">
+    <form id="posting-from" ref="formSubmit" v-on:submit.prevent="onSubmit">
         <div>
             <input type="hidden" name="board_url" :value="boardUrl" />
         </div>
@@ -57,22 +63,20 @@ export default {
             <input
                 type="text"
                 v-model="postingForm.post_header"
-                name="post_header"
                 id="pf-subj"
                 class="inp-x" 
                 placeholder="тема"
-                tabindex="2"
+                tabindex="1"
                 :maxlength="SUBJ_MAX_LEN"
             />
         </div>
         <div>
             <textarea
                 v-model="postingForm.post_text"
-                name="post_text" 
                 id="pf-msg"
                 class="inp-x"
                 :placeholder="MSG_PLACEHOLDER"
-                tabindex="1"
+                tabindex="2"
                 rows="7"
             />
         </div>

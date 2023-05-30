@@ -23,7 +23,7 @@ pub async fn handler(
     // Query(params): Query<HandlerParams>,
     State(state): State<HandlerState>,
     Json(params): Json<HandlerParams>,
-) -> Json<()>
+) -> Json<Option<u64>>
 {
     crate::delay_ms(300);
 
@@ -31,13 +31,13 @@ pub async fn handler(
     let op_post = Post::new_anon(params.post_text, params.post_img);
     let infinity = false;
 
-    {
+    let n = {
         let mut w_state = state.write().unwrap();
         w_state.mut_open_boards().board_mut(&params.board_url)
-            .map(|board|board.new_thr(params.post_header, op_post, infinity));    
-    }
+            .map(|board|board.new_thr(params.post_header, op_post, infinity))
+    };
 
-    Json(())
+    Json(n)
 }
 
 pub fn router(state: &HandlerState) -> Router {
