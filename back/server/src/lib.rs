@@ -200,9 +200,7 @@ mod fns {
 }
 
 macro_rules! define_id {
-    ($name:ident) => {
-        #[derive(Clone, Copy, Hash, PartialEq, Eq)]
-        pub(in crate) struct $name(usize);
+    ([IMPL] $name:ident) => {
         impl $name {
             pub fn first() -> Self { Self(1) }
             pub fn next(self) -> Self { Self(self.0 + 1) }
@@ -212,11 +210,35 @@ macro_rules! define_id {
                 ret 
             }
         }
+    };
+    ([INNER] $name:ident: $ty:ty) => {
+        #[derive(serde::Serialize)]
+        #[derive(Clone, Copy, Hash, PartialEq, Eq)]
+        pub(in crate) struct $name($ty);
+
         impl std::fmt::Debug for $name {
             fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
                 write!(f, "#{}", self.0)
             }
         }
-    }
+        impl Into<$ty> for $name {
+            fn into(self) -> $ty {
+                self.0
+            }
+        }
+        impl From<$ty> for $name {
+            fn from(value: $ty) -> Self {
+                Self(value)
+            }
+        }
+    };
+    ($name:ident: $ty:ty) => {
+        crate::define_id!([INNER] $name: $ty);
+        crate::define_id!([IMPL] $name);
+    };
+    ($name:ident: $ty:ty [NO IMPL]) => {
+        crate::define_id!([INNER] $name: $ty);
+    };
+    ($name:ident) => { crate::define_id!($name: usize); };
 }
 pub(crate) use define_id;

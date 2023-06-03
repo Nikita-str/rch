@@ -1,7 +1,7 @@
-use std::collections::{HashMap, VecDeque};
+use std::collections::{HashMap};
 pub use serde::Serialize;
-use crate::post::Post;
-use crate::thread::{Thread, ThreadId};
+use crate::post::{Post, PostN};
+use crate::thread::{Thread, ThreadOpN};
 use crate::thread_usage_rate::ThreadUsageRate;
 
 crate::define_id!(BoardId);
@@ -25,30 +25,26 @@ pub struct Board {
     pub url: String,
     pub name: String,
     pub descr: String,
-    pub post_qty: u64,
+    pub post_qty: PostN,
 
     // TODO:MAYBE: SpeedPost
-    cur_thr_id: ThreadId,
-    op_post_n_to_id: HashMap<u64, ThreadId>,
-    thrs: HashMap<ThreadId, Thread>,
+    thrs: HashMap<ThreadOpN, Thread>,
     thrs_usage: ThreadUsageRate, 
 }
 
 impl Board {
-    pub fn next_post_n(&mut self) -> u64 {
+    pub fn next_post_n(&mut self) -> PostN {
         self.post_qty += 1;
         self.post_qty
     }
 
-    pub fn new(url: String, name: String, descr: String, post_qty: u64, max_thr_qty: usize) -> Self {
+    pub fn new(url: String, name: String, descr: String, post_qty: PostN, max_thr_qty: usize) -> Self {
         Self {
             url,
             name,
             descr,
             post_qty,
 
-            cur_thr_id: ThreadId::first(),
-            op_post_n_to_id: HashMap::new(),
             thrs: HashMap::new(),
             thrs_usage: ThreadUsageRate::new(max_thr_qty),
         }
@@ -60,32 +56,40 @@ impl Board {
 
     pub fn new_thr(&mut self, header: Option<String>, mut op_post: Post, infinity: bool) -> u64 {
         op_post.upd_n(self.next_post_n());
-        let op_post_n = op_post.n();
-        let id = self.cur_thr_id.inc();
-        assert!(self.op_post_n_to_id.insert(op_post_n, id).is_none());
-        assert!(self.thrs.insert(id, Thread::new(header, op_post, infinity)).is_none());
-        self.thrs_usage.add_new(id);
-        op_post_n
-    }
-
-    pub(in crate) fn thread_mut_with_id(&mut self, op_post_n: u64) -> Option<(&mut Thread, ThreadId)> {
-        self.op_post_n_to_id.get(&op_post_n).map(|id|(self.thrs.get_mut(id).unwrap(), *id))
+        let thr_op_n = ThreadOpN::from(op_post.n());
+        assert!(self.thrs.insert(thr_op_n, Thread::new(header, op_post, infinity)).is_none());
+        self.thrs_usage.add_new(thr_op_n);
+        // TODO: delete least unrated if need
+        thr_op_n.into()
     }
 
     pub fn thread_mut(&mut self, op_post_n: u64) -> Option<&mut Thread> {
-        self.op_post_n_to_id.get(&op_post_n).map(|id|self.thrs.get_mut(id).unwrap())
+        self.thrs.get_mut(&ThreadOpN::from(op_post_n))
     }
 
     pub fn add_post(&mut self, op_post_n: u64, mut post: Post) /* TODO: ret Result */ {
         post.upd_n(self.next_post_n());
 
-        if let Some((thr, id)) = self.thread_mut_with_id(op_post_n) {
+        if let Some(thr) = self.thread_mut(op_post_n) {
             thr.add_post(post);
             if !thr.is_bump_limit_reached() {
                 let post_rate = thr.last_post_rate();
-                self.thrs_usage.upd_rates(id, post_rate)
+                let thr_op_n = thr.op_n();
+                self.thrs_usage.upd_rates(thr_op_n, post_rate)
             }
         };
+    }
+
+    pub fn thr_iter(&self) -> impl Iterator<Item = &Thread> {
+        self.thrs.values()
+    }
+
+    pub fn is_thr_exist(&self, op_post_n: u64) -> bool {
+        self.thrs.contains_key(&ThreadOpN::from(op_post_n))
+    }
+
+    pub fn thrs_rate(&self) -> Vec<u64> {
+        self.thrs_usage.thrs_rate()
     }
 }
 

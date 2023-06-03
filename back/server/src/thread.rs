@@ -1,8 +1,8 @@
 use std::collections::VecDeque;
 use crate::post::Post;
-use super::thread_usage_rate::post_rate;
+use super::thread_usage_rate::ThreadUsageRate as ThrRate;
 
-crate::define_id!(ThreadId);
+crate::define_id!(ThreadOpN: u64 [NO IMPL]);
 
 /// after this post qty thr will be auto saged  
 const BUMP_LIMIT: usize = 300;
@@ -12,6 +12,7 @@ const BUMP_LIMIT: usize = 300;
 const MAX_HEADER_LEN: usize = 42;
 
 pub struct Thread {
+    op_n: ThreadOpN,
     header: String,
     /// * `VecDeque` for inf threads
     posts: VecDeque<Post>,
@@ -45,6 +46,10 @@ impl Thread {
 
     // TODO: auth (before call this fn) when `infinity := true` 
     pub fn new(header: Option<String>, op_post: Post, infinity: bool) -> Self {
+        let op_n = op_post.n();
+        assert!(op_n != 0);
+        let op_n = ThreadOpN::from(op_n);
+
         let header = header
             .map(|h|Self::ctor_valid_header(h))
             .unwrap_or_else(||Self::ctor_header_by_msg(&op_post));
@@ -53,6 +58,7 @@ impl Thread {
         posts.push_back(op_post);
 
         Self {
+            op_n,
             header,
             posts,
             infinity,
@@ -71,6 +77,10 @@ impl Thread {
         self.posts.push_back(post)
     }
 
+    pub fn open_post(&self) -> &Post {
+        self.posts.get(0).unwrap()
+    }
+
     pub fn post(&self, n: usize) -> Option<&Post> {
         self.posts.get(n)
     }
@@ -83,6 +93,10 @@ impl Thread {
         &self.header
     }
 
+    pub(in crate) fn op_n(&self) -> ThreadOpN {
+        self.op_n
+    }
+
     pub fn is_bump_limit_reached(&self) -> bool {
         if self.infinity { false } 
         else { self.posts.len() >= BUMP_LIMIT }
@@ -92,9 +106,10 @@ impl Thread {
         let post_n = self.posts.len() - 1;
         let mut iter = self.posts.iter();
         let post = iter.next_back().unwrap();
-        let Some(prev_post) = iter.next_back() else { return post_rate(post_n, 0.) };
+        let Some(prev_post) = iter.next_back() 
+        else { return ThrRate::post_rate(post_n, 0.) };
         
         let dt_sec = post.dt(prev_post);
-        post_rate(post_n, dt_sec)
+        ThrRate::post_rate(post_n, dt_sec)
     }
 }

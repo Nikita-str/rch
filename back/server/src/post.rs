@@ -1,4 +1,5 @@
 use serde::Serialize;
+pub type PostN = u64;
 
 #[derive(Serialize, Debug, Clone)]
 pub enum Poster {
@@ -10,7 +11,7 @@ pub struct Post {
     text: String,
     img: Option<String>,
     time: i64,
-    n: u64,
+    n: PostN,
     poster: Poster,
 }
 
@@ -28,7 +29,7 @@ impl Post {
         }
     }
 
-    pub fn upd_n(&mut self, n: u64) {
+    pub fn upd_n(&mut self, n: PostN) {
         if self.n != 0 { panic!("post n already setted") }
         self.n = n;
     } 
@@ -37,7 +38,7 @@ impl Post {
         &self.text
     }
 
-    pub fn n(&self) -> u64 {
+    pub fn n(&self) -> PostN {
         self.n
     }
 

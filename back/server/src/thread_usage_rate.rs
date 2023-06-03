@@ -1,7 +1,6 @@
-use std::hash::Hash; 
-use std::collections::{LinkedList, VecDeque};
+use std::collections::{/* LinkedList, */ VecDeque};
 
-use crate::thread::ThreadId;
+use crate::thread::ThreadOpN;
 
 const INITIAL_RATE: f32 = 100.;
 const STD_RATE_COEF: f32 = 5.;
@@ -36,7 +35,7 @@ impl<T> Rate<T> {
 
 #[derive(Debug)]
 pub struct ThreadUsageRate {
-    rates: VecDeque<Rate<ThreadId>>,
+    rates: VecDeque<Rate<ThreadOpN>>,
     max_thr_qty: usize,
 }
 impl ThreadUsageRate {
@@ -47,7 +46,7 @@ impl ThreadUsageRate {
         }
     }
 
-    pub(in crate) fn top_n(&self, n: usize) -> Option<ThreadId> {
+    pub(in crate) fn top_n(&self, n: usize) -> Option<ThreadOpN> {
         let len = self.rates.len();
         if len <= n { None }
         else {
@@ -57,22 +56,22 @@ impl ThreadUsageRate {
 
     pub(in crate) fn post_rate(post_n: usize, dt_sec: f32) -> f32 { post_rate(post_n, dt_sec) }
     
-    pub(in crate) fn add_new(&mut self, id: ThreadId) {
+    pub(in crate) fn add_new(&mut self, thr_op_n: ThreadOpN) {
         if self.rates.len() == self.max_thr_qty {
             self.rates.pop_front();
         }
 
-        let post_rate = post_rate(0, 0.);
+        let post_rate = Self::post_rate(0, 0.);
         self.rates.iter_mut().for_each(|x|x.dec_rate(post_rate));
         
-        let rate = Rate::new(id);
+        let rate = Rate::new(thr_op_n);
         let index = self.rates.partition_point(|x|x.rate <= rate.rate);
         self.rates.insert(index, rate);
     }
 
     /// # panic
-    /// * if `id` is unkn
-    pub(in crate) fn upd_rates(&mut self, id: ThreadId, post_rate: f32) {
+    /// * if `thr_op_n` is unkn
+    pub(in crate) fn upd_rates(&mut self, thr_op_n: ThreadOpN, post_rate: f32) {
         // maybe we can do it faster (? by using LinkedList ?) but mheww...
 
         let mut cur_ind = None;
@@ -81,7 +80,7 @@ impl ThreadUsageRate {
         let thr_qty = self.rates.len();
 
         for (ind, rate) in self.rates.iter_mut().enumerate() {
-            let cur = rate.value == id;
+            let cur = rate.value == thr_op_n;
             rate.upd_rate(post_rate, thr_qty, cur);
             
             if cur {
@@ -105,12 +104,17 @@ impl ThreadUsageRate {
                 self.rates.push_back(cur)
             }
         } else {
-            panic!("[ALGO ERROR]: `id` is unkn")
+            panic!("[ALGO ERROR]: `thr_op_n` is unkn")
         }
+    }
+
+    
+    pub fn thrs_rate(&self) -> Vec<u64> {
+        self.rates.iter().map(|x|x.value.into()).collect()
     }
 }
 
-pub fn post_rate(post_n: usize, dt_sec: f32) -> f32 {
+fn post_rate(post_n: usize, dt_sec: f32) -> f32 {
     let dt_sec = if dt_sec <= 0. { 0. } 
     else if dt_sec >= (SEC_IN_H as f32) { SEC_IN_H as f32 }
     else { dt_sec };
