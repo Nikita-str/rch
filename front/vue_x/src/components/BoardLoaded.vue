@@ -1,17 +1,16 @@
 
 <script setup>
-    import BoardHeader from './BoardHeader.vue'
     import ThreadView from './ThreadView.vue'
-    import { trim } from '../js/fns'
+    // import { trim } from '../js/fns'
     import { mapActions } from 'vuex'
 </script> 
 
 <script> 
 const THR_CHUNK_LOAD = 10;
 
-function dataRecalc(new_path) {
+function dataRecalc(_new_path) {
     return {
-        boardUrl: trim(new_path, "/").split('/')[0],
+        // boardUrl: trim(new_path, "/").split('/')[0],
         thrs: null,
         thrs_op_n: null,
     }
@@ -19,15 +18,15 @@ function dataRecalc(new_path) {
 
 export default {
     props: {
-        boardName: {
+        boardUrl: {
             type: String,
             required: true,
-        }
+        },
     },
-    data() { return dataRecalc(this.$route.path) },
+    data() { return dataRecalc(this.boardUrl) },
     methods: {
-        dataRecalc(new_path) {
-            Object.assign(this.$data, dataRecalc(new_path))
+        dataRecalc(new_boardUrl) {
+            Object.assign(this.$data, dataRecalc(new_boardUrl))
         },
 
         ...mapActions({ getReq_Board_ThrsLoad: "getReq_Board_ThrsLoad", }),
@@ -53,8 +52,8 @@ export default {
         this.thrLoad()
     },
     watch: {
-        '$route' (to, _) {
-            this.dataRecalc(to.path)
+        boardUrl(new_boardUrl, _) {
+            this.dataRecalc(new_boardUrl)
             this.thrLoad()
         }
     },
@@ -62,7 +61,6 @@ export default {
 </script> 
 
 <template>
-    <!-- <BoardHeader :boardName="boardName" /> -->
     <div v-if="/* true || */ thrs === null" class="board-sad-text">
         <span class="board-await" style="animation-delay: 0s;">.</span>
         <span class="board-await" style="animation-delay: 1s;">.</span>

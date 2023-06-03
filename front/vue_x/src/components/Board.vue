@@ -53,8 +53,8 @@
     <div class="board-inner" v-else-if="boardExist.name">
         <BoardHeader :boardName="boardExist.name" />
 
-        <BoardLoaded      v-if="boardType == 'BoardLoaded'" :boardName="boardExist.name" />
-        <Catalog     v-else-if="boardType == 'Catalog'"      />
+        <BoardLoaded      v-if="boardType == 'BoardLoaded'" :boardUrl="boardUrl"/>
+        <Catalog     v-else-if="boardType == 'Catalog'"     />
         <div v-else class="board-sad-text">
             Inner error :3<br/>
             unknown board load type<br/>
