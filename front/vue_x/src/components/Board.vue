@@ -24,6 +24,9 @@
                 if (trim_path[1] == `catalog`) { return 'Catalog' }
             } else { return `unkn` }
         },
+        isCatalog() {
+            return this.boardType == 'Catalog'
+        }
     },
     mounted() {
         this.upd(this.$route.path);
@@ -51,7 +54,7 @@
 <template>
     <PageAwait v-if="boardExist === null" :msg="'когда поймем что с /' + boardUrl + '/'" />
     <div class="board-inner" v-else-if="boardExist.name">
-        <BoardHeader :boardName="boardExist.name" />
+        <BoardHeader :boardName="boardExist.name" :boardUrl="boardUrl" :isCatalog="isCatalog" />
 
         <BoardLoaded      v-if="boardType == 'BoardLoaded'" :boardUrl="boardUrl"/>
         <Catalog     v-else-if="boardType == 'Catalog'"     />

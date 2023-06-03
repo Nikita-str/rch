@@ -1,41 +1,37 @@
 
-<script setup>
-    import { trim } from '../js/fns'
-</script> 
-
 <script>
-
-function dataRecalc(new_path) {
-    return {
-        boardUrl: trim(new_path, "/").split('/')[0],
-    }
-}
 
 export default {
     props: {
         boardName: {
             type: String,
             required: true,
-        }
-    },
-    data(){ return dataRecalc(this.$route.path) },
-    methods: {
-        dataRecalc(new_path) {
-            Object.assign(this.$data, dataRecalc(new_path))
+        },
+        boardUrl: {
+            type: String,
+            required: true,
+        },
+        isCatalog: {
+            type: Boolean,
+            required: true,
         },
     },
-    watch: {
-        '$route' (to, _) {
-            this.dataRecalc(to.path)
-        }
-    },
+    computed: {
+        catalogRouteTo() {
+            if (this.isCatalog) { return '' }
+            else { return 'catalog/' }
+        },
+    }
 }
 </script> 
 
 <template>
     <div class="b-head">
         <div class="b-head-name" v-html="'/'+boardUrl+'/ : '+boardName" />
-        <router-link class="b-head-catalog" to="catalog/" append>→→→ каталог ←←←</router-link>
+        <!-- <router-link class="b-head-catalog" :to="catalogRouteTo" append>→→→ каталог ←←←</router-link> -->
+        <router-link v-if="isCatalog" class="b-head-catalog" :to="'/'+boardUrl+'/'">←←← на доску</router-link>
+        <router-link v-else           class="b-head-catalog"   to="catalog/" append>→→→ каталог ←←←</router-link>
+
         <div class="b-head-new-thr">[<router-link to="" append>Создать тред</router-link>]</div>
         <hr class="b-head-horiz" />
     </div>
