@@ -37,3 +37,4 @@ npm run build
 | fn           | `function`         |
 | dt           | `delta time`       |
 | qty          | `quantity`         |
+| sest         | `session storage`  |

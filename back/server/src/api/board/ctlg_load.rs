@@ -3,7 +3,7 @@ use std::collections::{/* HashMap, */ HashSet};
 use crate::post::Post;
 use crate::thread::Thread;
 
-pub const REQ_METHOD: Method = Method::GET;
+pub const REQ_METHOD: Method = Method::POST;
 pub type HandlerState = HandlerStateCommon;
 
 #[derive(Deserialize, Debug)]
@@ -21,7 +21,6 @@ pub struct ResultOk {
     new_thrs: Vec<SingleThreadView>,
     removed_thrs: Vec<u64>,
     rate_thrs: Vec<u64>,
-    
 }
 
 #[derive(Serialize, Debug)]
@@ -40,7 +39,6 @@ pub async fn handler(
 ) -> Result<Json<ResultOk>, ()> {
     crate::delay_ms(1_000);
 
-    println!("!TODO:DEL: [ctlg_load][IN]: {q_params:?} {body_params:?}");
     let board_url = q_params.board_url;
     let known_n = body_params.known_n;
 
@@ -73,5 +71,5 @@ pub async fn handler(
 }
 
 pub fn router(state: &HandlerState) -> Router {
-    Router::new().route("/ctlg_load", routing::get(handler).with_state(Arc::clone(state)))
+    Router::new().route("/ctlg_load", routing::post(handler).with_state(Arc::clone(state)))
 }

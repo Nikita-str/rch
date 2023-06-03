@@ -125,7 +125,21 @@ export default createStore({
             }).then(res => {
                 return res.data
             }).catch(err => { console.log(err.response) });
+        },        
+        postReq_Board_CtlgLoad({ getters }, {board_url, known_n}) {
+            let params = new URLSearchParams([['board_url', board_url]])
+            let data = { known_n, }
+            console.log('postReq_Board_CtlgLoad', data)
+            return axios({
+                url: getters.getPort + '/board/ctlg_load',
+                method: 'post',
+                params,
+                data,
+            }).then(res => {
+                return res.data
+            }).catch(err => { console.log(err.response) });
         },
+          
           
         postReq_Board_ThrNew({ getters }, data) {
             if (data.post_header !== null) {
