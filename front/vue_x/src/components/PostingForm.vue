@@ -96,7 +96,9 @@ export default {
 #pf-msg {
     width: 100%;
     min-width: 30ch;
+    max-width: calc(max(30ch, 30vw));
     min-height: 5ch;
+    max-height: calc(max(5ch, 70vh));
 }
 #pf-submit {
     float: right;

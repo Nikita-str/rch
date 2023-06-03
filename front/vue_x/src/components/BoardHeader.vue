@@ -34,7 +34,7 @@ export default {
 
 <template>
     <div class="b-head">
-        <div class="b-head-name">/{{boardUrl}}/ : {{ boardName }}</div>
+        <div class="b-head-name" v-html="'/'+boardUrl+'/ : '+boardName" />
         <router-link class="b-head-catalog" to="catalog/" append>→→→ каталог ←←←</router-link>
         <div class="b-head-new-thr">[<router-link to="" append>Создать тред</router-link>]</div>
         <hr class="b-head-horiz" />

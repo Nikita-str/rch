@@ -48,6 +48,10 @@ const routes = [
       path: '/:pathMatch([a-z]{1,' + maxBoardNameLen + '})/',
       component: Board,
     },
+    {
+      path: '/:pathMatch([a-z]{1,' + maxBoardNameLen + '})/catalog/',
+      component: Board,
+    },
 
     { 
       path: '/~~page~~/await/', 
@@ -128,11 +132,19 @@ const routes = [
 
     
     { 
-      path: '/~~page~~/posting-form/', 
+      path: '/~~page~~/posting-form/open/', 
       component: PostingForm,
       props: {
         boardUrl: 'b',
         isNewThr: true,
+      },
+    },
+    { 
+      path: '/~~page~~/posting-form/common/', 
+      component: PostingForm,
+      props: {
+        boardUrl: 'b',
+        isNewThr: false,
       },
     },
 

@@ -1,0 +1,12 @@
+.board-inner {
+    width: 100vw;
+}
+
+.board-sad-text {
+    text-align: center;
+    font-size: 1.9em;
+    padding-top: 0.35em;
+    color: var(--r-col-blue);
+    font-weight: 900;
+}
+
