@@ -4,6 +4,7 @@ import Tmp from '../Tmp.vue'
 import PageNotFound from '../components/PageNotFound.vue'
 import PageAwait from '../components/PageAwait.vue'
 import Board from '../components/Board.vue'
+import Thread from '../components/Thread.vue'
 import Post from '../components/Post.vue'
 import PostingForm from '../components/PostingForm.vue'
 
@@ -25,6 +26,7 @@ const POST_LONG_REPLIES = [
 
 
 const maxBoardNameLen = 16;
+const maxThrNLen = 16;
 
 const routes = [
     { 
@@ -51,6 +53,10 @@ const routes = [
     {
       path: '/:pathMatch([a-z]{1,' + maxBoardNameLen + '})/catalog/',
       component: Board,
+    },
+    {
+      path: '/:pathMatch([a-z]{1,' + maxBoardNameLen + '})/:pathMatch([0-9]{1,' + maxThrNLen + '})',
+      component: Thread,
     },
 
     { 

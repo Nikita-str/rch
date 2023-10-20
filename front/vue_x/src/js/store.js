@@ -170,5 +170,16 @@ export default createStore({
                 return res.data
             }).catch(err => { console.log('POST:thread/post_new', err.response) });
         },
+        getReq_Thread_ThrLoad({ getters }, {board_url, op_post_n, from, n_load}) {
+            let params = new URLSearchParams([['board_url', board_url], ['op_post_n', op_post_n], ['from', from], ['n_load', n_load]])
+
+            return axios({
+                url: getters.getPort + '/thread/thr_load',
+                method: 'get',
+                params,
+            }).then(res => {
+                return res.data
+            }).catch(err => { console.log(err.response) });
+        },
     },
 })
