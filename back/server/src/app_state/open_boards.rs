@@ -1,4 +1,4 @@
-use std::collections::{HashMap};
+use std::collections::HashMap;
 pub use serde::Serialize;
 use crate::post::{Post, PostN};
 use crate::thread::{Thread, ThreadOpN};
@@ -63,14 +63,19 @@ impl Board {
         thr_op_n.into()
     }
 
-    pub fn thread_mut(&mut self, op_post_n: u64) -> Option<&mut Thread> {
+    
+    pub fn thr(&self, op_post_n: u64) -> Option<&Thread> {
+        self.thrs.get(&ThreadOpN::from(op_post_n))
+    }
+
+    pub fn thr_mut(&mut self, op_post_n: u64) -> Option<&mut Thread> {
         self.thrs.get_mut(&ThreadOpN::from(op_post_n))
     }
 
     pub fn add_post(&mut self, op_post_n: u64, mut post: Post) /* TODO: ret Result */ {
         post.upd_n(self.next_post_n());
 
-        if let Some(thr) = self.thread_mut(op_post_n) {
+        if let Some(thr) = self.thr_mut(op_post_n) {
             thr.add_post(post);
             if !thr.is_bump_limit_reached() {
                 let post_rate = thr.last_post_rate();

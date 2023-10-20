@@ -85,6 +85,16 @@ impl Thread {
         self.posts.get(n)
     }
 
+    pub fn posts(&self, from: usize, n: usize) -> Vec<&Post> {
+        let mut ret = Vec::with_capacity(n + 1);
+        let to = from + n - 1;
+        for post_n in from..=to {
+            let Some(post) = self.post(post_n) else { break };
+            ret.push(post)
+        }
+        ret
+    }
+
     pub fn post_qty(&self) -> usize {
         self.posts.len()
     }

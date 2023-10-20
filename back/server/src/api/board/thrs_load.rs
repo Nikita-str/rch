@@ -60,11 +60,9 @@ pub async fn handler(
                 }
 
                 let from = if posts_qty > THR_FIRST_POSTS_QTY { posts_qty - THR_FIRST_POSTS_QTY } else { 1 };
-                let to = posts_qty.min(from + THR_FIRST_POSTS_QTY);
-                for post_n in from..to {
-                    let Some(post) = thr.post(post_n) else { break };
-                    posts.push(post.clone())
-                }
+                thr.posts(from, THR_FIRST_POSTS_QTY)
+                    .into_iter()
+                    .for_each(|x|posts.push(x.clone()));
                 
                 thrs.push(SingleThreadView{
                     posts,
