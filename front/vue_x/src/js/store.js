@@ -179,7 +179,12 @@ export default createStore({
                 params,
             }).then(res => {
                 return res.data
-            }).catch(err => { console.log(err.response) });
+            }).catch(err => { 
+                console.log('err data [/thread/thr_load]', err.response)
+                err = err.response.data
+                err.is_error = true
+                return err
+            });
         },
     },
 })
