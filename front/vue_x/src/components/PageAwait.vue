@@ -12,9 +12,24 @@ const PNF_ZEROS = 2;
 
 export default {
   props: {
+    msgFull: {
+      type: String,
+      required: false,
+    },
     msg: {
       type: String,
       required: false,
+      default: "Ждеееммм...",
+    },
+    backLinkText: {
+      type: String,
+      required: false,
+      default: "ждать",
+    },
+    backLink: {
+      type: String,
+      required: false,
+      default: '/',
     },
   },
   data(){
@@ -37,11 +52,11 @@ export default {
             <div class="big-rect-corn"></div>
             <div class="big-rect-inner">
               <div class="big-rect-text">
-                <template v-if="msg">Ждеееммм... {{ msg }}</template>
-                <template v-else="msg">Ждеееммм...</template>
+                <template v-if="msgFull">{{ msgFull }}</template>
+                <template v-else>{{msg}}</template>
               </div>
               <img class="big-rect-img" :src="'/imgs/pawait/' + pad(picN(), PNF_ZEROS) + '.png'" />
-              <router-link class="big-rect-text" to="/" style="top: 1em;">устали ждать!</router-link>
+              <router-link class="big-rect-text" :to='backLink' style="top: 1em;">устали {{backLinkText}}!</router-link>
             </div>
         </div>
     </main>
