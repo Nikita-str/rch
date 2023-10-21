@@ -1,6 +1,7 @@
 
 <script setup>
     import Post from './Post.vue'
+    import AwaitDots from './micro/awaiters/BigAwaitDots.vue'
 </script> 
 
 <script>
@@ -18,6 +19,10 @@ export default {
         header: {
             type: String,
             required: false,
+        },
+        all_loaded: {
+            type: Boolean,
+            default: true,
         },
     },
     computed: {
@@ -45,6 +50,9 @@ export default {
                     :msgWho="posts[post_index].poster"
                 />
                 <!-- :msgThrN="999" for `msgThrN` padding test -->
+            </div>
+            <div id="thr-view-await-dots" v-if="!all_loaded">
+                <AwaitDots />
             </div>
         </div>
         <hr class="thr-view-horiz" />
@@ -74,5 +82,11 @@ export default {
     padding-left: 1.2em;
     color: var(--r-col-blue);
     opacity: 0.75;
+}
+
+#thr-view-await-dots {
+    padding-left: 1.2em;
+    margin-top: -1.2em;
+    width: fit-content;
 }
 </style>
