@@ -1,5 +1,6 @@
 .board-inner {
-    width: 100vw;
+    /* width: 100vw; */
+    width: 100%;
 }
 
 .board-sad-text {

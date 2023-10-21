@@ -31,7 +31,9 @@ body {
   display: flex;
   place-items: center;
   background-color: var(--r-col-bg);
-  overflow-y:scroll;
+
+  /* overflow-y:scroll; */
+  overflow-y:auto;
 }
 
 #app {
