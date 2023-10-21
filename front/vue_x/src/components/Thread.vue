@@ -16,11 +16,12 @@
     function dataRecalc() {
         return {
             boardExist: null,
-            all_loaded: false,
+            allLoaded: false,
+            curLoad: false,
             header: null,
             posts: null,
             err: null,
-            next_n: 0,
+            nextN: 0,
         }
     }
 
@@ -58,10 +59,10 @@
             }
         },
         thrLoad() {
-            const N_LOAD = 15
+            const N_LOAD = 20 // 15 for test
             let board_url = this.boardUrl
             let op_post_n = this.thrN
-            let from = this.next_n
+            let from = this.nextN
             let n_load = N_LOAD
             this.getReq_Thread_ThrLoad({board_url, op_post_n, from, n_load}).then(res_x => {
                 console.log('[res_x]', res_x)
@@ -84,9 +85,18 @@
                     this.header = res_x.header
                 }
 
-                this.all_loaded = res_x.all_loaded
-                this.next_n = this.next_n + load_len
+                this.allLoaded = res_x.all_loaded
+                this.nextN = this.nextN + load_len
+                this.curLoad = false
             });
+        },
+        onNextLoadVisX(visible, post_board_n) {
+            if (this.curLoad || !visible) {
+                return
+            }
+            this.curLoad = true
+            console.log('next load on post with baord number:', post_board_n)
+            this.thrLoad()
         },
     },
 }
@@ -106,7 +116,13 @@
         <AwaitText v-else-if="err && err.code == 2" :text="'тред не найден...'" />
         <!-- TODO: если посты были -- значит тред удален -->
 
-        <ThreadView v-else :posts="posts" :posts_qty="posts.length" :header="header" :all_loaded="all_loaded" />
+        <ThreadView v-else 
+            :posts="posts" 
+            :posts_qty="posts.length" 
+            :header="header" 
+            :allLoaded="allLoaded"
+            :onNextLoadVis="onNextLoadVisX"
+        />
         
         <div name="bottom-indent" style="width: 1px; height: 1.2cm;"/>
     </div>
