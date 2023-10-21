@@ -1,5 +1,3 @@
-
-
 use crate::api::header_use::*;
 use crate::post::Post;
 
@@ -39,6 +37,8 @@ pub struct HandlerParams {
 #[derive(Serialize, Debug)]
 pub struct ResultOk {
     loaded_posts: Vec<Post>,
+    header: Option<String>,
+    all_loaded: bool,
 }
 
 pub async fn handler(
@@ -69,7 +69,13 @@ pub async fn handler(
             .map(|x| x.clone())
             .collect::<Vec<_>>();
 
-        Ok(Json(ResultOk { loaded_posts }))
+        let all_loaded = from + n_load > thr.post_qty();
+
+        Ok(Json(ResultOk {
+            loaded_posts,
+            header: (from == 0).then(||thr.header().to_owned()),
+            all_loaded,
+        }))
     }
 }
 
