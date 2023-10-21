@@ -52,7 +52,7 @@ pub async fn handler(
     let from = params.from;
     let n_load = params.n_load.min(N_LOAD_MAX).max(N_LOAD_MIN);
 
-    crate::delay_ms(300);
+    crate::delay_ms(1000);
 
     {
         let r_state = state.read().unwrap();

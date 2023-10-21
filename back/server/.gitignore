@@ -2,3 +2,4 @@
 Cargo.lock
 
 test/REST/*
+!test/REST/create_b.py
