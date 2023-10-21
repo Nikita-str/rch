@@ -7,6 +7,7 @@ import Board from '../components/Board.vue'
 import Thread from '../components/Thread.vue'
 import Post from '../components/Post.vue'
 import PostingForm from '../components/PostingForm.vue'
+import DraggablePostingForm from '../components/DraggablePostingForm.vue'
 
 const POST_LONG_MSG = 'The characters allowed in a URI are either reserved or unreserved'
 +' (or a percent character as part of a percent-encoding).'
@@ -152,6 +153,10 @@ const routes = [
         boardUrl: 'b',
         isNewThr: false,
       },
+    },
+    { 
+      path: '/~~page~~/posting-form/draggable/', 
+      component: DraggablePostingForm,
     },
 
 

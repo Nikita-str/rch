@@ -88,13 +88,14 @@ export default {
 
 <style>
 #posting-from {
-    padding: 3px;
+    padding: 1px 3px 0px 3px;
 }
 #pf-subj {
-    width: 42ch;
+    /* width: 42ch; */
+    width: 100%;
 }
 #pf-msg {
-    width: 100%;
+    width: 42ch;
     min-width: 30ch;
     max-width: calc(max(30ch, 30vw));
     min-height: 5ch;
@@ -105,6 +106,7 @@ export default {
     color: var(--r-col-blue);
     border-radius: 0;
     font-weight: 900;
+    margin-bottom: 3px;
 }
 #pf-submit:hover {
   background: var(--r-col-crab-light);
