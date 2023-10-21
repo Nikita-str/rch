@@ -39,3 +39,13 @@ export function trim(s, c) {
 
     return s.substring(start, end);
 }
+
+
+
+/** 
+ * @param obj object with $route
+ * @return boardUrl
+*/
+export function boardUrlCalc(obj) {
+    return trim(obj.$route.path, "/").split('/')[0]
+}

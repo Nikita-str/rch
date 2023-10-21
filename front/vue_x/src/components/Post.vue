@@ -1,5 +1,5 @@
 <script setup>
-    import { pad } from '../js/fns'
+    import { pad, boardUrlCalc } from '../js/fns'
 </script>
 
 <script> 
@@ -38,6 +38,11 @@ export default {
       required: false,
       default: false,
     },
+    nBoardOP: {
+      type: Number,
+      required: false,
+      default: null,
+    },
   },
   computed: {
     msgDateX() {
@@ -60,6 +65,16 @@ export default {
         let pad = (this.msgThrN > 99) ? 0 : ((this.msgThrN > 9) ? 1 : 2);
         return pad + "ch"
     },
+    nBoardLink() {
+      let bUrl = boardUrlCalc(this)
+      if (this.isOP) {
+        return '/' + bUrl + '/' + this.msgBoardN
+      } else if (this.nBoardOP !== null) {
+        return '/' + bUrl + '/' + this.nBoardOP + '#' + this.msgBoardN
+      } else {
+        return ""
+      }
+    }
     // msgThrNumX() {
     //     const PREFIX = '<span style="opacity:0;">' 
     //     const POSTFIX = '</span>' 
@@ -81,7 +96,7 @@ export default {
         <div class="post-header">
             <span class="post-who" v-html="msgWho"></span>
             <span class="post-date">{{ msgDateX }}</span>
-            <span class="post-board-n">#<a href="#">{{ msgBoardN }}</a></span>
+            <span class="post-board-n">#<router-link :to="nBoardLink">{{ msgBoardN }}</router-link></span>
             <span class="post-thr-n">{{ msgThrN }}</span>
         </div>
         <div class="post-inner">
