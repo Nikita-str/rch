@@ -6,6 +6,7 @@
 
 
 <script>
+const MOUSE_LB = 0x1
 export const ELEM_ID = "draggable-posting-form" 
 var save_pos = null
 
@@ -60,9 +61,14 @@ export default {
             if (save_pos && save_pos != 'once') {
                 var top = save_pos.top
                 var left = save_pos.left
-                if (h != save_pos.h) top += h - save_pos.h
-                if (w != save_pos.w) left += w - save_pos.w
-                
+                if (h != save_pos.h) {
+                    top += h - save_pos.h
+                    if (top < 3) top = 3 
+                }
+                if (w != save_pos.w) {
+                    left += w - save_pos.w                    
+                    if (left < 3) left = 3
+                }
                 style.top = top + 'px'
                 style.left = left + "px" 
             } else {            
@@ -79,10 +85,28 @@ export default {
             }
         },
 
-        dragEnd(obj) {
-            // console.log('drag-end', obj)
-            let el = obj.target
-            
+        onMouseDown(e) {
+            if((e.buttons & MOUSE_LB) == MOUSE_LB) {
+                e.preventDefault();
+                document.addEventListener('mousemove', this.onMouseMove)
+                document.addEventListener('mouseup', this.onMouseUp)
+            }
+        },
+        
+        onMouseUp(e) {
+            if((e.buttons & MOUSE_LB) == 0x0) {
+                // console.log('remove')
+                e.preventDefault();
+                document.removeEventListener('mousemove', this.onMouseMove)
+                document.removeEventListener('mouseup', this.onMouseUp)
+            }
+        },
+        
+        onMouseMove(e) {
+            e.preventDefault();
+            let el = document.getElementById(ELEM_ID)
+            let style = el.style
+
             let w = window.innerWidth
             let h = window.innerHeight
             let el_w = el.clientWidth
@@ -90,18 +114,20 @@ export default {
             let max_top = h - el_h - 3;
             let max_left = w - el_w - 3;
 
-            if (el.offsetTop < 3) {
-                el.style.top = "3px"
+            let top = el.offsetTop + e.movementY 
+            let left = el.offsetLeft + e.movementX 
+
+            if (top < 3) top = 3
+            else if (top > max_top) {
+                top = max_top
             }
-            if (el.offsetLeft < 3) {
-                el.style.left = "3px"
+            
+            if (left < 3) left = 3
+            else if (left > max_left) {
+                left = max_left
             }
-            if (el.offsetTop > max_top) {
-                el.style.top = max_top + "px"
-            }
-            if (el.offsetLeft > max_left) {
-                el.style.left = max_left + "px"
-            }
+            style.top = top + "px"
+            style.left = left + "px"
         },
     },
 }
@@ -109,9 +135,8 @@ export default {
 </script>
 
 <template>
-    <div :id="ELEM_ID" v-drag="{ handle: '#dpf-dragger' }" @v-drag-end="dragEnd">
-        <div  id="dpf-dragger" />
-        <!-- <div  style="width: 100%; height: 20px; background-color: crimson;" @click.left="xxx" /> -->
+    <div :id="ELEM_ID">
+        <div  id="dpf-dragger" @mousedown="onMouseDown" />
         <div style="position: relative;">
             <PostingForm :boardUrl="boardUrl" :isNewThr="isNewThr" />
         </div>
@@ -131,6 +156,7 @@ export default {
     }
 
     #dpf-dragger {
+        cursor: move;
         height: 1.2em;
         margin-top: 3px;
         margin-left: 3px;
