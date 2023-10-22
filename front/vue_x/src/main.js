@@ -5,8 +5,6 @@ import router from './js/router'
 
 import Render from "./Render.vue"
 
-import drag from "v-drag"
-
 import './assets/main.css'
 
 const app = createApp({
@@ -14,6 +12,5 @@ const app = createApp({
 })
 app.use(store)
 app.use(router)
-app.use(drag)
 app.mount('#app')
 
