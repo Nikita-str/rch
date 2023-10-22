@@ -32,6 +32,10 @@ export default {
     },
     mounted() {
         this.upd()
+        window.addEventListener("resize", this.onResize);
+    },
+    unmounted() {
+        window.removeEventListener("resize", this.onResize);
     },
     methods: {
         upd() {
@@ -44,7 +48,7 @@ export default {
             if (this.visible) {
                 style.display = "block"
             } else {
-                if (save_pos == 'once') { 
+                if (save_pos) { 
                     save_pos = {
                         w: w,
                         h: h,
@@ -58,23 +62,13 @@ export default {
 
             if (save_pos === null) save_pos = 'once'
 
+            let el_w = el.clientWidth
+            let el_h = el.clientHeight
             if (save_pos && save_pos != 'once') {
-                var top = save_pos.top
-                var left = save_pos.left
-                if (h != save_pos.h) {
-                    top += h - save_pos.h
-                    if (top < 3) top = 3 
-                }
-                if (w != save_pos.w) {
-                    left += w - save_pos.w                    
-                    if (left < 3) left = 3
-                }
+                var [top, left] = RectToScreen(el_w, el_h, save_pos.top, save_pos.left)
                 style.top = top + 'px'
                 style.left = left + "px" 
-            } else {            
-                let el_w = el.clientWidth
-                let el_h = el.clientHeight
-                
+            } else {
                 var top = (h - el_h) / 2
                 if (top < 0) { top = 0 }
 
@@ -107,29 +101,45 @@ export default {
             let el = document.getElementById(ELEM_ID)
             let style = el.style
 
-            let w = window.innerWidth
-            let h = window.innerHeight
             let el_w = el.clientWidth
             let el_h = el.clientHeight
-            let max_top = h - el_h - 3;
-            let max_left = w - el_w - 3;
 
-            let top = el.offsetTop + e.movementY 
-            let left = el.offsetLeft + e.movementX 
+            var top = el.offsetTop + e.movementY 
+            var left = el.offsetLeft + e.movementX 
 
-            if (top < 3) top = 3
-            else if (top > max_top) {
-                top = max_top
-            }
-            
-            if (left < 3) left = 3
-            else if (left > max_left) {
-                left = max_left
-            }
+            var [top, left] = RectToScreen(el_w, el_h, top, left)
+
             style.top = top + "px"
             style.left = left + "px"
         },
+
+        onResize(_e) {
+            let el = document.getElementById(ELEM_ID)
+            if (el) {
+                let [top, left] = RectToScreen(el.clientWidth, el.clientHeight, el.offsetTop, el.offsetLeft)
+                el.style.top = top + "px"
+                el.style.left = left + "px"
+            }
+        },
     },
+}
+
+function RectToScreen(rect_w, rect_h, top, left) {
+    let w = window.innerWidth
+    let h = window.innerHeight
+    let max_top = h - rect_h - 3;
+    let max_left = w - rect_w - 3;
+    if (top < 3) top = 3
+    else if (top > max_top) {
+        top = max_top
+    }
+    
+    if (left < 3) left = 3
+    else if (left > max_left) {
+        left = max_left
+    }
+
+    return [top, left]
 }
 
 </script>
