@@ -7,6 +7,7 @@
 
 <script>
 export const ELEM_ID = "draggable-posting-form" 
+var save_pos = null
 
 export default {
     props: {
@@ -42,23 +43,40 @@ export default {
             if (this.visible) {
                 style.display = "block"
             } else {
+                if (save_pos == 'once') { 
+                    save_pos = {
+                        w: w,
+                        h: h,
+                        top: el.offsetTop,
+                        left: el.offsetLeft,
+                    }
+                }
                 style.display = "none"
                 return
             }
-            
-            let el_w = el.clientWidth
-            let el_h = el.clientHeight
 
-            
-            var top = (h - el_h) / 2
-            if (top < 0) { top = 0 }
+            if (save_pos === null) save_pos = 'once'
 
-            var left = w - el_w
+            if (save_pos && save_pos != 'once') {
+                var top = save_pos.top
+                var left = save_pos.left
+                if (h != save_pos.h) top += h - save_pos.h
+                if (w != save_pos.w) left += w - save_pos.w
+                
+                style.top = top + 'px'
+                style.left = left + "px" 
+            } else {            
+                let el_w = el.clientWidth
+                let el_h = el.clientHeight
+                
+                var top = (h - el_h) / 2
+                if (top < 0) { top = 0 }
 
-            console.log('wh', el_w, el_h)
+                var left = w - el_w
 
-            style.top = top + 'px'
-            style.left = 'calc(' + left + "px - 1cm)"
+                style.top = top + 'px'
+                style.left = 'calc(' + left + "px - 1cm)"                    
+            }
         },
 
         dragEnd(obj) {
@@ -108,7 +126,7 @@ export default {
         /* top: v-bind(); */
         /* left: v-bind(); ... need to be mounted*/
         top: 20vh;
-        border: 1px solid var(--r-col-bg-light-blue);
+        border: 1px solid var(--r-col-blue); /* var(--r-col-bg-light-blue); */
         background-color: var(--r-col-bg-dark);
     }
 
