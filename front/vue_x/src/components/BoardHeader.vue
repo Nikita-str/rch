@@ -1,6 +1,4 @@
-
 <script>
-
 export default {
     props: {
         boardName: {
@@ -14,6 +12,10 @@ export default {
         isCatalog: {
             type: Boolean,
             required: true,
+        },
+        onNewThrClick: {
+            type: Function,
+            required: null,
         },
     },
     computed: {
@@ -32,7 +34,7 @@ export default {
         <router-link v-if="isCatalog" class="b-head-catalog" :to="'/'+boardUrl+'/'">←←← на доску</router-link>
         <router-link v-else           class="b-head-catalog"   to="catalog/" append>→→→ каталог ←←←</router-link>
 
-        <div class="b-head-new-thr">[<router-link to="" append>Создать тред</router-link>]</div>
+        <div class="b-head-new-thr">[<span @click="onNewThrClick"><router-link to="" append>Создать тред</router-link></span>]</div>
         <hr class="b-head-horiz" />
     </div>
 </template>

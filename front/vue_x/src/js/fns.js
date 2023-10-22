@@ -47,5 +47,6 @@ export function trim(s, c) {
  * @return boardUrl
 */
 export function boardUrlCalc(obj) {
-    return trim(obj.$route.path, "/").split('/')[0]
+    var path = (typeof(obj) == 'string') ? obj : obj.$route.path;
+    return trim(path, "/").split('/')[0]
 }

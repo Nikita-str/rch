@@ -157,6 +157,10 @@ const routes = [
     { 
       path: '/~~page~~/posting-form/draggable/', 
       component: DraggablePostingForm,
+      props: {
+        boardUrl: 'b',
+        isNewThr: true,
+      },
     },
 
 

@@ -5,8 +5,29 @@
 </script>
 
 
-<script> 
+<script>
+export const ELEM_ID = "draggable-posting-form" 
+
 export default {
+    props: {
+        boardUrl: {
+            type: String,
+            required: true,
+        },
+        isNewThr: {
+            type: Boolean,
+            required: true,
+        },
+        visible: {
+            type: Boolean,
+            default: true,
+        },
+    },
+    watch: {
+        'visible' (to, from) {
+            if (to != from) this.upd()
+        }
+    },
     mounted() {
         this.upd()
     },
@@ -15,16 +36,26 @@ export default {
             let w = window.innerWidth
             let h = window.innerHeight
 
-            let el = document.getElementById('draggable-posting-form')
+            let el = document.getElementById(ELEM_ID)
+            let style = el.style
+            
+            if (this.visible) {
+                style.display = "block"
+            } else {
+                style.display = "none"
+                return
+            }
+            
             let el_w = el.clientWidth
             let el_h = el.clientHeight
 
-            let style = el.style
             
             var top = (h - el_h) / 2
             if (top < 0) { top = 0 }
 
             var left = w - el_w
+
+            console.log('wh', el_w, el_h)
 
             style.top = top + 'px'
             style.left = 'calc(' + left + "px - 1cm)"
@@ -60,11 +91,11 @@ export default {
 </script>
 
 <template>
-    <div id="draggable-posting-form" v-drag="{ handle: '#dpf-dragger' }" @v-drag-end="dragEnd">
+    <div :id="ELEM_ID" v-drag="{ handle: '#dpf-dragger' }" @v-drag-end="dragEnd">
         <div  id="dpf-dragger" />
         <!-- <div  style="width: 100%; height: 20px; background-color: crimson;" @click.left="xxx" /> -->
         <div style="position: relative;">
-            <PostingForm boardUrl="TODO" :isNewThr=true />
+            <PostingForm :boardUrl="boardUrl" :isNewThr="isNewThr" />
         </div>
     </div>
 </template>

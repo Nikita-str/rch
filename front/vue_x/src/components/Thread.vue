@@ -9,6 +9,10 @@
     import { mapActions } from 'vuex'
     import BoardHeader from './BoardHeader.vue'
     import ThreadView from './ThreadView.vue'
+    
+    import {ELEM_ID} from '../components/DraggablePostingForm.vue'
+    import DraggablePostingForm from '../components/DraggablePostingForm.vue'
+
 </script>
 
 <script>
@@ -22,6 +26,8 @@
             posts: null,
             err: null,
             nextN: 0,
+
+            draggableFormVisivle: false,
         }
     }
 
@@ -35,8 +41,10 @@
         this.upd()
     },
     watch: {
-        '$route' (_to, _) {
-            this.upd()
+        '$route' (to, from) {
+            var from = trim(from.path.split('#')[0], '/')
+            var to = trim(to.path.split('#')[0], '/')
+            if (from != to) this.upd()
         }
     },
     methods: {
@@ -98,6 +106,9 @@
             console.log('next load on post with baord number:', post_board_n)
             this.thrLoad()
         },
+        onNewThrClick() {
+            this.draggableFormVisivle = !this.draggableFormVisivle
+        }
     },
 }
 </script>
@@ -108,7 +119,7 @@
         back-link-text="выяс>>ня<<ть"
     />
     <div class="board-inner" v-else-if="boardExist.name">
-        <BoardHeader :boardName="boardExist.name" :boardUrl="boardUrl" :isCatalog="true" />
+        <BoardHeader :boardName="boardExist.name" :boardUrl="boardUrl" :isCatalog="true" :onNewThrClick="onNewThrClick" />
 
         <AwaitDots v-if="posts === null && err === null" />
         <AwaitText v-else-if="err && err.code == 1" :text="'доска /' + boardUrl + '/ не существует?!'" />
@@ -126,6 +137,8 @@
         
         <div name="bottom-indent" style="width: 1px; height: 1.2cm;"/>
     </div>
-    <PageNotFound v-else /> 
+    <PageNotFound v-else />
+
+    <DraggablePostingForm :boardUrl="boardUrl" :isNewThr="false" :visible="draggableFormVisivle" />
 </template>
 
