@@ -139,6 +139,6 @@
     </div>
     <PageNotFound v-else />
 
-    <DraggablePostingForm :boardUrl="boardUrl" :isNewThr="false" :visible="draggableFormVisivle" />
+    <DraggablePostingForm :boardUrl="boardUrl" :opPostN="parseInt(thrN)" :visible="draggableFormVisivle" />
 </template>
 

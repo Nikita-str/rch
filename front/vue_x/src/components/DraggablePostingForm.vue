@@ -18,8 +18,9 @@ export default {
             type: String,
             required: true,
         },
-        isNewThr: {
-            type: Boolean,
+        /** if null => isNewThr */
+        opPostN: {
+            type: Number,
             required: true,
         },
         visible: {
@@ -92,7 +93,7 @@ export default {
                     dx: Math.round(drager_rect.left - el_rect.left) + e.layerX,
                     dy: Math.round(drager_rect.top - el_rect.top) + e.layerY,
                 }
-                
+
                 document.addEventListener('mousemove', this.onMouseMove)
                 document.addEventListener('mouseup', this.onMouseUp)
             }
@@ -164,7 +165,7 @@ function RectToScreen(rect_w, rect_h, top, left) {
     <div :id="ELEM_ID">
         <div  id="dpf-dragger" @mousedown="onMouseDown" />
         <div style="position: relative;">
-            <PostingForm :boardUrl="boardUrl" :isNewThr="isNewThr" />
+            <PostingForm :boardUrl="boardUrl" :opPostN="opPostN" />
         </div>
     </div>
 </template>

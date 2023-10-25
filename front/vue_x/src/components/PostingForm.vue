@@ -21,14 +21,16 @@ export default {
       type: String,
       required: true,
     },
-    isNewThr: {
-      type: Boolean,
-      required: true,
+    /** if null => isNewThr */
+    opPostN: {
+        type: Number,
+        required: true,
     },
   },
   computed: {
     // formAction() { return 'api/' + (this.isNewThr ? "board/thr_new" : "thread/post_new"); },
     needSubj() { return this.isNewThr },
+    isNewThr() { return this.opPostN === null },
   },
   methods: {
         ...mapActions({ postReq_Board_ThrNew: "postReq_Board_ThrNew", }),
@@ -45,6 +47,7 @@ export default {
                     } 
                 });
             } else {
+                data.op_post_n = this.opPostN
                 this.postReq_Thread_PostNew(data)
             }
             

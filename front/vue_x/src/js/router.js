@@ -143,7 +143,7 @@ const routes = [
       component: PostingForm,
       props: {
         boardUrl: 'b',
-        isNewThr: true,
+        opPostN: null,
       },
     },
     { 
@@ -151,7 +151,7 @@ const routes = [
       component: PostingForm,
       props: {
         boardUrl: 'b',
-        isNewThr: false,
+        opPostN: 244,
       },
     },
     { 
@@ -159,7 +159,7 @@ const routes = [
       component: DraggablePostingForm,
       props: {
         boardUrl: 'b',
-        isNewThr: true,
+        opPostN: null,
       },
     },
 

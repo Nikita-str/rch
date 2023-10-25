@@ -157,6 +157,7 @@ export default createStore({
             }).catch(err => { console.log('POST board/thr_new', err.response) });
         },
         postReq_Thread_PostNew({ getters }, data) {
+            // console.log('TODO:DEL: /api/thread/post_new/', data)
             if (data.post_header !== null) {
                 console.log('[WARN][POST:thread/post_new]: post_header isnt empty', data.post_header)
             }
