@@ -13,6 +13,8 @@
     import {ELEM_ID} from '../components/DraggablePostingForm.vue'
     import DraggablePostingForm from '../components/DraggablePostingForm.vue'
 
+    import BottomIndent from './micro/BottomIndent.vue'
+
 </script>
 
 <script>
@@ -135,7 +137,7 @@
             :onNextLoadVis="onNextLoadVisX"
         />
         
-        <div name="bottom-indent" style="width: 1px; height: 1.2cm;"/>
+        <BottomIndent />
     </div>
     <PageNotFound v-else />
 

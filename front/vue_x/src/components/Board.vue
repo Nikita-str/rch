@@ -6,6 +6,9 @@
     import { mapActions } from 'vuex'
     import BoardHeader from './BoardHeader.vue'
     import Catalog from './Catalog.vue'
+
+    import DraggablePostingForm from '../components/DraggablePostingForm.vue'
+    import BottomIndent from './micro/BottomIndent.vue'
 </script>
 
 <script>
@@ -14,6 +17,7 @@
         return {
             boardExist: null,
             boardUrl: trim(this.$route.path, "/").split('/')[0],
+            draggableFormVisivle: false,
         };
     },
     computed: {
@@ -42,6 +46,9 @@
                 });
             }
         },
+        onNewThrClick() {
+            this.draggableFormVisivle = !this.draggableFormVisivle
+        }
     },
     watch: {
         '$route' (to, _) {
@@ -54,7 +61,7 @@
 <template>
     <PageAwait v-if="boardExist === null" :msg="'когда поймем что с /' + boardUrl + '/'" />
     <div class="board-inner" v-else-if="boardExist.name">
-        <BoardHeader :boardName="boardExist.name" :boardUrl="boardUrl" :isCatalog="isCatalog" />
+        <BoardHeader :boardName="boardExist.name" :boardUrl="boardUrl" :isCatalog="isCatalog" :onNewThrClick="onNewThrClick" />
 
         <BoardLoaded      v-if="boardType == 'BoardLoaded'" :boardUrl="boardUrl"/>
         <Catalog     v-else-if="boardType == 'Catalog'"     :boardUrl="boardUrl"/>
@@ -63,7 +70,11 @@
             unknown board load type<br/>
             `{{boardType}}`
         </div>
+        
+        <BottomIndent />
     </div>
     <PageNotFound v-else />
+
+    <DraggablePostingForm :boardUrl="boardUrl" :opPostN="null" :visible="draggableFormVisivle" />
 </template>
 
