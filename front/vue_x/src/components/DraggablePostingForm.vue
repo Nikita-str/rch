@@ -9,6 +9,8 @@
 const MOUSE_LB = 0x1
 export const ELEM_ID = "draggable-posting-form" 
 var save_pos = null
+var drag_delta = null
+const INDENT = 3
 
 export default {
     props: {
@@ -82,6 +84,15 @@ export default {
         onMouseDown(e) {
             if((e.buttons & MOUSE_LB) == MOUSE_LB) {
                 e.preventDefault();
+                let el = document.getElementById(ELEM_ID)
+
+                let el_rect = el.getBoundingClientRect()
+                let drager_rect = e.target.getBoundingClientRect()
+                drag_delta = {
+                    dx: Math.round(drager_rect.left - el_rect.left) + e.layerX,
+                    dy: Math.round(drager_rect.top - el_rect.top) + e.layerY,
+                }
+                
                 document.addEventListener('mousemove', this.onMouseMove)
                 document.addEventListener('mouseup', this.onMouseUp)
             }
@@ -104,8 +115,13 @@ export default {
             let el_w = el.clientWidth
             let el_h = el.clientHeight
 
-            var top = el.offsetTop + e.movementY 
-            var left = el.offsetLeft + e.movementX 
+            // var dx = e.movementX
+            // var dy = e.movementY
+            var dx = e.pageX - (el.offsetLeft + drag_delta.dx)
+            var dy = e.pageY - (el.offsetTop + drag_delta.dy)
+
+            var top = el.offsetTop + dy
+            var left = el.offsetLeft + dx 
 
             var [top, left] = RectToScreen(el_w, el_h, top, left)
 
@@ -127,14 +143,14 @@ export default {
 function RectToScreen(rect_w, rect_h, top, left) {
     let w = window.innerWidth
     let h = window.innerHeight
-    let max_top = h - rect_h - 3;
-    let max_left = w - rect_w - 3;
-    if (top < 3) top = 3
+    let max_top = h - rect_h - INDENT;
+    let max_left = w - rect_w - INDENT;
+    if (top < INDENT) top = INDENT
     else if (top > max_top) {
         top = max_top
     }
     
-    if (left < 3) left = 3
+    if (left < INDENT) left = INDENT
     else if (left > max_left) {
         left = max_left
     }
