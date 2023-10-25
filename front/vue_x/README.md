@@ -38,3 +38,4 @@ npm run build
 | dt           | `delta time`       |
 | qty          | `quantity`         |
 | sest         | `session storage`  |
+| dpf          | `draggable posting form`   |

@@ -30,18 +30,18 @@ export default {
     },
     watch: {
         'visible' (to, from) {
-            if (to != from) this.upd()
+            if (to != from) this.upd(false)
         }
     },
     mounted() {
-        this.upd()
+        this.upd(true)
         window.addEventListener("resize", this.onResize);
     },
     unmounted() {
         window.removeEventListener("resize", this.onResize);
     },
     methods: {
-        upd() {
+        upd(called_by_mounted) {
             let w = window.innerWidth
             let h = window.innerHeight
 
@@ -51,7 +51,7 @@ export default {
             if (this.visible) {
                 style.display = "block"
             } else {
-                if (save_pos) { 
+                if (!called_by_mounted && save_pos) { 
                     save_pos = {
                         w: w,
                         h: h,
