@@ -121,7 +121,7 @@
         back-link-text="выяс>>ня<<ть"
     />
     <div class="board-inner" v-else-if="boardExist.name">
-        <BoardHeader :boardName="boardExist.name" :boardUrl="boardUrl" :isCatalog="true" :onNewThrClick="onNewThrClick" />
+        <BoardHeader :boardName="boardExist.name" :boardUrl="boardUrl" :isCatalog="true" :onNewThrClick="onNewThrClick" headerNewMsg="Ответить в тред" />
 
         <AwaitDots v-if="posts === null && err === null" />
         <AwaitText v-else-if="err && err.code == 1" :text="'доска /' + boardUrl + '/ не существует?!'" />

@@ -15,7 +15,11 @@ export default {
         },
         onNewThrClick: {
             type: Function,
-            required: null,
+            default: null,
+        },
+        headerNewMsg: {
+            type: String,
+            default: "Создать тред",
         },
     },
     computed: {
@@ -33,8 +37,8 @@ export default {
         <!-- <router-link class="b-head-catalog" :to="catalogRouteTo" append>→→→ каталог ←←←</router-link> -->
         <router-link v-if="isCatalog" class="b-head-catalog" :to="'/'+boardUrl+'/'">←←← на доску</router-link>
         <router-link v-else           class="b-head-catalog"   to="catalog/" append>→→→ каталог ←←←</router-link>
-
-        <div class="b-head-new-thr">[<span @click="onNewThrClick"><router-link to="" append>Создать тред</router-link></span>]</div>
+        
+        <div class="b-head-new-thr">[<span @click="onNewThrClick"><router-link to="" append>{{headerNewMsg}}</router-link></span>]</div>
         <hr class="b-head-horiz" />
     </div>
 </template>
