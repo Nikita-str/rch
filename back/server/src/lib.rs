@@ -3,12 +3,13 @@ mod post;
 mod api;
 mod thread;
 mod thread_usage_rate;
+mod preproc;
 
 const VUE_DIST_PATH: &str = "../../front/vue_x/dist";
 
 
 #[allow(unused)] use fns::{delay, delay_ms};
-pub use fns::{server};
+pub use fns::server;
 mod fns {
     use crate::app_state::open_boards::Board;
     use super::{api, app_state, VUE_DIST_PATH};
