@@ -29,7 +29,8 @@ impl HeadPreproc {
             println!("[ALGO WARN]: no preprocessors");
             return String::from(input)
         }
-
+        
+        let state = ();
         let mut output = Self::init_output(input); 
         let mut tokenizer = Tokenizer::new(input);
         
@@ -59,7 +60,7 @@ impl HeadPreproc {
                         PreprocVerdict::Maybe => maybe_once = true,
                         PreprocVerdict::Matched => {
                             matched = true;
-                            preproc.action(&mut output);
+                            preproc.action(&mut output, state);
                             preproc.reset();
                         }
                     }
@@ -78,7 +79,7 @@ impl HeadPreproc {
         }
         
         output.push_str(unwrited_span.extract_str(input));
-        self.preprocers.iter_mut().for_each(|preproc|preproc.close(&mut output));
+        self.preprocers.iter_mut().for_each(|preproc|preproc.close(&mut output, state));
 
         output
     }

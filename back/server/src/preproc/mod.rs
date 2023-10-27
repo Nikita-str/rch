@@ -15,14 +15,22 @@ enum PreprocVerdict {
     Matched,
 }
 
-trait Preproc {
+trait Preproc<State = ()> {
     /// called on end of stream: we need close all open tag or smth like this
-    fn close(&mut self, output: &mut String);
+    fn close(&mut self, output: &mut String, state: State);
     /// called after unsuitable subseq for this preprocesor
     /// (when current unwrited seq is not suitable) 
     fn reset(&mut self);
     /// called after successful match
-    fn action(&mut self, output: &mut String);
+    fn action(&mut self, output: &mut String, state: State);
     fn state_upd(&mut self, token: &str) -> PreprocVerdict;
 }
 
+// if it needed we can use ref for State:
+// ```
+// impl Preproc<&StateType> for PreprocType {
+//     fn close(&mut self, output: &mut String, state: &StateType) { ... }
+//     fn action(&mut self, output: &mut String, state: &StateType) { ... }
+//     ...
+// }
+// ``` 

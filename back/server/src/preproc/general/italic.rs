@@ -1,12 +1,12 @@
-use crate::preproc::PreprocVerdict;
-use crate::preproc::generic::OpclPreprocState;
-use crate::preproc::generic::OpclInnerState;
+use crate::preproc::{Preproc, PreprocVerdict};
+use crate::preproc::generic::OpclPreproc;
+use crate::preproc::generic::OpclInnerState as State;
 
 #[derive(Default)]
 pub(in crate::preproc)
-struct ItalicInnerState;
+struct ItalicInnerPreproc;
 
-impl OpclInnerState for ItalicInnerState {
+impl Preproc<State> for ItalicInnerPreproc {
     fn state_upd(&mut self, token: &str) -> PreprocVerdict {
         match token {
             "i" | "italic" => PreprocVerdict::Matched,
@@ -14,9 +14,9 @@ impl OpclInnerState for ItalicInnerState {
         }
     }
 
-    fn action(&mut self, output: &mut String, open_times: usize, is_open: bool) {
-        if open_times == 1 {
-            if is_open {
+    fn action(&mut self, output: &mut String, state: State) {
+        if state.open_times == 1 {
+            if state.is_open {
                 output.push_str("<i>")
             } else {
                 output.push_str("</i>")
@@ -25,16 +25,16 @@ impl OpclInnerState for ItalicInnerState {
     }
 
     fn reset(&mut self) { }
-    fn close(&mut self, output: &mut String, open_times: usize, is_open: bool) {
-        if is_open {
+    fn close(&mut self, output: &mut String, state: State) {
+        if state.is_open {
             println!("[ALGO WARN]: close with `is_open == true`");
             return
         }
-        if open_times == 1 {
+        if state.open_times == 1 {
             output.push_str("</i>")
         }
     }
 }
 
 pub(in crate::preproc)
-type ItalicState = OpclPreprocState<ItalicInnerState>;
+type ItalicPreproc = OpclPreproc<ItalicInnerPreproc>;

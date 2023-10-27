@@ -92,45 +92,15 @@ impl State {
     }
 }
 
+
 pub(in crate::preproc)
-trait InnerState {
-    // const CAN_BE_MULTI_OPEN: bool;
-    // fn is_err(&self) -> bool;
-    // fn is_ended(&self) -> bool;
-    
-
-    /// # return
-    /// * if err must return `PreprocVerdict::No`
-    /// * if ended must return `PreprocVerdict::Matched`
-    fn state_upd(&mut self, token: &str) -> PreprocVerdict;
-
-
-    /// # params
-    /// ## `open_times`
-    /// ```
-    /// [/A] [A][A][/A][A][/A][/A]  [A] [/A] [/A] [/A]
-    ///   0   1  2   2  2   2   1    1    1    0    0
-    /// ````
-    fn action(&mut self, output: &mut String, open_times: usize, is_open: bool);
-    fn reset(&mut self);
-    fn close(&mut self, output: &mut String, open_times: usize, is_open: bool);
-
-
-    /*
-    // forced close call when there incorrect parrentheses order
-    // for example in case of `000 [a] 111 [b] 222 [/a] 333 [/b]`
-    // `forced_close_action` will be called for `[b]` before `[/a]`
-    // and if [b]::CAN_BE_FORCED_OPEN => after `[/a]` will be called `forced_open_action`
-    // so it will be like `000 <a> 111 <b> 222 </b></a><b> 333 </b>`
-
-    const CAN_BE_FORCED_OPEN: bool;
-    fn forced_close_action(self, output: &mut String);
-    fn forced_open_action(self, output: &mut String);
-    */
+struct InnerState {
+    pub open_times: usize,
+    pub is_open: bool,
 }
 
 pub(in crate::preproc)
-struct PreprocState<Inner: InnerState + Default> {
+struct OpclPreproc<Inner: Preproc<InnerState> + Default> {
     inner: Inner,
     // TODO:MAYBE: successful open inner queue ?
     
@@ -144,7 +114,7 @@ struct PreprocState<Inner: InnerState + Default> {
     changed: bool,
 }
 
-impl<Inner: InnerState + Default> Default for PreprocState<Inner> {
+impl<Inner: Preproc<InnerState> + Default> Default for OpclPreproc<Inner> {
     fn default() -> Self {
         Self {
             inner: Inner::default(),
@@ -157,11 +127,16 @@ impl<Inner: InnerState + Default> Default for PreprocState<Inner> {
     }
 }
 
-impl<Inner: InnerState + Default> Preproc for PreprocState<Inner> {
-    fn close(&mut self, output: &mut String) {
+impl<Inner: Preproc<InnerState> + Default> Preproc for OpclPreproc<Inner> {
+    fn close(&mut self, output: &mut String, _: ()) {
         self.reset();
+        let is_open = false;
         for open_times in (1..=self.open_times).rev() {
-            self.inner.close(output, open_times, false);
+            let preproc_state = InnerState {
+                open_times,
+                is_open,
+            };
+            self.inner.close(output, preproc_state);
         }
     }
 
@@ -207,11 +182,15 @@ impl<Inner: InnerState + Default> Preproc for PreprocState<Inner> {
         return PreprocVerdict::Maybe
     }
 
-    fn action(&mut self, output: &mut String) {
+    fn action(&mut self, output: &mut String, _: ()) {
         let is_open = self.cur_match_type.is_open();
         let open_times = self.open_times + if is_open { 1 } else { 0 }; 
-        
-        self.inner.action(output, open_times, is_open);
+        let preproc_state = InnerState {
+            open_times,
+            is_open,
+        };
+
+        self.inner.action(output, preproc_state);
 
         if is_open {
             self.open_times += 1;
