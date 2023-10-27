@@ -5,7 +5,7 @@ pub struct HeadPreproc {
 }
 
 impl HeadPreproc {
-    pub fn new(input: &str) -> Self {
+    pub fn new() -> Self {
         Self {
             preprocers: Vec::new(),
         }
@@ -73,6 +73,7 @@ impl HeadPreproc {
             } else if maybe_once {
                 unwrited_span.union(token_span);
             } else {
+                unwrited_span.union(token_span);
                 output.push_str(unwrited_span.extract_str(input));
                 unwrited_span = Span::new_empty(token_span.end());
             }
@@ -85,3 +86,22 @@ impl HeadPreproc {
     }
 }
 
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn test_preproc_01_simple_italic_only() {
+        let input = "test [i]italic[i] and still[/i] italic[/i]... completed";
+        let mut head_preproc = HeadPreproc::new();
+
+        let italic = crate::preproc::general::italic::ItalicPreproc::default();
+        head_preproc.add_preproc(Box::new(italic));
+
+        let output = head_preproc.preproc(input);
+        let expected_output = "test <i>italic and still italic</i>... completed";
+
+        assert_eq!(output, expected_output);
+    }
+}

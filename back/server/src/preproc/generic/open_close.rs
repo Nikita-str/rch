@@ -21,6 +21,7 @@ impl PreprocType {
     }
 }
 
+#[derive(Debug)]
 #[derive(Clone, Copy)]
 enum State {
     NotStarted,
@@ -160,12 +161,14 @@ impl<Inner: Preproc<InnerState> + Default> Preproc for OpclPreproc<Inner> {
         }
 
         if !self.cur_inner {
-            self.state = self.state.state_upd(token);
-            self.changed |= !self.state.is_err();
-            
-            if self.state.is_err() {
+            let state = self.state.state_upd(token);
+            if state.is_err() {
                 return PreprocVerdict::No
             }
+
+            self.state = state;
+            self.changed = true;
+            
             if self.state.is_ended() {
                 return PreprocVerdict::Matched
             }
