@@ -54,6 +54,7 @@ impl HeadPreproc {
                 macro_rules! on_matched {
                     () => {{
                         matched = true;
+                        // TODO: pass full_match into `action` by `(unwrited_span U span).extract_str(input)`
                         preproc.action(&mut output, state);
                         preproc.reset();    
                     }};
@@ -105,7 +106,8 @@ impl HeadPreproc {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::preproc::general::{Italic, Bold, Spoiler};
+    use crate::preproc::general::{Bold, Italic, Strike, Spoiler};
+    use crate::preproc::general::{NewLinePreproc, ReservedSymbsPreproc};
 
 
     fn help_only_italic(input: &str, expected_output: &str) {
@@ -122,14 +124,22 @@ mod tests {
 
         let bold = Bold::default();
         let italic = Italic::default();
+        let strike = Strike::default();
         let spoiler = Spoiler::default();
         head_preproc.add_preproc(Box::new(bold));
         head_preproc.add_preproc(Box::new(italic));
+        head_preproc.add_preproc(Box::new(strike));
         head_preproc.add_preproc(Box::new(spoiler));
+
+        let new_line = NewLinePreproc::default();
+        let reserved = ReservedSymbsPreproc::default();
+        head_preproc.add_preproc(Box::new(new_line));
+        head_preproc.add_preproc(Box::new(reserved));
 
         let output = head_preproc.preproc(input);
         assert_eq!(output, expected_output);
     }
+
 
     #[test]
     fn test_preproc_01_simple_italic_only() {
@@ -191,6 +201,36 @@ mod tests {
     fn test_preproc_06_simple_spoiler_itelic() {
         let input = "а не подскажите [spoiler]ли вы[/spoiler] почему на [i]имеджеборде [/i]так интелегентно разговаривают?!";
         let expected_output = "а не подскажите <span class=\"P-sp\">ли вы</span> почему на <i>имеджеборде </i>так интелегентно разговаривают?!";
+        help_all(input, expected_output);
+    }
+
+    #[test]
+    fn test_preproc_07_single_unclose() {
+        let input = "Y[/strike] x [i]42 24[/i] 33[i]33 [s]321 [/s] 123";
+        let expected_output = "Y x <i>42 24</i> 33<i>33 <s>321 </s> 123</i>";
+        help_all(input, expected_output);
+    }
+    
+    #[test]
+    fn test_preproc_08_simple_spoiler_itelic() {
+        // the orde on the end can be (in general case) another
+        // but because we know the orden in which we add -- we can 
+        let input = "Y x [i]42 24 33[i]33 [s]32[/i]1 [spoiler] 123";
+        let expected_output = "Y x <i>42 24 3333 <s>321 <span class=\"P-sp\"> 123</i></s></span>";
+        help_all(input, expected_output);
+    }
+    
+    #[test]
+    fn test_preproc_09_one_token_preprocs() {
+        let input = "Y <x> & ! #\nhmm...";
+        let expected_output = "Y &#60;x&#62; &#38; ! #<br/>hmm...";
+        help_all(input, expected_output);
+    }
+
+    #[test]
+    fn test_preproc_10_one_token_preprocs() { 
+        let input = "br[s]rr & [i]! #\n\nhm[/strike]m...";
+        let expected_output = "br<s>rr &#38; <i>! #<br/><br/>hm</s>m...</i>";
         help_all(input, expected_output);
     }
 }
