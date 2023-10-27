@@ -1,4 +1,4 @@
-use crate::preproc::PreprocVerdict;
+use crate::preproc::{Preproc, PreprocVerdict};
 
 #[derive(Clone, Copy, )]
 enum PreprocType {
@@ -113,6 +113,7 @@ trait InnerState {
     /// ````
     fn action(&mut self, output: &mut String, open_times: usize, is_open: bool);
     fn reset(&mut self);
+    fn close(&mut self, output: &mut String, open_times: usize, is_open: bool);
 
 
     /*
@@ -139,6 +140,8 @@ struct PreprocState<Inner: InnerState + Default> {
 
     cur_match_type: PreprocType,
     cur_inner: bool,
+
+    changed: bool,
 }
 
 impl<Inner: InnerState + Default> Default for PreprocState<Inner> {
@@ -149,19 +152,30 @@ impl<Inner: InnerState + Default> Default for PreprocState<Inner> {
             open_times: 0,
             cur_match_type: PreprocType::Unkn,
             cur_inner: false,
+            changed: false,
         }
     }
 }
 
-impl<Inner: InnerState + Default> PreprocState<Inner> {
-    pub fn reset(&mut self) {
+impl<Inner: InnerState + Default> Preproc for PreprocState<Inner> {
+    fn close(&mut self, output: &mut String) {
+        self.reset();
+        for open_times in (1..=self.open_times).rev() {
+            self.inner.close(output, open_times, false);
+        }
+    }
+
+    fn reset(&mut self) {
+        if !self.changed { return }
+
         self.inner.reset();
         self.state = State::NotStarted;
         self.cur_match_type = PreprocType::Unkn;
         self.cur_inner = false;
+        self.changed = false;
     }
 
-    pub fn state_upd(&mut self, token: &str) -> PreprocVerdict {
+    fn state_upd(&mut self, token: &str) -> PreprocVerdict {
         if !self.cur_inner {
             if self.state.transfer_ctrl_to_inner(token) {
                 self.cur_inner = true;
@@ -170,8 +184,10 @@ impl<Inner: InnerState + Default> PreprocState<Inner> {
             }
         }
 
-        if self.cur_inner {
+        if !self.cur_inner {
             self.state = self.state.state_upd(token);
+            self.changed |= !self.state.is_err();
+            
             if self.state.is_err() {
                 return PreprocVerdict::No
             }
@@ -191,7 +207,7 @@ impl<Inner: InnerState + Default> PreprocState<Inner> {
         return PreprocVerdict::Maybe
     }
 
-    pub fn action(&mut self, output: &mut String) {
+    fn action(&mut self, output: &mut String) {
         let is_open = self.cur_match_type.is_open();
         let open_times = self.open_times + if is_open { 1 } else { 0 }; 
         

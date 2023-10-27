@@ -25,6 +25,15 @@ impl OpclInnerState for ItalicInnerState {
     }
 
     fn reset(&mut self) { }
+    fn close(&mut self, output: &mut String, open_times: usize, is_open: bool) {
+        if is_open {
+            println!("[ALGO WARN]: close with `is_open == true`");
+            return
+        }
+        if open_times == 1 {
+            output.push_str("</i>")
+        }
+    }
 }
 
 pub(in crate::preproc)

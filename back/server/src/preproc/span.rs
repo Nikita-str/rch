@@ -9,18 +9,32 @@ pub struct Span {
 }
 
 impl Span {
-    pub fn union(a: Self, b: Self) -> Self {
-        Self {
-            from: a.from.min(b.from),
-            to: a.to.max(b.to),
-        }
+    #[inline]
+    pub fn start(&self) -> usize {
+        self.from
     }
+    #[inline]
+    pub fn end(&self) -> usize {
+        self.to
+    }
+
 
     pub fn new_empty(byte_pos: usize) -> Self {
         Self {
             from: byte_pos,
             to: byte_pos,
         }
+    }
+
+    pub fn new_union(mut a: Self, b: Self) -> Self {
+        a.union(b);
+        a
+    }
+
+
+    pub fn union(&mut self, span: Self) {
+        self.from = self.from.min(span.from);
+        self.to = self.to.max(span.to);
     }
     
     /// `[A; B)` --> `[A; B + expand)`

@@ -39,14 +39,14 @@ pub struct Tokenizer<'s> {
 }
 
 impl<'s> Tokenizer<'s> {
-    fn new(token_stream: &'s str) -> Self {
+   pub fn new(token_stream: &'s str) -> Self {
         Self {
             token_stream,
             byte_pos: 0,
         }
     }
 
-    fn next_token(&mut self) -> Token<'s> {
+    pub fn next_token(&mut self) -> Token<'s> {
         let token_stream = &self.token_stream[self.byte_pos..];
         let mut seq_type: Option<CharSeqType> = None;
         let mut span = Span::new_empty(self.byte_pos);
@@ -84,7 +84,7 @@ impl<'s> Tokenizer<'s> {
         }
     }
 
-    fn is_ended(&self) -> bool {
+    pub fn is_ended(&self) -> bool {
         self.token_stream.len() == self.byte_pos
     }
 }
