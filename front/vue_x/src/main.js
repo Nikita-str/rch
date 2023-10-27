@@ -6,6 +6,7 @@ import router from './js/router'
 import Render from "./Render.vue"
 
 import './assets/main.css'
+import './assets/post_elems.css'
 
 const app = createApp({
     render: ()=>h(Render)

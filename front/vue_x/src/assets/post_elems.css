@@ -1,0 +1,21 @@
+
+:root {
+    --spoiler-color: #B1CAE3;
+}
+
+/*
+* small name needed because of this name will be used as output for msg preproc
+* so for reducing probability of realloc we need use more small name 
+* `P` stands for `post`
+* `sp` stands for `spoiler`
+*/
+span.P-sp {
+    color: var(--spoiler-color);
+    background-color: var(--spoiler-color);
+}
+span.P-sp:hover {
+    color: inherit;
+    background-color: inherit;
+}
+
+/* <span class="P-sp">spoilered text</span> */
