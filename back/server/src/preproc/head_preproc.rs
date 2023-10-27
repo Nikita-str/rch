@@ -105,18 +105,31 @@ impl HeadPreproc {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::preproc::general::italic::ItalicPreproc;
+    use crate::preproc::general::{Italic, Bold, Spoiler};
 
 
     fn help_only_italic(input: &str, expected_output: &str) {
         let mut head_preproc = HeadPreproc::new();
-        let italic = ItalicPreproc::default();
+        let italic = Italic::default();
         head_preproc.add_preproc(Box::new(italic));
         let output = head_preproc.preproc(input);
 
         assert_eq!(output, expected_output);
     }
 
+    fn help_all(input: &str, expected_output: &str) {
+        let mut head_preproc = HeadPreproc::new();
+
+        let bold = Bold::default();
+        let italic = Italic::default();
+        let spoiler = Spoiler::default();
+        head_preproc.add_preproc(Box::new(bold));
+        head_preproc.add_preproc(Box::new(italic));
+        head_preproc.add_preproc(Box::new(spoiler));
+
+        let output = head_preproc.preproc(input);
+        assert_eq!(output, expected_output);
+    }
 
     #[test]
     fn test_preproc_01_simple_italic_only() {
@@ -172,5 +185,12 @@ mod tests {
         let input = "aa[i]bb[/i]cc[i]dd[i]ee[i]ff[/i]gg[/i][[[/i]11[i][[[i]]][/i][[";
         let expected_output = "aa<i>bb</i>cc<i>ddeeffgg[[</i>11<i>[[]][[</i>";
         help_only_italic(input, expected_output);
+    }
+
+    #[test]
+    fn test_preproc_06_simple_spoiler_itelic() {
+        let input = "а не подскажите [spoiler]ли вы[/spoiler] почему на [i]имеджеборде [/i]так интелегентно разговаривают?!";
+        let expected_output = "а не подскажите <span class=\"P-sp\">ли вы</span> почему на <i>имеджеборде </i>так интелегентно разговаривают?!";
+        help_all(input, expected_output);
     }
 }

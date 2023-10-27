@@ -94,14 +94,12 @@ impl State {
 }
 
 
-pub(in crate::preproc)
-struct InnerState {
+pub struct InnerState {
     pub open_times: usize,
     pub is_open: bool,
 }
 
-pub(in crate::preproc)
-struct OpclPreproc<Inner: Preproc<InnerState> + Default> {
+pub struct OpclPreproc<Inner: Preproc<InnerState> + Default> {
     inner: Inner,
     // TODO:MAYBE: successful open inner queue ?
     
