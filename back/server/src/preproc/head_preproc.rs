@@ -90,6 +90,7 @@ impl HeadPreproc {
                 if !cur_token_in_use { unwrited_span.union(token_span); }
                 output.push_str(unwrited_span.extract_str(input));
                 unwrited_span = Span::new_empty(token_span.end());
+                if cur_token_in_use { unwrited_span.union(token_span); }
             }
         }
         
@@ -134,6 +135,10 @@ mod tests {
       
     #[test]
     fn test_preproc_03_hardv2_italic_only() {
+        let input = "[[[[[[i]";
+        let expected_output = "[[[[[<i></i>";
+        help_only_italic(input, expected_output);
+
         let input = "[[[[i][[[[/i][[[";
         let expected_output = "[[[<i>[[[</i>[[[";
         help_only_italic(input, expected_output);
