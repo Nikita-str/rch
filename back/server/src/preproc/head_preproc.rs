@@ -107,6 +107,7 @@ impl HeadPreproc {
 mod tests {
     use super::*;
     use crate::preproc::general::{Bold, Italic, Strike, Spoiler};
+    use crate::preproc::general::{SubText, SupText};
     use crate::preproc::general::{NewLinePreproc, ReservedSymbsPreproc};
 
 
@@ -130,6 +131,11 @@ mod tests {
         head_preproc.add_preproc(Box::new(italic));
         head_preproc.add_preproc(Box::new(strike));
         head_preproc.add_preproc(Box::new(spoiler));
+
+        let sup = SupText::default();
+        let sub = SubText::default();
+        head_preproc.add_preproc(Box::new(sup));
+        head_preproc.add_preproc(Box::new(sub));
 
         let new_line = NewLinePreproc::default();
         let reserved = ReservedSymbsPreproc::default();
@@ -231,6 +237,13 @@ mod tests {
     fn test_preproc_10_one_token_preprocs() { 
         let input = "br[s]rr & [i]! #\n\nhm[/strike]m...";
         let expected_output = "br<s>rr &#38; <i>! #<br/><br/>hm</s>m...</i>";
+        help_all(input, expected_output);
+    }
+    
+    #[test]
+    fn test_preproc_11_sup_sub_and_others() { 
+        let input = "br[s]rr &[/sub] [i]![i]![sup]![sup]![i]! #\n\nhm[/strike]m...";
+        let expected_output = "br<s>rr &#38; <i>!!<sup>!<sup>!! #<br/><br/>hm</s>m...</i></sup></sup>";
         help_all(input, expected_output);
     }
 }

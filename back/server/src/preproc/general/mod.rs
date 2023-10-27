@@ -8,6 +8,14 @@ mod italic { crate::preproc::generic::define_opcl!{ItalicPreproc ["i"; "italic"]
 mod strike { crate::preproc::generic::define_opcl!{StrikePreproc ["s"; "strike"] "<s>" / "</s>"} }
 mod spoiler { crate::preproc::generic::define_opcl!{SpoilerPreproc ["spoiler"] "<span class=\"P-sp\">" / "</span>"} }
 
+
+pub use sub::SubTextPreproc as SubText;
+pub use sup::SupTextPreproc as SupText;
+
+mod sub { crate::preproc::generic::define_opcl!{MULTI SubTextPreproc ["sub"] "<sub>" / "</sub>"} }
+mod sup { crate::preproc::generic::define_opcl!{MULTI SupTextPreproc ["sup"] "<sup>" / "</sup>"} }
+
+
 mod new_line;
 pub use new_line::NewLinePreproc;
 
