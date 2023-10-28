@@ -1,6 +1,7 @@
 
 :root {
     --spoiler-color: #B1CAE3;
+    --rand-color: #88A5;
 }
 
 /*
@@ -19,3 +20,21 @@ span.P-sp:hover {
 }
 
 /* <span class="P-sp">spoilered text</span> */
+
+
+span.P-rand {
+    color: var(--r-col-crab-light);
+    background-color: var(--rand-color);
+    padding-left: 0.3em;
+    padding-right: 0.3em;
+  
+    -webkit-clip-path: polygon(0 0, 0 100%, 100% 100%, 100% 35%, 75% 0);
+    clip-path: polygon(0 0, 0 100%, 100% 100%, 100% 35%, 75% 0);
+    
+    /* -webkit-clip-path: polygon(0 0, 0 100%, 100% 100%, 100% 25%, 75% 0);
+    clip-path: polygon(0 0, 0 100%, 100% 100%, 100% 25%, 75% 0); */
+
+    /* -webkit-clip-path: polygon(0 0, 0 75%, 25% 100%, 100% 100%, 100% 25%, 75% 0);
+    clip-path: polygon(0 0, 0 75%, 25% 100%, 100% 100%, 100% 25%, 75% 0); */
+}
+/* <span class="P-rand" title="{from} <= x <= {to}">number</span> */
