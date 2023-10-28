@@ -151,6 +151,38 @@ mod tests {
         assert_eq!(output, expected_output);
     }
 
+    fn help_header(input: &str, expected_output: &str) {
+        let mut head_preproc = HeadPreproc::new();
+
+        let bold = Bold::new_ignore_mode();
+        let italic = Italic::new_ignore_mode();
+        let strike = Strike::new_ignore_mode();
+        let spoiler = Spoiler::new_ignore_mode();
+        head_preproc.add_preproc(Box::new(bold));
+        head_preproc.add_preproc(Box::new(italic));
+        head_preproc.add_preproc(Box::new(strike));
+        head_preproc.add_preproc(Box::new(spoiler));
+
+        let sup = SupText::new_ignore_mode();
+        let sub = SubText::new_ignore_mode();
+        head_preproc.add_preproc(Box::new(sup));
+        head_preproc.add_preproc(Box::new(sub));
+
+        let mut new_line = NewLinePreproc::default();
+        let reserved = ReservedSymbsPreproc::default();
+        new_line.set_space_mode(true);
+        head_preproc.add_preproc(Box::new(new_line));
+        head_preproc.add_preproc(Box::new(reserved));
+
+        // is non-necessary
+        let mut random = Random::default();
+        random.header_mode_on();
+        head_preproc.add_preproc(Box::new(random));
+
+        let output = head_preproc.preproc(input);
+        assert_eq!(output, expected_output);
+    }
+
 
     #[test]
     fn test_preproc_01_simple_italic_only() {
@@ -299,5 +331,13 @@ mod tests {
             let output = head_preproc.preproc(&input);
             assert_rand(&output, from, to);
         }
+    }
+
+    
+    #[test]
+    fn test_preproc_13_all_header() { 
+        let input = "br[s]rr &[/sub] [i]![i]![sup]![random(11:11)][sup]![i]! #\n\nhm[/strike]m...";
+        let expected_output = "brrr &#38; !!!<span class=\"H-rand\" title=\"11 ≤ x ≤ 11\">11</span>!! #  hmm...";
+        help_header(input, expected_output);
     }
 }

@@ -69,11 +69,29 @@ impl State {
     }
 }
 
+#[derive(Default, Debug)]
+enum Mode {
+    #[default]
+    Std,
+    HeaderClass,
+    Simple,
+}
+
 #[derive(Default)]
 pub struct __InnerPreproc {
-    state: State,
     from: i32,
     to: i32,
+    state: State,
+    mode: Mode, // if we need trait then just rename into `ignore_mdoe`
+}
+
+impl __InnerPreproc {
+    pub fn simple_mode_on(&mut self) {
+        self.mode = Mode::Simple
+    }
+    pub fn header_mode_on(&mut self) {
+        self.mode = Mode::HeaderClass;
+    }
 }
 
 impl Preproc for __InnerPreproc {
@@ -90,7 +108,12 @@ impl Preproc for __InnerPreproc {
         let from = self.from.min(self.to);
         let to = self.from.max(self.to);
         let rand_num = rng.gen_range(from..=to);
-        let _ = write!(output, "<span class=\"P-rand\" title=\"{from} ≤ x ≤ {to}\">{rand_num}</span>");
+        
+        let _ = match self.mode {
+            Mode::Std => write!(output, "<span class=\"P-rand\" title=\"{from} ≤ x ≤ {to}\">{rand_num}</span>"),
+            Mode::HeaderClass => write!(output, "<span class=\"H-rand\" title=\"{from} ≤ x ≤ {to}\">{rand_num}</span>"),
+            Mode::Simple => write!(output, "{rand_num}"),
+        };
     }
 
     fn state_upd(&mut self, token: &str) -> PreprocVerdict {
@@ -120,4 +143,13 @@ impl Preproc for __InnerPreproc {
     }
 }
 
+
 pub type RandomPreproc = crate::preproc::generic::SingleCmdPreproc<__InnerPreproc>;
+impl RandomPreproc {
+    pub fn simple_mode_on(&mut self) {
+        self.inner_mut().simple_mode_on()
+    }
+    pub fn header_mode_on(&mut self) {
+        self.inner_mut().header_mode_on()
+    }
+}

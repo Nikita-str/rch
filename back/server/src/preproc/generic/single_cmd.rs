@@ -60,6 +60,12 @@ pub struct SingleCmd<Inner: Preproc + Default> {
     cur_inner: bool,
     changed: bool,
 }
+impl<Inner: Preproc + Default> SingleCmd<Inner> {
+    pub(in crate::preproc)
+    fn inner_mut(&mut self) -> &mut Inner {
+        &mut self.inner
+    }
+}
 
 impl<Inner: Preproc + Default> Default for SingleCmd<Inner> {
     fn default() -> Self {
@@ -79,7 +85,11 @@ impl<Inner: Preproc + Default> Preproc for SingleCmd<Inner> {
 
     fn reset(&mut self) {
         if self.changed {
-            *self = Self::default()
+            self.inner.reset();
+            self.state = State::NotStarted;
+            self.cur_inner = false;
+            self.changed = false;
+            // *self = Self::default()
         }
     }
 

@@ -82,6 +82,7 @@ impl State {
         return matches!(self, Self::Err)
     }
 
+    #[allow(unused)]
     #[inline]
     fn is_inner(self) -> bool {
         return matches!(self, Self::Inner)
@@ -109,8 +110,20 @@ pub struct OpclPreproc<Inner: Preproc<InnerState> + Default> {
 
     cur_match_type: PreprocType,
     cur_inner: bool,
+    ignore_mode: bool,
 
     changed: bool,
+}
+
+impl<Inner: Preproc<InnerState> + Default> OpclPreproc<Inner> {
+    pub fn set_ignore_mode(&mut self, ignore_mode: bool) {
+        self.ignore_mode = ignore_mode;
+    }
+    pub fn new_ignore_mode() -> Self {
+        let mut ret = Self::default();
+        ret.set_ignore_mode(true);
+        return ret
+    }
 }
 
 impl<Inner: Preproc<InnerState> + Default> Default for OpclPreproc<Inner> {
@@ -121,6 +134,7 @@ impl<Inner: Preproc<InnerState> + Default> Default for OpclPreproc<Inner> {
             open_times: 0,
             cur_match_type: PreprocType::Unkn,
             cur_inner: false,
+            ignore_mode: false,
             changed: false,
         }
     }
@@ -130,6 +144,9 @@ impl<Inner: Preproc<InnerState> + Default> Preproc for OpclPreproc<Inner> {
     fn close(&mut self, output: &mut String, _: ()) {
         self.reset();
         let is_open = false;
+        if self.ignore_mode {
+            return
+        }
         for open_times in (1..=self.open_times).rev() {
             let preproc_state = InnerState {
                 open_times,
@@ -185,13 +202,16 @@ impl<Inner: Preproc<InnerState> + Default> Preproc for OpclPreproc<Inner> {
 
     fn action(&mut self, output: &mut String, _: ()) {
         let is_open = self.cur_match_type.is_open();
-        let open_times = self.open_times + if is_open { 1 } else { 0 }; 
-        let preproc_state = InnerState {
-            open_times,
-            is_open,
-        };
 
-        self.inner.action(output, preproc_state);
+        if !self.ignore_mode {
+            let open_times = self.open_times + if is_open { 1 } else { 0 }; 
+            let preproc_state = InnerState {
+                open_times,
+                is_open,
+            };
+            
+            self.inner.action(output, preproc_state);
+        }
 
         if is_open {
             self.open_times += 1;
