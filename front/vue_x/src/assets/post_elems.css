@@ -21,9 +21,12 @@ span.P-sp:hover {
 
 /* <span class="P-sp">spoilered text</span> */
 
-
 span.P-rand {
     color: var(--r-col-crab-light);
+}
+span.P-rand, span.H-rand {
+    margin-left: 0.1em;
+    margin-right: 0.1em;
     background-color: var(--rand-color);
     padding-left: 0.3em;
     padding-right: 0.3em;
