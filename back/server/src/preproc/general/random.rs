@@ -90,7 +90,7 @@ impl Preproc for __InnerPreproc {
         let from = self.from.min(self.to);
         let to = self.from.max(self.to);
         let rand_num = rng.gen_range(from..=to);
-        let _ = write!(output, "{rand_num}");
+        let _ = write!(output, "<span class=\"P-rand\" title=\"{from} ≤ x ≤ {to}\">{rand_num}</span>");
     }
 
     fn state_upd(&mut self, token: &str) -> PreprocVerdict {

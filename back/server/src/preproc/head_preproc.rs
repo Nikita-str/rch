@@ -20,7 +20,7 @@ impl HeadPreproc {
 
     fn init_output(input: &str) -> String {
         const OUT_COEF_99_PROC_CASE: f64 = 1.2;
-        const OUT_ADDITIONAL_BYTES: usize = 128;
+        const OUT_ADDITIONAL_BYTES: usize = 300;
         let output_exp_capacity = ((input.len() as f64 * OUT_COEF_99_PROC_CASE) as usize) + OUT_ADDITIONAL_BYTES;
 
         String::with_capacity(output_exp_capacity)
@@ -109,7 +109,7 @@ mod tests {
     use crate::preproc::general::{Bold, Italic, Strike, Spoiler};
     use crate::preproc::general::{SubText, SupText};
     use crate::preproc::general::{NewLinePreproc, ReservedSymbsPreproc};
-    use crate::preproc::general::{Random};
+    use crate::preproc::general::Random;
 
 
     fn help_only_italic(input: &str, expected_output: &str) {
@@ -254,30 +254,41 @@ mod tests {
 
     #[test]
     fn test_preproc_12_rand() {
+        let assert_rand = |output: &str, from: i32, to: i32| {
+            let prefix = format!("<span class=\"P-rand\" title=\"{from} ≤ x ≤ {to}\">");
+            assert!(output.starts_with(&prefix));
+            let postfix = "</span>";
+            assert!(output.ends_with(postfix));
+            let number = &output[prefix.len()..(output.len() - postfix.len())];
+            let x = number.parse().unwrap();
+            assert!(from <= x && x <= to);
+        };
+
         let mut head_preproc = HeadPreproc::new();
         
         let random = Random::default();
         head_preproc.add_preproc(Box::new(random));
 
-        for _ in 0..100 {
-            let input = "[random( -42,  50  )]";
+        for i in 0..100 {
+            let input = if i % 2 == 0 { 
+                "[random( -42,  50  )]" 
+            } else {
+                "[random(50, -42)]" 
+            };
             let output = head_preproc.preproc(input);
-            let x = output.parse().unwrap();
-            assert!(-42 <= x && x <= 50);
+            assert_rand(&output, -42, 50);
         }
         
         for _ in 0..10 {
             let input = "[random( -1245,  -1245  )]";
             let output = head_preproc.preproc(input);
-            let x: i32 = output.parse().unwrap();
-            assert_eq!(x, -1245);
+            assert_rand(&output, -1245, -1245);
         }
         
         for _ in 0..10 {
             let input = "[random(-103:-101)]";
             let output = head_preproc.preproc(input);
-            let x: i32 = output.parse().unwrap();
-            assert!(x == -103 || x == -102 || x == -101);
+            assert_rand(&output, -103, -101);
         }
 
         for i in 0..10 {
@@ -286,8 +297,7 @@ mod tests {
             let delim = if i % 2 == 0 { ":" } else { ", " };
             let input = format!("[random({from}{delim}{to})]");
             let output = head_preproc.preproc(&input);
-            let x: i32 = output.parse().unwrap();
-            assert!(from <= x && x <= to);
+            assert_rand(&output, from, to);
         }
     }
 }
