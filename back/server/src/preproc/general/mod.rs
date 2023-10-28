@@ -21,3 +21,6 @@ pub use new_line::NewLinePreproc;
 
 mod reserved_symbs;
 pub use reserved_symbs::ReservedSymbsPreproc;
+
+mod random;
+pub use random::RandomPreproc as Random;

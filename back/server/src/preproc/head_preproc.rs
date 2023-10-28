@@ -109,6 +109,7 @@ mod tests {
     use crate::preproc::general::{Bold, Italic, Strike, Spoiler};
     use crate::preproc::general::{SubText, SupText};
     use crate::preproc::general::{NewLinePreproc, ReservedSymbsPreproc};
+    use crate::preproc::general::{Random};
 
 
     fn help_only_italic(input: &str, expected_output: &str) {
@@ -141,6 +142,10 @@ mod tests {
         let reserved = ReservedSymbsPreproc::default();
         head_preproc.add_preproc(Box::new(new_line));
         head_preproc.add_preproc(Box::new(reserved));
+
+        // is non-necessary
+        let random = Random::default();
+        head_preproc.add_preproc(Box::new(random));
 
         let output = head_preproc.preproc(input);
         assert_eq!(output, expected_output);
@@ -245,5 +250,44 @@ mod tests {
         let input = "br[s]rr &[/sub] [i]![i]![sup]![sup]![i]! #\n\nhm[/strike]m...";
         let expected_output = "br<s>rr &#38; <i>!!<sup>!<sup>!! #<br/><br/>hm</s>m...</i></sup></sup>";
         help_all(input, expected_output);
+    }
+
+    #[test]
+    fn test_preproc_12_rand() {
+        let mut head_preproc = HeadPreproc::new();
+        
+        let random = Random::default();
+        head_preproc.add_preproc(Box::new(random));
+
+        for _ in 0..100 {
+            let input = "[random( -42,  50  )]";
+            let output = head_preproc.preproc(input);
+            let x = output.parse().unwrap();
+            assert!(-42 <= x && x <= 50);
+        }
+        
+        for _ in 0..10 {
+            let input = "[random( -1245,  -1245  )]";
+            let output = head_preproc.preproc(input);
+            let x: i32 = output.parse().unwrap();
+            assert_eq!(x, -1245);
+        }
+        
+        for _ in 0..10 {
+            let input = "[random(-103:-101)]";
+            let output = head_preproc.preproc(input);
+            let x: i32 = output.parse().unwrap();
+            assert!(x == -103 || x == -102 || x == -101);
+        }
+
+        for i in 0..10 {
+            let from = 4200 + i;
+            let to = 4200 + i * 2;
+            let delim = if i % 2 == 0 { ":" } else { ", " };
+            let input = format!("[random({from}{delim}{to})]");
+            let output = head_preproc.preproc(&input);
+            let x: i32 = output.parse().unwrap();
+            assert!(from <= x && x <= to);
+        }
     }
 }
