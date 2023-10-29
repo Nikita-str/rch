@@ -2,6 +2,15 @@
 :root {
     --spoiler-color: #B1CAE3;
     --rand-color: #88A5;
+
+    --a--nyan-color: #eb39be;
+    --a--nyan-color-from: #9e68ff;
+    --a--nyan-color-to: #fb399d;
+
+    --a--cat-bg-color: #de2897ab; /* #de2897ab;  #E369B3; */
+
+    --a--word-0: #18c5e1;
+    --a--word-1: #ea018f;
 }
 
 /*
@@ -41,3 +50,24 @@ span.P-rand, span.H-rand {
     clip-path: polygon(0 0, 0 75%, 25% 100%, 100% 100%, 100% 25%, 75% 0); */
 }
 /* <span class="P-rand" title="{from} <= x <= {to}">number</span> */
+
+
+span.P-a-nyan {
+    background-color: var(--a--nyan-color);
+    background-image: linear-gradient(to right, var(--a--nyan-color-from), var(--a--nyan-color-to));
+    background-size: 100%;
+    background-clip: text;
+    -moz-background-clip: text;
+    -webkit-background-clip: text;
+    -moz-text-fill-color: transparent;
+    -webkit-text-fill-color: transparent;
+    /* font-weight: bold; */
+}
+
+span.P-a-cat {
+    background-color: var(--a--cat-bg-color);
+    padding-left: 0.3em;
+    padding-right: 0.3em;
+    font-weight: bold;
+    color: #fff;
+}
