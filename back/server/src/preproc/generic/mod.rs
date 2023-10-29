@@ -25,7 +25,7 @@ macro_rules! define_opcl {
                 }
             }
 
-            fn action(&mut self, output: &mut String, state: State) {
+            fn action(&mut self, output: &mut String, _: &str, state: State) {
                 if state.open_times == 1 {
                     if state.is_open {
                         output.push_str($open)
@@ -64,7 +64,7 @@ macro_rules! define_opcl {
                 }
             }
 
-            fn action(&mut self, output: &mut String, state: State) {
+            fn action(&mut self, output: &mut String, _: &str, state: State) {
                 if state.open_times != 0 {
                     if state.is_open {
                         output.push_str($open)

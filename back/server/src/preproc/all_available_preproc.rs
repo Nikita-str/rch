@@ -4,6 +4,11 @@ use crate::preproc::general::{NewLinePreproc as NewLine, ReservedSymbsPreproc as
 use crate::preproc::general::Random;
 use crate::preproc::{Preproc, PreprocVerdict};
 
+use crate::preproc::board_specific as board;
+use board::a::Cat as CatFromA;
+use board::a::Nyan as NyanFromA;
+use board::a::Kawaii as KawaiiFromA;
+
 macro_rules! all_gen {
     ($name:ident $type_enum_name:ident [$( $preproc:ident; )*]) => {
         pub enum $name {
@@ -31,9 +36,9 @@ macro_rules! all_gen {
                 }
             }
 
-            fn action(&mut self, output: &mut String, state: ()) {
+            fn action(&mut self, output: &mut String, matched_tokens: &str, state: ()) {
                 match self {
-                    $( Self::$preproc(x) => x.action(output, state), )*
+                    $( Self::$preproc(x) => x.action(output, matched_tokens, state), )*
                 }
             }
 
@@ -57,6 +62,9 @@ all_gen!{
         SupText; SubText;
         NewLine; ReservedSymbs;
         Random;
+
+        // board = `/a/`
+        CatFromA; NyanFromA; KawaiiFromA;
     ]
 }
 
@@ -72,7 +80,11 @@ pub enum AllPreprocCtor {
     NewLine{ space_mode: bool },
     ReservedSymbs,
 
-    Random{ mode: crate::preproc::general::RandomMode }
+    Random{ mode: crate::preproc::general::RandomMode },
+
+    CatFromA,
+    NyanFromA,
+    KawaiiFromA,
 }
 
 impl AllPreprocCtor {
@@ -115,6 +127,10 @@ impl AllPreproc {
                 };
                 Self::Random(random)
             }
+
+            AllPreprocCtor::CatFromA => Self::CatFromA(CatFromA::default()),
+            AllPreprocCtor::NyanFromA => Self::NyanFromA(NyanFromA::default()),
+            AllPreprocCtor::KawaiiFromA => Self::KawaiiFromA(KawaiiFromA::default()),
         }
     }
 }

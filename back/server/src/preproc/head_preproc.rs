@@ -49,6 +49,20 @@ impl HeadPreproc {
         head_preproc
     }
 
+    pub fn new_by_board(board: &str, header: bool) -> Self {
+        match (board, header) {
+            ("a", false) => {
+                let mut head_preproc = Self::new_std(StdHeadPreprocType::Std);
+                head_preproc.add_preproc(AllPreprocCtor::CatFromA);
+                head_preproc.add_preproc(AllPreprocCtor::NyanFromA);
+                head_preproc.add_preproc(AllPreprocCtor::KawaiiFromA);
+                head_preproc
+            }
+            (_, false) => Self::new_std(StdHeadPreprocType::Std),
+            (_, true) => Self::new_std(StdHeadPreprocType::Header),
+        }
+    }
+
     pub fn add_preproc_direct(&mut self, preproc: AllPreproc) {
         let ty = preproc.preproc_type();
         if !self.used.insert(ty) {
@@ -99,8 +113,15 @@ impl HeadPreproc {
                 macro_rules! on_matched {
                     () => {{
                         matched = true;
-                        // TODO: pass full_match into `action` by `(unwrited_span U span).extract_str(input)`
-                        preproc.action(&mut output, state);
+                        // bad bug fix ... but for ours cases +- k
+                        // (in good case we must save pos of start for each preproc...)
+                        // ((and allow them work +- independent))
+                        if !prev_is_maybe.contains(&iprep) {
+                            output.push_str(unwrited_span.extract_str(input));
+                            unwrited_span = Span::new_empty(unwrited_span.end());
+                        }
+                        let matched_tokens = Span::new_union(unwrited_span, token_span).extract_str(input);
+                        preproc.action(&mut output, matched_tokens, state);
                         preproc.reset();    
                     }};
                 }
@@ -115,7 +136,10 @@ impl HeadPreproc {
                                     cur_token_in_use = true;
                                     prev_is_maybe.insert(iprep);
                                 }
-                                PreprocVerdict::Matched => on_matched!(),
+                                PreprocVerdict::Matched => {
+                                    // write prev unwrited
+                                    on_matched!()
+                                }
                             }
                         }
                     }
@@ -179,7 +203,6 @@ mod tests {
         help_only_italic(input, expected_output);
     }
 
-    
     #[test]
     fn test_preproc_02_hard_italic_only() {
         let input = "[[i][[/i][";
@@ -257,6 +280,13 @@ mod tests {
         let expected_output = "Y &#60;x&#62; &#38; ! #<br/>hmm...";
         help_all(input, expected_output);
     }
+    
+    #[test]
+    fn test_preproc_09v2() {
+        let input = "xx[<a]";
+        let expected_output = "xx[&#60;a]";
+        help_all(input, expected_output);
+    }
 
     #[test]
     fn test_preproc_10_one_token_preprocs() { 
@@ -327,5 +357,14 @@ mod tests {
         let input = "br[s]rr &[/sub] [i]![i]![sup]![random(11:11)][sup]![i]! #\n\nhm[/strike]m...";
         let expected_output = "brrr &#38; !!!<span class=\"H-rand\" title=\"11 ≤ x ≤ 11\">11</span>!! #  hmm...";
         help_header(input, expected_output);
+    }
+    
+    #[test]
+    fn test_preproc_14_board_a() { 
+        let input = "какие ~~сладкие~~ Котики!!!";
+        let expected_output = "какие <span class=\"P-a-nyan\">~~сладкие~~</span> <span class=\"P-a-cat\">:3</span>и!!!";
+        let mut head_preproc = HeadPreproc::new_by_board("a", false);
+        let output = head_preproc.preproc(input);
+        assert_eq!(output, expected_output);
     }
 }

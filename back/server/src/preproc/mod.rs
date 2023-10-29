@@ -1,4 +1,6 @@
 
+mod board_specific;
+
 mod general;
 mod generic;
 
@@ -28,7 +30,7 @@ mod inner {
         /// (when current unwrited seq is not suitable) 
         fn reset(&mut self);
         /// called after successful match
-        fn action(&mut self, output: &mut String, state: State);
+        fn action(&mut self, output: &mut String, matched_tokens: &str, state: State);
         fn state_upd(&mut self, token: &str) -> PreprocVerdict;
     }
 

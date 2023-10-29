@@ -103,7 +103,7 @@ impl Preproc for __InnerPreproc {
         self.state = State::NotStarted
     }
 
-    fn action(&mut self, output: &mut String, _: ()) {
+    fn action(&mut self, output: &mut String, _: &str, _: ()) {
         let mut rng = rand::thread_rng();
         let from = self.from.min(self.to);
         let to = self.from.max(self.to);

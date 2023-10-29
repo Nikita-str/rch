@@ -15,7 +15,7 @@ impl Preproc for NewLinePreproc {
     fn close(&mut self, _: &mut String, _: ()) {}
     fn reset(&mut self) {}
 
-    fn action(&mut self, output: &mut String, _: ()) {
+    fn action(&mut self, output: &mut String, _: &str, _: ()) {
         if self.space_mode {
             output.push(' ');
         } else {

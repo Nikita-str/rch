@@ -200,7 +200,7 @@ impl<Inner: Preproc<InnerState> + Default> Preproc for OpclPreproc<Inner> {
         return PreprocVerdict::Maybe
     }
 
-    fn action(&mut self, output: &mut String, _: ()) {
+    fn action(&mut self, output: &mut String, matched_tokens: &str, _: ()) {
         let is_open = self.cur_match_type.is_open();
 
         if !self.ignore_mode {
@@ -210,7 +210,7 @@ impl<Inner: Preproc<InnerState> + Default> Preproc for OpclPreproc<Inner> {
                 is_open,
             };
             
-            self.inner.action(output, preproc_state);
+            self.inner.action(output, matched_tokens, preproc_state);
         }
 
         if is_open {

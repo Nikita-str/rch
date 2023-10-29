@@ -1,27 +1,19 @@
 use crate::preproc::{Preproc, PreprocVerdict};
 
 #[derive(Default)]
-pub struct ReservedSymbsPreproc {
-    // TODO:
-    // it's good to pass full match into `action`... but for it we need to change code
-    // we can do it by use unwrited_span U span
-    token: char,
-}
+pub struct ReservedSymbsPreproc;
 
 impl Preproc for ReservedSymbsPreproc {
     fn close(&mut self, _: &mut String, _: ()) {}
-    fn reset(&mut self) {
-        self.token = ' ';
-    }
+    fn reset(&mut self) { }
 
-    fn action(&mut self, output: &mut String, _: ()) {
-        let token = self.token;
-        match token {
-            '"' => output.push_str("&#34;"), 
-            '\'' => output.push_str("&#39;"), 
-            '&' => output.push_str("&#38;"), 
-            '<' => output.push_str("&#60;"), 
-            '>' => output.push_str("&#62;"), 
+    fn action(&mut self, output: &mut String, matched_tokens: &str, _: ()) {
+        match matched_tokens {
+            "\"" => output.push_str("&#34;"), 
+            "\'" => output.push_str("&#39;"), 
+            "&" => output.push_str("&#38;"), 
+            "<" => output.push_str("&#60;"), 
+            ">" => output.push_str("&#62;"), 
             _ => println!("[ALGO WARN] unexpected token"),
         }
     }
@@ -31,8 +23,8 @@ impl Preproc for ReservedSymbsPreproc {
             return PreprocVerdict::No;
         }
 
-        self.token = token.as_bytes()[0] as char;
-        match self.token {
+        let token = token.as_bytes()[0] as char;
+        match token {
             '\'' | '"' | '>' | '<' | '&' => PreprocVerdict::Matched,
             _ => PreprocVerdict::No,
         }

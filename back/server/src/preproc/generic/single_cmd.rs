@@ -93,8 +93,8 @@ impl<Inner: Preproc + Default> Preproc for SingleCmd<Inner> {
         }
     }
 
-    fn action(&mut self, output: &mut String, state: ()) {
-        self.inner.action(output, state)
+    fn action(&mut self, output: &mut String, matched_tokens: &str, state: ()) {
+        self.inner.action(output, matched_tokens, state)
     }
 
     fn state_upd(&mut self, token: &str) -> PreprocVerdict {
