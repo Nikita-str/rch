@@ -70,7 +70,7 @@ impl State {
 }
 
 #[derive(Default, Debug)]
-enum Mode {
+pub enum Mode {
     #[default]
     Std,
     HeaderClass,
@@ -146,6 +146,7 @@ impl Preproc for __InnerPreproc {
 
 pub type RandomPreproc = crate::preproc::generic::SingleCmdPreproc<__InnerPreproc>;
 impl RandomPreproc {
+    #[allow(unused)]
     pub fn simple_mode_on(&mut self) {
         self.inner_mut().simple_mode_on()
     }

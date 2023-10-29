@@ -10,6 +10,10 @@ use span::Span;
 use tokenizer::Tokenizer;
 use inner::{Preproc, PreprocVerdict};
 
+mod all_available_preproc;
+pub use all_available_preproc::*;
+
+
 mod inner {
     pub enum PreprocVerdict {
         No,

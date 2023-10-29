@@ -1,22 +1,67 @@
 use std::collections::HashSet;
-
 use super::{Span, Preproc, PreprocVerdict, Tokenizer};
+use crate::preproc::all_available_preproc::*;
 
+pub enum StdHeadPreprocType {
+    Std,
+    Header,
+}
+
+// pub struct HeadPreproc {
+//     preprocers: Vec<Box<dyn Preproc>>, // OR `Vec<enum AllPreproc>`,
+// }
 pub struct HeadPreproc {
-    preprocers: Vec<Box<dyn Preproc>>, // OR `Vec<enum AllPreproc>`,
+    preprocers: Vec<AllPreproc>,
+    used: HashSet<AllPreprocType>,
 }
 
 impl HeadPreproc {
     pub fn new() -> Self {
         Self {
             preprocers: Vec::new(),
+            used: HashSet::new(),
         }
     }
 
-    pub(in crate::preproc)
-    fn add_preproc(&mut self, preproc: Box<dyn Preproc>) {
-        self.preprocers.push(preproc);
+    pub fn new_std(std_ty: StdHeadPreprocType) -> Self {
+        use crate::preproc::general::RandomMode as RandomMode;
+
+        let mut head_preproc = Self::new();
+
+        let (ignore, space_mode, random_mode) = match std_ty {
+            StdHeadPreprocType::Std => (false, false, RandomMode::Std),
+            StdHeadPreprocType::Header => (true, true, RandomMode::HeaderClass),
+        };
+
+        head_preproc.add_preproc(AllPreprocCtor::Bold { ignore });
+        head_preproc.add_preproc(AllPreprocCtor::Italic { ignore });
+        head_preproc.add_preproc(AllPreprocCtor::Strike { ignore });
+        head_preproc.add_preproc(AllPreprocCtor::Spoiler { ignore });
+
+        head_preproc.add_preproc(AllPreprocCtor::SupText { ignore });
+        head_preproc.add_preproc(AllPreprocCtor::SubText { ignore });
+
+        head_preproc.add_preproc(AllPreprocCtor::NewLine { space_mode });
+        head_preproc.add_preproc(AllPreprocCtor::ReservedSymbs);
+
+        head_preproc.add_preproc(AllPreprocCtor::Random { mode: random_mode });
+
+        head_preproc
     }
+
+    pub fn add_preproc_direct(&mut self, preproc: AllPreproc) {
+        let ty = preproc.preproc_type();
+        if !self.used.insert(ty) {
+            println!("[ALGO ERROR]: try add already added preproc type({:?})", ty)
+        } else {
+            self.preprocers.push(preproc);
+        }
+    }
+    
+    pub fn add_preproc(&mut self, preproc_ctor: AllPreprocCtor) {
+        self.add_preproc_direct(preproc_ctor.create()) 
+    }
+
 
     fn init_output(input: &str) -> String {
         const OUT_COEF_99_PROC_CASE: f64 = 1.2;
@@ -106,79 +151,22 @@ impl HeadPreproc {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::preproc::general::{Bold, Italic, Strike, Spoiler};
-    use crate::preproc::general::{SubText, SupText};
-    use crate::preproc::general::{NewLinePreproc, ReservedSymbsPreproc};
-    use crate::preproc::general::Random;
-
 
     fn help_only_italic(input: &str, expected_output: &str) {
         let mut head_preproc = HeadPreproc::new();
-        let italic = Italic::default();
-        head_preproc.add_preproc(Box::new(italic));
+        head_preproc.add_preproc(AllPreprocCtor::Italic { ignore: false });
         let output = head_preproc.preproc(input);
-
         assert_eq!(output, expected_output);
     }
 
     fn help_all(input: &str, expected_output: &str) {
-        let mut head_preproc = HeadPreproc::new();
-
-        let bold = Bold::default();
-        let italic = Italic::default();
-        let strike = Strike::default();
-        let spoiler = Spoiler::default();
-        head_preproc.add_preproc(Box::new(bold));
-        head_preproc.add_preproc(Box::new(italic));
-        head_preproc.add_preproc(Box::new(strike));
-        head_preproc.add_preproc(Box::new(spoiler));
-
-        let sup = SupText::default();
-        let sub = SubText::default();
-        head_preproc.add_preproc(Box::new(sup));
-        head_preproc.add_preproc(Box::new(sub));
-
-        let new_line = NewLinePreproc::default();
-        let reserved = ReservedSymbsPreproc::default();
-        head_preproc.add_preproc(Box::new(new_line));
-        head_preproc.add_preproc(Box::new(reserved));
-
-        // is non-necessary
-        let random = Random::default();
-        head_preproc.add_preproc(Box::new(random));
-
+        let mut head_preproc = HeadPreproc::new_std(StdHeadPreprocType::Std);
         let output = head_preproc.preproc(input);
         assert_eq!(output, expected_output);
     }
 
     fn help_header(input: &str, expected_output: &str) {
-        let mut head_preproc = HeadPreproc::new();
-
-        let bold = Bold::new_ignore_mode();
-        let italic = Italic::new_ignore_mode();
-        let strike = Strike::new_ignore_mode();
-        let spoiler = Spoiler::new_ignore_mode();
-        head_preproc.add_preproc(Box::new(bold));
-        head_preproc.add_preproc(Box::new(italic));
-        head_preproc.add_preproc(Box::new(strike));
-        head_preproc.add_preproc(Box::new(spoiler));
-
-        let sup = SupText::new_ignore_mode();
-        let sub = SubText::new_ignore_mode();
-        head_preproc.add_preproc(Box::new(sup));
-        head_preproc.add_preproc(Box::new(sub));
-
-        let mut new_line = NewLinePreproc::default();
-        let reserved = ReservedSymbsPreproc::default();
-        new_line.set_space_mode(true);
-        head_preproc.add_preproc(Box::new(new_line));
-        head_preproc.add_preproc(Box::new(reserved));
-
-        // is non-necessary
-        let mut random = Random::default();
-        random.header_mode_on();
-        head_preproc.add_preproc(Box::new(random));
-
+        let mut head_preproc = HeadPreproc::new_std(StdHeadPreprocType::Header);
         let output = head_preproc.preproc(input);
         assert_eq!(output, expected_output);
     }
@@ -298,8 +286,8 @@ mod tests {
 
         let mut head_preproc = HeadPreproc::new();
         
-        let random = Random::default();
-        head_preproc.add_preproc(Box::new(random));
+        let mode = crate::preproc::general::RandomMode::Std;
+        head_preproc.add_preproc(AllPreprocCtor::Random { mode });
 
         for i in 0..100 {
             let input = if i % 2 == 0 { 

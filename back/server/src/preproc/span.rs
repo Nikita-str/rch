@@ -8,6 +8,7 @@ pub struct Span {
     to: usize,
 }
 
+#[allow(unused)]
 impl Span {
     #[inline]
     pub fn start(&self) -> usize {
