@@ -2,6 +2,8 @@
     import { mapActions } from 'vuex'
     import {ref, toRaw } from "vue";
 
+    import PostingFormButton from "./micro/PostingFormButton.vue";
+
     const SUBJ_MAX_LEN = 80;
     const MSG_PLACEHOLDER = 'Сообщи сообщение\nДоложи степень негодования';
 </script>
@@ -55,6 +57,25 @@ export default {
         }
     },
 }
+
+export const ID_POST_TEXT_FIELD = "pf-msg";
+function wrapSelected(before, after) {
+    let el = document.getElementById(ID_POST_TEXT_FIELD)
+    let start = el.selectionStart
+    let end = el.selectionEnd
+    let prefix = el.value.substring(0, start)
+    let center = el.value.substring(start, end)
+    let suffix = el.value.substring(end, el.value.length)
+
+    // console.log('selection:', center);
+    el.value = prefix + before + center + after + suffix
+    el.selectionStart = start + before.length
+    el.selectionEnd = end + before.length
+    el.focus()
+}
+function wrapSelectedTag(tag) {
+    wrapSelected(`[${tag}]`, `[/${tag}]`)
+}
 </script>
 
 <template>
@@ -84,6 +105,13 @@ export default {
             />
         </div>
         <div>
+            <PostingFormButton :onClick="() => wrapSelectedTag('b')"><b>B</b></PostingFormButton>
+            <PostingFormButton :onClick="() => wrapSelectedTag('i')"><i>It</i></PostingFormButton>
+            <PostingFormButton :onClick="() => wrapSelectedTag('s')"><s>St</s></PostingFormButton>
+            <PostingFormButton :onClick="() => wrapSelectedTag('spoiler')"><span class="P-sp">?!</span></PostingFormButton>
+            <PostingFormButton :onClick="() => wrapSelectedTag('sup')"><span style="margin-left: -2px;">A<sup>x</sup></span></PostingFormButton>
+            <PostingFormButton :onClick="() => wrapSelectedTag('sub')"><span style="margin-left: -2px;">A<sub>x</sub></span></PostingFormButton>
+
             <input type="submit" id="pf-submit" value="Сделано!" class="inp-x" />
         </div>
     </form>
@@ -99,12 +127,13 @@ export default {
 }
 #pf-msg {
     width: 42ch;
-    min-width: 30ch;
-    max-width: calc(max(30ch, 30vw));
-    min-height: 5ch;
-    max-height: calc(max(5ch, 70vh));
+    min-width: calc(7 * 1.6em + 10ch + 7 * 3px);
+    max-width: calc(max(calc(7 * 1.6em + 10ch + 7 * 3px), 30vw));
+    min-height: 6ch;
+    max-height: calc(max(6ch, 70vh));
 }
 #pf-submit {
+    height: 1.8em;
     float: right;
     color: var(--r-col-blue);
     border-radius: 0;
