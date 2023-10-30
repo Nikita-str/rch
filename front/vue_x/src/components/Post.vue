@@ -138,6 +138,7 @@ export default {
 }
 
 .post-inner {
+    line-height: 1.4em;
     padding: 0em 0.2em 0em 1.5em;
 }
 

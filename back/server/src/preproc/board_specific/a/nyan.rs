@@ -33,6 +33,8 @@ impl State {
 
             (Self::Inner, "~") => Self::Close1,
             (Self::Close1, "~") => Self::Close2,
+            
+            (Self::Inner, _) => Self::Inner,
 
             _ => Self::Err,
         }
@@ -65,6 +67,7 @@ impl Preproc for NyanPreproc {
     }
 
     fn action(&mut self, output: &mut String, matched_tokens: &str, _: ()) {
+        // TODO: or as different action (open and close) for multiline and another tags inner posibility?!
         output.push_str("<span class=\"P-a-nyan\">");
         output.push_str(matched_tokens);
         output.push_str("</span>");
