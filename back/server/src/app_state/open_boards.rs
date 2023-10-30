@@ -54,15 +54,20 @@ impl Board {
         self.thrs_usage.top_n(n).map(|id|self.thrs.get(&id).unwrap())
     }
 
-    pub fn new_thr(&mut self, header: Option<String>, mut op_post: Post, infinity: bool) -> u64 {
+    pub fn new_thr_preproced(&mut self, header: String, mut op_post: Post, infinity: bool) -> u64 {
         op_post.upd_n(self.next_post_n());
         let thr_op_n = ThreadOpN::from(op_post.n());
-        assert!(self.thrs.insert(thr_op_n, Thread::new(header, op_post, infinity)).is_none());
+        assert!(self.thrs.insert(thr_op_n, Thread::new_preproced(header, op_post, infinity)).is_none());
         self.thrs_usage.add_new(thr_op_n);
         // TODO: delete least unrated if need
         thr_op_n.into()
     }
 
+    #[allow(unused)]
+    pub fn new_thr(&mut self, header: Option<String>, op_post: Post, infinity: bool) -> u64 {
+        let header = Thread::preproc_header(header, &op_post);
+        self.new_thr_preproced(header, op_post, infinity)
+    }
     
     pub fn thr(&self, op_post_n: u64) -> Option<&Thread> {
         self.thrs.get(&ThreadOpN::from(op_post_n))
@@ -187,7 +192,7 @@ impl OpenBoards {
     pub fn is_board_exist(&self, board_url: &str) -> bool {
         self.board_urls.contains_key(board_url)
     }
-    
+
     pub fn board_name(&self, board_url: &str) -> Option<&str> {
         self.board(board_url).map(|b|b.name.as_str())
     }

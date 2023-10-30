@@ -4,6 +4,7 @@ mod board_specific;
 mod general;
 mod generic;
 
+pub use head_preproc::HeadPreproc;
 mod head_preproc;
 mod tokenizer;
 mod span;

@@ -25,14 +25,28 @@ pub async fn handler(
 ) -> Json<()>
 {
     crate::delay_ms(300);
+    let board_url = &params.board_url;
+
+    {
+        let r_state = state.read().unwrap();
+        if !r_state.open_boards().is_board_exist(board_url) {
+            return Json(()) // ERROR
+        }
+    }
+
+    let post_text = {
+        // TODO: Pool of preproc?!
+        let mut preproc = crate::preproc::HeadPreproc::new_by_board(board_url, false);
+        preproc.preproc(&params.post_text)
+    };
 
     if params.post_img.is_some() { todo!("img case") }
-    let post = Post::new_anon(params.post_text, params.post_img);
+    let post = Post::new_anon(post_text, params.post_img);
 
     {
         let mut w_state = state.write().unwrap();
         w_state.mut_open_boards()
-            .board_mut(&params.board_url)
+            .board_mut(board_url)
             .map(|board|board.add_post(params.op_post_n, post));
     }
 

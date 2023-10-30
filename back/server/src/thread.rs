@@ -9,7 +9,7 @@ const BUMP_LIMIT: usize = 300;
 // /// after this post qty thr will be deleted
 // const DELETE_QTY: usize = WIPE_QTY * 2;
 
-const MAX_HEADER_LEN: usize = 42;
+pub const MAX_HEADER_LEN: usize = 42;
 
 pub struct Thread {
     op_n: ThreadOpN,
@@ -44,15 +44,24 @@ impl Thread {
         Self::ctor_valid_header(post.text())
     }
 
+    pub fn preproc_header(header: Option<String>, op_post: &Post) -> String {
+        let header = header
+            .map(|h|Self::ctor_valid_header(h))
+            .unwrap_or_else(||Self::ctor_header_by_msg(op_post));
+        header
+    }
+
     // TODO: auth (before call this fn) when `infinity := true` 
     pub fn new(header: Option<String>, op_post: Post, infinity: bool) -> Self {
+        let header = Self::preproc_header(header, &op_post);
+        Self::new_preproced(header, op_post, infinity)
+    }
+
+    // TODO: auth (before call this fn) when `infinity := true` 
+    pub fn new_preproced(header: String, op_post: Post, infinity: bool) -> Self {
         let op_n = op_post.n();
         assert!(op_n != 0);
         let op_n = ThreadOpN::from(op_n);
-
-        let header = header
-            .map(|h|Self::ctor_valid_header(h))
-            .unwrap_or_else(||Self::ctor_header_by_msg(&op_post));
 
         let mut posts = VecDeque::with_capacity(BUMP_LIMIT);
         posts.push_back(op_post);
