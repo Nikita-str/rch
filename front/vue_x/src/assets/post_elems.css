@@ -63,6 +63,7 @@ span.P-a-nyan {
     -webkit-text-fill-color: transparent;
     /* font-weight: bold; */
 }
+/* <span class=\"P-a-nyan\">content</span> */
 
 span.P-a-cat {
     background-color: var(--a--cat-bg-color);
@@ -71,3 +72,4 @@ span.P-a-cat {
     font-weight: bold;
     color: #fff;
 }
+/* <span class=\"P-a-cat\">:3</span>" */

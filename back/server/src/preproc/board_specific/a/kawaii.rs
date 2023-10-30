@@ -17,7 +17,7 @@ impl Preproc for KawaiiPreproc {
 
         output.push_str("<span style=\"color: ");
         output.push_str(color);
-        output.push_str(";>");
+        output.push_str("\";>");
         output.push_str(matched_tokens);
         output.push_str("</span>");
     }
