@@ -80,9 +80,6 @@ function wrapSelectedTag(tag) {
 
 <template>
     <form id="posting-from" ref="formSubmit" v-on:submit.prevent="onSubmit">
-        <div>
-            <input type="hidden" name="board_url" :value="boardUrl" />
-        </div>
         <div v-if="needSubj">
             <input
                 type="text"
@@ -92,6 +89,7 @@ function wrapSelectedTag(tag) {
                 placeholder="тема"
                 tabindex="1"
                 :maxlength="SUBJ_MAX_LEN"
+                autocomplete = "off"
             />
         </div>
         <div>
@@ -102,6 +100,7 @@ function wrapSelectedTag(tag) {
                 :placeholder="MSG_PLACEHOLDER"
                 tabindex="2"
                 rows="7"
+                autocomplete = "off"
             />
         </div>
         <div>

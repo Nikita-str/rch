@@ -45,7 +45,7 @@ export default {
 <template>
     <div class="thr-view">
         <div>
-            <div v-if="header" style="padding-left: 1.2em; color: var(--r-col-blue); font-weight: 700;">{{ header }}</div>
+            <div v-if="header" style="padding-left: 1.2em; color: var(--r-col-blue); font-weight: 700;" v-html="header" />
             <div style="display: flex; padding-left: 1.2em;">
                 <Post 
                     :msg="posts[0].text"
