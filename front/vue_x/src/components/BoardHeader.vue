@@ -1,3 +1,7 @@
+<script setup>
+    import HorizontalLine from './micro/HorizontalLine.vue'
+</script>
+
 <script>
 export default {
     props: {
@@ -39,20 +43,12 @@ export default {
         <router-link v-else           class="b-head-catalog"   to="catalog/" append>→→→ каталог ←←←</router-link>
         
         <div class="b-head-new-thr">[<span @click="onNewThrClick"><router-link to="" append>{{headerNewMsg}}</router-link></span>]</div>
-        <hr class="b-head-horiz" />
+        <HorizontalLine />
     </div>
 </template>
 
 
 <style scoped>
-.b-head-horiz {
-    width: 90%;
-    margin: auto;
-    margin-top: 0.7em;
-    border-top: 1px solid var(--r-col-blue);
-    border-bottom: 0px;
-}
-
 .b-head {
     width: 100%;
     text-align: center;

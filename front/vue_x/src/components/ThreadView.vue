@@ -1,6 +1,7 @@
 
 <script setup>
     import Post from './Post.vue'
+    import HorizontalLine from './micro/HorizontalLine.vue'
     import AwaitDots from './micro/awaiters/BigAwaitDots.vue'
     import { vElementVisibility } from '@vueuse/components'
 </script> 
@@ -83,8 +84,8 @@ export default {
                 <AwaitDots />
             </div>
         </div>
-        <hr class="thr-view-horiz" />
     </div>
+    <HorizontalLine />
 </template>
 
 
@@ -93,13 +94,6 @@ export default {
     padding-left: 5%;
     margin-top: 1.2em;
 }
-.thr-view-horiz {
-    width: 95%;
-    margin-top: 0.6em;
-    border-top: 1px solid var(--r-col-blue);
-    border-bottom: 0px;
-}
-
 .thr-view-reply {
     display: flex;
     padding-left: 2.4em;

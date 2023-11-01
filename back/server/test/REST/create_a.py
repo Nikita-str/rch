@@ -39,7 +39,7 @@ resp(conn)
 
 ###
 
-payload = f"{{\"board_url\":\"{board_url}\", \"op_post_n\": {op_post}, \"post_text\":\">~<< UwU ~~nyan~~\\n^w^ :3 <-- это же котик!\\nкавайно вот!\"}}"
+payload = f"{{\"board_url\":\"{board_url}\", \"op_post_n\": {op_post}, \"post_text\":\"UwU ~~nyan~~\\n^w^ :3 <-- это же котик!\\nкавайно вот!\"}}"
 conn.request("POST", "/api/thread/post_new", payload.encode('utf-8'), headers)
 resp(conn)
 

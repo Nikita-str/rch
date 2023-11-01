@@ -15,6 +15,8 @@
 
     import BottomIndent from './micro/BottomIndent.vue'
 
+    import ThreadBar from './ThreadBar.vue'
+
 </script>
 
 <script>
@@ -122,6 +124,7 @@
     />
     <div class="board-inner" v-else-if="boardExist.name">
         <BoardHeader :boardName="boardExist.name" :boardUrl="boardUrl" :isCatalog="true" :onNewThrClick="onNewThrClick" headerNewMsg="Ответить в тред" />
+        <ThreadBar :upperBar="true" :onUpdate="thrLoad"/>
 
         <AwaitDots v-if="posts === null && err === null" />
         <AwaitText v-else-if="err && err.code == 1" :text="'доска /' + boardUrl + '/ не существует?!'" />
@@ -137,6 +140,7 @@
             :onNextLoadVis="onNextLoadVisX"
         />
         
+        <ThreadBar :upperBar="false" :onUpdate="thrLoad"/>
         <BottomIndent />
     </div>
     <PageNotFound v-else />
