@@ -2,7 +2,7 @@
     import HorizontalLine from './micro/HorizontalLine.vue'
     import { boardUrlCalc } from '../js/fns'
 
-    import { ref, onMounted, onUnmounted } from 'vue'
+    import { ref, onMounted, onUnmounted, watch } from 'vue'
 
     // #####################################################
 
@@ -10,7 +10,7 @@
     let screenTypeListener
 
     function onScreenTypeChange(e) {
-        updText.value = (e.matches ? '' : 'метохтоничное ') + 'обновление через'
+        updText.value = (e.matches ? '' : 'метахтоничное ') + 'обновление через'
     }
 
     onMounted(() => {
@@ -25,11 +25,25 @@
 </script>
 
 <script> 
-const AUTO_UPD_DEFAULT = 30
+const AUTO_UPD_DEFAULT = 30 // 5 FOR TESTS
 
 // here in ref because should be shared between top and bottom bar
+let autoUpdTimer = null
 const autoUpd = ref(false)
 const autoUpdIn = ref(AUTO_UPD_DEFAULT)
+
+function autoUpdOn(f) {
+    if (autoUpdTimer !== null) { return }
+    autoUpdTimer = setInterval(f, 1000)
+    // console.log('autoUpd:ON')
+    autoUpdIn.value = AUTO_UPD_DEFAULT >> 1
+}
+function autoUpdOff() {
+    // console.log('autoUpd:OFF')
+    autoUpdIn.value = AUTO_UPD_DEFAULT >> 1
+    clearInterval(autoUpdTimer)
+    autoUpdTimer = null
+}
 
 export default {
     // data() {
@@ -46,6 +60,9 @@ export default {
         type: Function,
         default: null,
     },
+    curLoad: {
+        type: Boolean,
+    },
   },
   computed: {
     boardUrl() { return boardUrlCalc(this.$route.path) },
@@ -61,9 +78,36 @@ export default {
                 el.scrollIntoView(true)
             }
         },
+        autoUpdTimerTick() {
+            if (autoUpdIn.value > 0) {
+                autoUpdIn.value--
+            } else {
+                if(!this.curLoad) {
+                    this.onUpdate()
+                }
+            }
+        },
         onCheckerChange() {
-            if (autoUpd) {
-                autoUpdIn.value = AUTO_UPD_DEFAULT >> 1
+            if (autoUpd.value) {
+                autoUpdOn(this.autoUpdTimerTick)
+            } else {
+                autoUpdOff()
+            }
+        },
+    },
+    mounted() {
+        if (autoUpd.value) {
+            autoUpdOn(this.autoUpdTimerTick)
+        }
+    },
+    unmounted() {
+        // autoUpd.value = false
+        autoUpdOff()
+    },
+    watch: {
+        curLoad(new_curLoad, _) {
+            if (!new_curLoad) {
+                autoUpdIn.value = AUTO_UPD_DEFAULT
             }
         },
     },
@@ -87,7 +131,7 @@ function scrollId(upperBar) {
         <span class="thr-bar-elem thr-bar-rl">
             <input type="checkbox" class="thr-bar-auto-upd nonselectable" v-model="autoUpd" @change="onCheckerChange()" />
             <span>{{updText}}
-                <span class="thr-bar-auto-upd-timer">{{ autoUpd ?  autoUpdIn : '...' }}</span>
+                <span class="thr-bar-auto-upd-timer">{{ curLoad ? '??!' : (autoUpd ?  autoUpdIn : '...') }}</span>
             </span>
         </span>
         <!-- TODO: thread info (posts/pics/posters) -->

@@ -72,6 +72,8 @@
         },
         thrLoad() {
             const N_LOAD = 20 // 15 for test
+            if (this.curLoad) { return }
+            this.curLoad = true
             let board_url = this.boardUrl
             let op_post_n = this.thrN
             let from = this.nextN
@@ -106,7 +108,6 @@
             if (this.curLoad || !visible) {
                 return
             }
-            this.curLoad = true
             console.log('next load on post with baord number:', post_board_n)
             this.thrLoad()
         },
@@ -124,7 +125,7 @@
     />
     <div class="board-inner" v-else-if="boardExist.name">
         <BoardHeader :boardName="boardExist.name" :boardUrl="boardUrl" :isCatalog="true" :onNewThrClick="onNewThrClick" headerNewMsg="Ответить в тред" />
-        <ThreadBar :upperBar="true" :onUpdate="thrLoad"/>
+        <ThreadBar :upperBar="true" :onUpdate="thrLoad" :curLoad="curLoad" />
 
         <AwaitDots v-if="posts === null && err === null" />
         <AwaitText v-else-if="err && err.code == 1" :text="'доска /' + boardUrl + '/ не существует?!'" />
@@ -140,7 +141,7 @@
             :onNextLoadVis="onNextLoadVisX"
         />
         
-        <ThreadBar :upperBar="false" :onUpdate="thrLoad"/>
+        <ThreadBar :upperBar="false" :onUpdate="thrLoad" :curLoad="curLoad" />
         <BottomIndent />
     </div>
     <PageNotFound v-else />
