@@ -27,6 +27,10 @@ export default {
             type: Boolean,
             default: true,
         },
+        afterPostInThr: {
+            type: Function,
+            default: null,
+        },
     },
     watch: {
         'visible' (to, from) {
@@ -165,7 +169,7 @@ function RectToScreen(rect_w, rect_h, top, left) {
     <div :id="ELEM_ID">
         <div  id="dpf-dragger" @mousedown="onMouseDown" />
         <div style="position: relative;">
-            <PostingForm :boardUrl="boardUrl" :opPostN="opPostN" />
+            <PostingForm :boardUrl="boardUrl" :opPostN="opPostN" :afterPostInThr="afterPostInThr" />
         </div>
     </div>
 </template>

@@ -28,6 +28,10 @@ export default {
         type: Number,
         required: true,
     },
+    afterPostInThr: {
+        type: Function,
+        default: null,
+    },
   },
   computed: {
     // formAction() { return 'api/' + (this.isNewThr ? "board/thr_new" : "thread/post_new"); },
@@ -42,6 +46,7 @@ export default {
             let data = toRaw(postingForm.value);
             postingForm.value = newPostingFormContent();
             data.board_url = this.boardUrl;
+
             if (this.isNewThr) {
                 this.postReq_Board_ThrNew(data).then(n => {
                     if (this.isNewThr && n !== null) {
@@ -50,7 +55,11 @@ export default {
                 });
             } else {
                 data.op_post_n = this.opPostN
-                this.postReq_Thread_PostNew(data)
+                this.postReq_Thread_PostNew(data).then(_ => {
+                    if (this.afterPostInThr !== null) {
+                        this.afterPostInThr()
+                    }
+                })
             }
             
             // x.target.reset()
