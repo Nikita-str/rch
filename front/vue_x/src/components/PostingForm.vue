@@ -43,7 +43,13 @@ export default {
         ...mapActions({ postReq_Thread_PostNew: "postReq_Thread_PostNew", }),
         onSubmit(x) {
             // this.$refs.formSubmit.submit()
+
+            // console.log('TODO:DEL:raw[data][A]', postingForm.value.post_text)
+            let el = document.getElementById(ID_POST_TEXT_FIELD);
+            postingForm.value.post_text = el.value; // because `wrapSelected` not update v-modeled value
             let data = toRaw(postingForm.value);
+            // console.log('TODO:DEL:raw[data][B]', data, postingForm.value.post_text)
+            
             postingForm.value = newPostingFormContent();
             data.board_url = this.boardUrl;
 
