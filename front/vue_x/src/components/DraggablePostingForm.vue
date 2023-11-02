@@ -118,8 +118,8 @@ export default {
 
             // var dx = e.movementX
             // var dy = e.movementY
-            var dx = e.pageX - (el.offsetLeft + drag_delta.dx)
-            var dy = e.pageY - (el.offsetTop + drag_delta.dy)
+            var dx = e.clientX - (el.offsetLeft + drag_delta.dx)
+            var dy = e.clientY - (el.offsetTop + drag_delta.dy)
 
             var top = el.offsetTop + dy
             var left = el.offsetLeft + dx 
