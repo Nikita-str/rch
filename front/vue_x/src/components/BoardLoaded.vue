@@ -6,16 +6,20 @@
 
     import AwaitDots from './micro/awaiters/BigAwaitDots.vue'
     import AwaitText from './micro/awaiters/BigAwaitText.vue'
+
+    import { vElementVisibility } from '@vueuse/components'
 </script> 
 
 <script> 
-const THR_CHUNK_LOAD = 10;
+const THR_LAST_N_UPD = 2
+const THR_CHUNK_LOAD = 10 // 2 FOR TESTS
 
 function dataRecalc(_new_path) {
     return {
         // boardUrl: trim(new_path, "/").split('/')[0],
         thrs: null,
         thrs_op_n: null,
+        cur_load_more: false,
     }
 }
 
@@ -34,6 +38,8 @@ export default {
 
         ...mapActions({ getReq_Board_ThrsLoad: "getReq_Board_ThrsLoad", }),
         thrLoad() {
+            if (this.cur_load_more) { return }
+            this.cur_load_more = true
             let board_url = this.boardUrl;
             let from = (this.thrs === null) ? 0 : this.thrs.length;
             let to = from + THR_CHUNK_LOAD;
@@ -45,10 +51,16 @@ export default {
                 } else {
                     this.thrs = this.thrs.concat(res)
                 }
+                this.cur_load_more = false
                 console.log('[thr load\'ed]', res, this.thrs)
                 // TODO: remove duplication ! (by thrs_op_n)
                 // TODO: getReq_Board_ThrsLoad : add Set param of known thrs_op_n
             });
+        },               
+        onElementVisibility(visible) {
+            if (visible) {
+                this.thrLoad()
+            }
         },
     },
     mounted() {
@@ -67,6 +79,15 @@ export default {
     <AwaitDots v-if="/* true || */ thrs === null" />
     <AwaitText v-else-if="thrs.length == 0" text="с доски украли все треды!!!" />
     <template v-else>
-        <ThreadView v-for="thr in thrs" :posts="thr.posts" :posts_qty="thr.posts_qty" :header="thr.header" />
+        <!-- <ThreadView v-for="thr in thrs" :posts="thr.posts" :posts_qty="thr.posts_qty" :header="thr.header" /> -->
+
+        <template v-for="(thr, index) in thrs" >
+            <ThreadView :posts="thr.posts" :posts_qty="thr.posts_qty" :header="thr.header" v-if="index + THR_LAST_N_UPD < thrs.length"/>
+            <ThreadView :posts="thr.posts" :posts_qty="thr.posts_qty" :header="thr.header" v-else
+                    v-element-visibility="onElementVisibility"
+            />
+        </template>
+
+        <AwaitDots v-if="cur_load_more" />
     </template>
 </template>

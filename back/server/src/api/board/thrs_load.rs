@@ -32,7 +32,7 @@ pub async fn handler(
     State(state): State<HandlerState>,
 ) -> Json<ResultOk>
 {
-    crate::delay_ms(300);
+    crate::delay_ms(1500);
 
     pub const THR_FIRST_POSTS_QTY: usize = 3;
     pub const MAX_LOAD: usize = 30;

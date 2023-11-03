@@ -43,7 +43,7 @@ export default {
 }
 </script> 
 
-<template>
+<template><div>
     <div class="thr-view">
         <div>
             <div v-if="header" style="padding-left: 1.2em; color: var(--r-col-blue); font-weight: 700;" v-html="header" />
@@ -86,7 +86,7 @@ export default {
         </div>
     </div>
     <HorizontalLine />
-</template>
+</div></template>
 
 
 <style scoped>
