@@ -13,6 +13,7 @@
 <script> 
 const THR_LAST_N_UPD = 2
 const THR_CHUNK_LOAD = 10 // 2 FOR TESTS
+const THR_AUTO_UPD_MS = 60_000 // 5_000
 
 function dataRecalc(_new_path) {
     return {
@@ -20,6 +21,8 @@ function dataRecalc(_new_path) {
         thrs: null,
         thrs_op_n: null,
         cur_load_more: false,
+        auto_upd_timer: null,
+        visible_mask: 0,
     }
 }
 
@@ -52,19 +55,46 @@ export default {
                     this.thrs = this.thrs.concat(res)
                 }
                 this.cur_load_more = false
+
+                if ((this.auto_upd_timer === null) && ((this.thrs.length == 0) || ((res.length == 0) && (this.visible_mask > 0)))) {
+                    // console.log('SET TIMER');
+                    this.auto_upd_timer = setTimeout(() => {
+                        // console.log('AUTO');
+                        this.removeAutoUpdTimer() 
+                        this.thrLoad()
+                    }, THR_AUTO_UPD_MS)
+                }
                 console.log('[thr load\'ed]', res, this.thrs)
                 // TODO: remove duplication ! (by thrs_op_n)
                 // TODO: getReq_Board_ThrsLoad : add Set param of known thrs_op_n
             });
         },               
-        onElementVisibility(visible) {
+        onElementVisibility(visible_n, visible) {
+            if (visible) {
+                this.visible_mask |= visible_n
+            } else {
+                this.visible_mask &= ~visible_n
+            }
+            if ((this.visible_mask == 0) && (this.auto_upd_timer !== null)) {
+                this.removeAutoUpdTimer()
+            }
             if (visible) {
                 this.thrLoad()
             }
         },
+        removeAutoUpdTimer() {
+            if (this.auto_upd_timer !== null) {
+                // console.log('REMOVE TIMER');
+                clearInterval(this.auto_upd_timer)
+                this.auto_upd_timer = null
+          }
+        }
     },
     mounted() {
         this.thrLoad()
+    },
+    unmounted() {
+        this.removeAutoUpdTimer()
     },
     watch: {
         boardUrl(new_boardUrl, _) {
@@ -84,10 +114,10 @@ export default {
         <template v-for="(thr, index) in thrs" >
             <ThreadView :posts="thr.posts" :posts_qty="thr.posts_qty" :header="thr.header" v-if="index + THR_LAST_N_UPD < thrs.length"/>
             <ThreadView :posts="thr.posts" :posts_qty="thr.posts_qty" :header="thr.header" v-else
-                    v-element-visibility="onElementVisibility"
+                    v-element-visibility="(vis) => onElementVisibility(1 << (thrs.length - index - 1), vis)"
             />
         </template>
 
-        <AwaitDots v-if="cur_load_more" />
     </template>
+    <AwaitDots v-if="thrs !== null && cur_load_more" />
 </template>
