@@ -11,7 +11,7 @@
 </script> 
 
 <script> 
-const THR_LAST_N_UPD = 2
+const THR_LAST_N_UPD = 3
 const THR_CHUNK_LOAD = 10 // 2 FOR TESTS
 const THR_AUTO_UPD_MS = 60_000 // 5_000
 
@@ -22,7 +22,7 @@ function dataRecalc(_new_path) {
         thrs_op_n: null,
         cur_load_more: false,
         auto_upd_timer: null,
-        visible_mask: 0,
+        last_visible: false,
     }
 }
 
@@ -56,7 +56,7 @@ export default {
                 }
                 this.cur_load_more = false
 
-                if ((this.auto_upd_timer === null) && ((this.thrs.length == 0) || ((res.length == 0) && (this.visible_mask > 0)))) {
+                if ((this.auto_upd_timer === null) && ((this.thrs.length == 0) || ((res.length == 0) && this.last_visible))) {
                     // console.log('SET TIMER');
                     this.auto_upd_timer = setTimeout(() => {
                         // console.log('AUTO');
@@ -69,13 +69,8 @@ export default {
                 // TODO: getReq_Board_ThrsLoad : add Set param of known thrs_op_n
             });
         },               
-        onElementVisibility(visible_n, visible) {
-            if (visible) {
-                this.visible_mask |= visible_n
-            } else {
-                this.visible_mask &= ~visible_n
-            }
-            if ((this.visible_mask == 0) && (this.auto_upd_timer !== null)) {
+        onElementVisibility(visible) {
+            if ((!this.last_visible) && (this.auto_upd_timer !== null)) {
                 this.removeAutoUpdTimer()
             }
             if (visible) {
@@ -114,7 +109,10 @@ export default {
         <template v-for="(thr, index) in thrs" >
             <ThreadView :posts="thr.posts" :posts_qty="thr.posts_qty" :header="thr.header" v-if="index + THR_LAST_N_UPD < thrs.length"/>
             <ThreadView :posts="thr.posts" :posts_qty="thr.posts_qty" :header="thr.header" v-else
-                    v-element-visibility="(vis) => onElementVisibility(1 << (thrs.length - index - 1), vis)"
+                    v-element-visibility="(vis) => { 
+                        if (index == thrs.length - 1) { last_visible = vis } 
+                        onElementVisibility(vis) 
+                    }"
             />
         </template>
 
