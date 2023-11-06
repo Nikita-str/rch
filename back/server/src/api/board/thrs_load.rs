@@ -16,6 +16,7 @@ pub struct HandlerParams{
 #[derive(Serialize, Debug)]
 pub struct ResultOk {
     thrs: Vec<SingleThreadView>,
+    all_loaded: bool,
 }
 
 #[derive(Serialize, Debug)]
@@ -40,6 +41,7 @@ pub async fn handler(
     let from = params.from.min(params.to);
     let to = params.from.max(params.to);
     let to = to.min(from + MAX_LOAD); 
+    let mut all_loaded = false;
 
     {
         let r_state = state.read().unwrap();
@@ -48,7 +50,10 @@ pub async fn handler(
         let mut thrs = Vec::with_capacity(to - from + 1); 
         if let Some(board) = board {
             for thr_n in from..=to {
-                let Some(thr) = board.top_thr_by_usage_n(thr_n) else { break };
+                let Some(thr) = board.top_thr_by_usage_n(thr_n) else {
+                    all_loaded = true;
+                    break
+                };
 
                 let mut posts = Vec::with_capacity(THR_FIRST_POSTS_QTY + 1);
                 let posts_qty = thr.post_qty();
@@ -71,7 +76,11 @@ pub async fn handler(
                 })
             }
         }
-        Json(ResultOk { thrs })
+
+        Json(ResultOk {
+            thrs,
+            all_loaded,
+        })
     }
 }
 

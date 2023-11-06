@@ -23,6 +23,8 @@ function dataRecalc(_new_path) {
         cur_load_more: false,
         auto_upd_timer: null,
         last_visible: false,
+        all_loaded: false,
+        last_loaded_time: new Date(),
     }
 }
 
@@ -41,30 +43,39 @@ export default {
 
         ...mapActions({ getReq_Board_ThrsLoad: "getReq_Board_ThrsLoad", }),
         thrLoad() {
+            if (this.all_loaded) {
+                let cur = new Date()
+                let delta_ms = cur - this.last_loaded_time
+                if (delta_ms < (THR_AUTO_UPD_MS * 0.8)) {
+                    this.addAutoUpdTimer(Math.min(THR_AUTO_UPD_MS, THR_AUTO_UPD_MS * 1.1 - Math.abs(delta_ms)))
+                    return
+                }
+            }
             if (this.cur_load_more) { return }
             this.cur_load_more = true
+
             let board_url = this.boardUrl;
             let from = (this.thrs === null) ? 0 : this.thrs.length;
             let to = from + THR_CHUNK_LOAD;
 
             this.getReq_Board_ThrsLoad({board_url, from, to}).then(res_x => {
-                let res = res_x.thrs
+                this.all_loaded = res_x.all_loaded
+                if (this.all_loaded) {
+                    this.last_loaded_time = new Date()
+                }
+
+                let thrs = res_x.thrs
                 if (this.thrs === null) {
-                    this.thrs = res
+                    this.thrs = thrs
                 } else {
-                    this.thrs = this.thrs.concat(res)
+                    this.thrs = this.thrs.concat(thrs)
                 }
                 this.cur_load_more = false
 
-                if ((this.auto_upd_timer === null) && ((this.thrs.length == 0) || ((res.length == 0) && this.last_visible))) {
-                    // console.log('SET TIMER');
-                    this.auto_upd_timer = setTimeout(() => {
-                        // console.log('AUTO');
-                        this.removeAutoUpdTimer() 
-                        this.thrLoad()
-                    }, THR_AUTO_UPD_MS)
+                if ((this.auto_upd_timer === null) && ((this.thrs.length == 0) || (this.all_loaded && this.last_visible))) {
+                    this.addAutoUpdTimer(THR_AUTO_UPD_MS)
                 }
-                console.log('[thr load\'ed]', res, this.thrs)
+                console.log('[thr load\'ed]', thrs, this.thrs)
                 // TODO: remove duplication ! (by thrs_op_n)
                 // TODO: getReq_Board_ThrsLoad : add Set param of known thrs_op_n
             });
@@ -77,13 +88,23 @@ export default {
                 this.thrLoad()
             }
         },
+        addAutoUpdTimer(t) {
+            if (this.auto_upd_timer === null) {
+                // console.log('SET TIMER');
+                this.auto_upd_timer = setTimeout(() => {
+                    // console.log('AUTO');
+                    this.removeAutoUpdTimer() 
+                    this.thrLoad()
+                }, t)
+            }
+        },
         removeAutoUpdTimer() {
             if (this.auto_upd_timer !== null) {
                 // console.log('REMOVE TIMER');
                 clearInterval(this.auto_upd_timer)
                 this.auto_upd_timer = null
-          }
-        }
+            }
+        },
     },
     mounted() {
         this.thrLoad()
