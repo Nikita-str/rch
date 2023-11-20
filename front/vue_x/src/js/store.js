@@ -116,7 +116,7 @@ export default createStore({
             }).catch(err => { console.log(err.response) });
         },
         
-        getReq_Board_ThrsLoad({ getters }, {board_url, from, to}) {
+        getReq_Board_ThrsLoad_old_v1({ getters }, {board_url, from, to}) {
             let params = new URLSearchParams([['board_url', board_url], ['from', from], ['to', to]])
             return axios({
                 url: getters.getPort + '/board/thrs_load',
@@ -125,7 +125,19 @@ export default createStore({
             }).then(res => {
                 return res.data
             }).catch(err => { console.log(err.response) });
+        },
+        
+        getReq_Board_ThrsLoad({ getters }, {board_url, known_n, load_n}) {
+            let data = { board_url, known_n, load_n }
+            return axios({
+                url: getters.getPort + '/board/thrs_load',
+                method: 'post',
+                data,
+            }).then(res => {
+                return res.data
+            }).catch(err => { console.log(err.response) });
         },        
+
         postReq_Board_CtlgLoad({ getters }, {board_url, known_n}) {
             let params = new URLSearchParams([['board_url', board_url]])
             let data = { known_n, }

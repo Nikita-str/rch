@@ -1,4 +1,4 @@
-use std::collections::HashMap;
+use std::collections::{HashMap, HashSet};
 pub use serde::Serialize;
 use crate::post::{Post, PostN};
 use crate::thread::{Thread, ThreadOpN};
@@ -48,6 +48,23 @@ impl Board {
             thrs: HashMap::new(),
             thrs_usage: ThreadUsageRate::new(max_thr_qty),
         }
+    }
+
+    pub fn top_k_thrs_by_usage(&self, k: usize, except_n: &HashSet<u64>) -> Vec<&Thread> {
+        //TODO:MAYBE:speed up
+        //TODO:slow
+        assert_ne!(k, 0);
+        let mut ret = Vec::with_capacity(k + 1);
+
+        let mut top_i = 0;
+        loop {
+            let Some(n) = self.thrs_usage.top_n(top_i) else { break };
+            top_i += 1;
+            if except_n.contains(&n.into()) { continue; }
+            ret.push(self.thrs.get(&n).unwrap());
+            if ret.len() == k { break }
+        }
+        return ret
     }
 
     pub fn top_thr_by_usage_n(&self, n: usize) -> Option<&Thread> {
@@ -100,6 +117,10 @@ impl Board {
 
     pub fn thrs_rate(&self) -> Vec<u64> {
         self.thrs_usage.thrs_rate()
+    }
+
+    pub fn thrs_qty(&self) -> usize {
+        self.thrs.len()
     }
 }
 

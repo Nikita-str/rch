@@ -19,7 +19,6 @@ function dataRecalc(_new_path) {
     return {
         // boardUrl: trim(new_path, "/").split('/')[0],
         thrs: null,
-        thrs_op_n: null,
         cur_load_more: false,
         auto_upd_timer: null,
         last_visible: false,
@@ -55,10 +54,13 @@ export default {
             this.cur_load_more = true
 
             let board_url = this.boardUrl;
-            let from = (this.thrs === null) ? 0 : this.thrs.length;
-            let to = from + THR_CHUNK_LOAD;
+            let load_n = THR_CHUNK_LOAD;
+            let known_n = new Array() // new Set() but then we must convert it to Array
+            if (this.thrs) {
+                this.thrs.forEach((x) => known_n.push(x.posts[0].n))
+            }
 
-            this.getReq_Board_ThrsLoad({board_url, from, to}).then(res_x => {
+            this.getReq_Board_ThrsLoad({board_url, known_n, load_n}).then(res_x => {
                 this.all_loaded = res_x.all_loaded
                 if (this.all_loaded) {
                     this.last_loaded_time = new Date()
@@ -76,8 +78,6 @@ export default {
                     this.addAutoUpdTimer(THR_AUTO_UPD_MS)
                 }
                 console.log('[thr load\'ed]', thrs, this.thrs)
-                // TODO: remove duplication ! (by thrs_op_n)
-                // TODO: getReq_Board_ThrsLoad : add Set param of known thrs_op_n
             });
         },               
         onElementVisibility(visible) {
