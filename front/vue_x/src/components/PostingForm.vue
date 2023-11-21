@@ -4,6 +4,7 @@
 
     import PostingFormButton from "./micro/PostingFormButton.vue";
     import DragAndDropField from "./files/pics/DragAndDropField.vue";
+    import {REJECT_TY} from "./files/pics/DragAndDropField.vue";
     import DragAndDropFieldX from "./files/DragAndDropField.vue";
 
     const SUBJ_MAX_LEN = 80;

@@ -2,6 +2,7 @@
 import { ref, defineEmits, defineProps } from 'vue'
 defineProps({
     acceptTys: {type: String, default: ""},
+    whatDragAwait: {type: String, default: "ФАЙЛЫ"},
 })
 const emit = defineEmits(['selected'])
 
@@ -39,7 +40,7 @@ function onClickSelect(e) {
     @dragleave.prevent="setInactive"
     @click="$refs.fileInput.click()"
     @drop.prevent="onDrop">
-        <span class="file-dnd-field-text">ПЕРЕМЕСТИ ПИКЧИ<br/>CTRL+V</span>
+        <span class="file-dnd-field-text">ПЕРЕМЕСТИ {{whatDragAwait}}<br/>CTRL+V</span>
     </div>
     <input ref="fileInput" type="file" style="display: none;" multiple="" :accept="acceptTys" @change="onClickSelect">
 </template>
