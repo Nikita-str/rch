@@ -1,8 +1,9 @@
 <script setup>
 import { ref } from 'vue'
 
-let active = ref(false)
+let fileInput = ref(null)
 
+let active = ref(false)
 function setActive() {
     active.value = true
 }
@@ -11,7 +12,8 @@ function setInactive() {
 }
 
 function onDrop(e) {
-    console.log('TODO:DEL:[on drop]:', e)
+    setInactive()
+    console.log('TODO:DEL:[on drop]:', e.dataTransfer)
 }
 </script>
 
@@ -22,9 +24,11 @@ function onDrop(e) {
     :class="{'file-dnd-field-act': active, 'file-dnd-field-unact': !active}"
     @dragenter.prevent="setActive" @dragover.prevent="setActive" 
     @dragleave.prevent="setInactive"
+    @click="$refs.fileInput.click()"
     @drop.prevent="onDrop">
         <span class="file-dnd-field-text">ПЕРЕМЕСТИ ПИКЧИ<br/>CTRL+V</span>
     </div>
+    <input ref="fileInput" type="file" style="display: none;" multiple="">
 </template>
 
 
