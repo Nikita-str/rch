@@ -70,7 +70,10 @@ export default {
             }
             
             // x.target.reset()
-        }
+        },
+        onSelected(files) {
+            console.log('TODO:DEL:[selected]:', files)
+        },
     },
 }
 
@@ -129,8 +132,8 @@ function wrapSelectedTag(tag) {
 
             <input type="submit" id="pf-submit" value="Сделано!" class="inp-x" />
         </div>
-        
-        <DragAndDropField />
+
+        <DragAndDropField :needCompress=false @selected="onSelected" />
         <DragAndDropField />
     </form>
 </template>

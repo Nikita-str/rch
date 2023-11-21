@@ -1,5 +1,11 @@
 <script setup>
-import { ref } from 'vue'
+import { ref, defineEmits, defineProps } from 'vue'
+defineProps({
+    needCompress: { type: Boolean, default: false },
+})
+const emit = defineEmits(['selected'])
+
+const validImgTys = ['image/png', 'image/webp', 'image/jpeg']; // validFileTys as props
 
 let fileInput = ref(null)
 
@@ -11,9 +17,18 @@ function setInactive() {
     active.value = false
 }
 
+function callSelected(files) {
+    emit('selected', [... files])
+}
+
 function onDrop(e) {
     setInactive()
-    console.log('TODO:DEL:[on drop]:', e.dataTransfer)
+    callSelected(e.dataTransfer.files)
+}
+
+
+function onClickSelect(e) {
+    callSelected(e.target.files)
 }
 </script>
 
@@ -28,7 +43,7 @@ function onDrop(e) {
     @drop.prevent="onDrop">
         <span class="file-dnd-field-text">ПЕРЕМЕСТИ ПИКЧИ<br/>CTRL+V</span>
     </div>
-    <input ref="fileInput" type="file" style="display: none;" multiple="">
+    <input ref="fileInput" type="file" style="display: none;" multiple="" accept="image/png, image/webp, image/jpeg" @change="onClickSelect">
 </template>
 
 
