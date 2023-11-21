@@ -3,6 +3,7 @@
     import {ref, toRaw } from "vue";
 
     import PostingFormButton from "./micro/PostingFormButton.vue";
+    import DragAndDropField from "./files/DragAndDropField.vue";
 
     const SUBJ_MAX_LEN = 80;
     const MSG_PLACEHOLDER = 'Сообщи сообщение\nДоложи степень негодования';
@@ -128,6 +129,9 @@ function wrapSelectedTag(tag) {
 
             <input type="submit" id="pf-submit" value="Сделано!" class="inp-x" />
         </div>
+        
+        <DragAndDropField />
+        <DragAndDropField />
     </form>
 </template>
 
