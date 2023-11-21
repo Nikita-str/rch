@@ -3,7 +3,8 @@
     import {ref, toRaw } from "vue";
 
     import PostingFormButton from "./micro/PostingFormButton.vue";
-    import DragAndDropField from "./files/DragAndDropField.vue";
+    import DragAndDropField from "./files/pics/DragAndDropField.vue";
+    import DragAndDropFieldX from "./files/DragAndDropField.vue";
 
     const SUBJ_MAX_LEN = 80;
     const MSG_PLACEHOLDER = 'Сообщи сообщение\nДоложи степень негодования';
@@ -72,7 +73,10 @@ export default {
             // x.target.reset()
         },
         onSelected(files) {
-            console.log('TODO:DEL:[selected]:', files)
+            console.log('TODO:DEL:[pic-selected]:', files)
+        },
+        onRejected(files) {
+            console.log('TODO:DEL:[REJECT]:', files)
         },
     },
 }
@@ -133,8 +137,8 @@ function wrapSelectedTag(tag) {
             <input type="submit" id="pf-submit" value="Сделано!" class="inp-x" />
         </div>
 
-        <DragAndDropField :needCompress=false @selected="onSelected" />
-        <DragAndDropField />
+        <DragAndDropField :needCompress=false @selected="onSelected" @rejected="onRejected" />
+        <DragAndDropFieldX @selected="onSelected" />
     </form>
 </template>
 

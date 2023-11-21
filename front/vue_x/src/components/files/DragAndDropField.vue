@@ -1,13 +1,11 @@
 <script setup>
 import { ref, defineEmits, defineProps } from 'vue'
 defineProps({
-    needCompress: { type: Boolean, default: false },
+    acceptTys: {type: String, default: ""},
 })
 const emit = defineEmits(['selected'])
 
-const validImgTys = ['image/png', 'image/webp', 'image/jpeg']; // validFileTys as props
-
-let fileInput = ref(null)
+let fileInput = ref(null)  //TODO:NEED? //TODO:DEL
 
 let active = ref(false)
 function setActive() {
@@ -43,7 +41,7 @@ function onClickSelect(e) {
     @drop.prevent="onDrop">
         <span class="file-dnd-field-text">ПЕРЕМЕСТИ ПИКЧИ<br/>CTRL+V</span>
     </div>
-    <input ref="fileInput" type="file" style="display: none;" multiple="" accept="image/png, image/webp, image/jpeg" @change="onClickSelect">
+    <input ref="fileInput" type="file" style="display: none;" multiple="" :accept="acceptTys" @change="onClickSelect">
 </template>
 
 
