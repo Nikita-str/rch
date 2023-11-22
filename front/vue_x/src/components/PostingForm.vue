@@ -8,7 +8,7 @@
     import DragAndDropFieldX from "./files/DragAndDropField.vue";
 
     import { FileX } from "../js/pics/file_x";
-    import ViewSingle from "./files/pics/ViewSingle.vue";
+    import PicView from "./files/pics/View.vue";
 
     const SUBJ_MAX_LEN = 80;
     const MSG_PLACEHOLDER = 'Сообщи сообщение\nДоложи степень негодования';
@@ -41,7 +41,8 @@ export default {
   },
   data() {
     return {
-        tmpFile: null, 
+        tmpFiles: new Array(),
+        msgMinWidthByFile: 2,
     }
   },
   computed: {
@@ -83,8 +84,10 @@ export default {
         },
         onSelected(files) {
             console.log('TODO:DEL:[pic-selected]:', files)
-            let tmp = new FileX(files[0])
-            this.tmpFile = tmp
+            files.forEach((file) => {
+                this.tmpFiles.push(new FileX(file))
+            })
+            this.msgMinWidthByFile = (this.tmpFiles.length > 2) ? 3 : 2;
         },
         onRejected(files) {
             console.log('TODO:DEL:[REJECT]:', files)
@@ -151,7 +154,7 @@ function wrapSelectedTag(tag) {
         <DragAndDropField :needCompress=false @selected="onSelected" @rejected="onRejected" />
         <DragAndDropFieldX @selected="onSelected" />
 
-        <ViewSingle v-if="tmpFile" :file="tmpFile" />
+        <PicView v-if="tmpFiles.length > 0" :files="tmpFiles" />
     </form>
 </template>
 
@@ -165,8 +168,8 @@ function wrapSelectedTag(tag) {
 }
 #pf-msg {
     width: 42ch;
-    min-width: calc(7 * 1.6em + 10ch + 7 * 3px);
-    max-width: calc(max(calc(7 * 1.6em + 10ch + 7 * 3px), 30vw));
+    min-width: calc(max(calc(7 * 1.6em + 10ch + 7 * 3px), ( 3px + 6.4 * 15px ) * v-bind(msgMinWidthByFile)));
+    max-width: calc(max(calc(7 * 1.6em + 10ch + 7 * 3px), 35vw));
     min-height: 6ch;
     max-height: calc(max(6ch, 70vh));
 }

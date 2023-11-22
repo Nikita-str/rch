@@ -32,7 +32,6 @@ export default {
     <div class="pic-sinlge-view pic-sinlge-view-max-sz">
         <img class="pic-sinlge-view-max-sz" :src="file.url" :alt="file.name" :title="file.name" />
         <div class="pic-sinlge-view-bottom">{{sizeText}}</div>
-        <div></div>
     </div>
 </template>
 
@@ -40,6 +39,8 @@ export default {
 .pic-sinlge-view {
     text-align: center;
     background: var(--r-col-bg-light-blue);
+    margin-bottom: 3px;
+    margin-right: 3px;
 }
 .pic-sinlge-view-max-sz {
     max-width: v-bind(maxDimSz);
