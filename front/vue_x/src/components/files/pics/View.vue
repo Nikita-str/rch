@@ -38,6 +38,7 @@ export default {
     },
     methods: {
         onResize() {
+            if (!this.$refs.outer) { return }
             let new_w = this.$refs.outer.clientWidth
             let em = this.$refs.em_to_px.clientWidth
             let single_sz = 6.4 * em + 3

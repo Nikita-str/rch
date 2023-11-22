@@ -82,18 +82,23 @@ export default {
             
             // x.target.reset()
         },
+        recalcMsgWidth() {
+            this.msgMinWidthByFile = (this.tmpFiles.length > 2) ? 3 : 2;
+        },
         onSelected(files) {
             console.log('TODO:DEL:[pic-selected]:', files)
             files.forEach((file) => {
                 this.tmpFiles.push(new FileX(file))
             })
-            this.msgMinWidthByFile = (this.tmpFiles.length > 2) ? 3 : 2;
+            this.recalcMsgWidth()
         },
         onRejected(files) {
             console.log('TODO:DEL:[REJECT]:', files)
         },
         onCancel(index) {
             console.log('TODO:DEL:[CANCEL]', index)
+            this.tmpFiles.splice(index, 1)
+            this.recalcMsgWidth()
         },
     },
 }

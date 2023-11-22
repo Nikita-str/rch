@@ -51,6 +51,7 @@ export default {
     background: var(--r-col-bg-light-blue);
     margin-bottom: 3px;
     margin-right: 3px;
+    width: v-bind(maxDimSz);
 }
 .pic-sinlge-view-max-sz {
     max-width: v-bind(maxDimSz);
