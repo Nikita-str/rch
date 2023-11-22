@@ -25,7 +25,6 @@ function onDrop(e) {
     callSelected(e.dataTransfer.files)
 }
 
-
 function onClickSelect(e) {
     callSelected(e.target.files)
 }

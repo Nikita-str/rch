@@ -8,6 +8,7 @@
   --r-col-crab-dark: #8F1F1D;
   --r-col-blue: #01346B;
   /* don't work: rgba(var(--r-col-blue), 0.7); */
+  --r-col-blue-60: #01346B99;
   --r-col-blue-70: #01346BB3;
   --r-col-blue-80: #01346BCC;
 

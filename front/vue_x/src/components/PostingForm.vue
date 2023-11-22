@@ -7,6 +7,9 @@
     import {REJECT_TY} from "./files/pics/DragAndDropField.vue";
     import DragAndDropFieldX from "./files/DragAndDropField.vue";
 
+    import { FileX } from "../js/pics/file_x";
+    import ViewSingle from "./files/pics/ViewSingle.vue";
+
     const SUBJ_MAX_LEN = 80;
     const MSG_PLACEHOLDER = 'Сообщи сообщение\nДоложи степень негодования';
 </script>
@@ -35,6 +38,11 @@ export default {
         type: Function,
         default: null,
     },
+  },
+  data() {
+    return {
+        tmpFile: null, 
+    }
   },
   computed: {
     // formAction() { return 'api/' + (this.isNewThr ? "board/thr_new" : "thread/post_new"); },
@@ -75,6 +83,8 @@ export default {
         },
         onSelected(files) {
             console.log('TODO:DEL:[pic-selected]:', files)
+            let tmp = new FileX(files[0])
+            this.tmpFile = tmp
         },
         onRejected(files) {
             console.log('TODO:DEL:[REJECT]:', files)
@@ -140,6 +150,8 @@ function wrapSelectedTag(tag) {
 
         <DragAndDropField :needCompress=false @selected="onSelected" @rejected="onRejected" />
         <DragAndDropFieldX @selected="onSelected" />
+
+        <ViewSingle v-if="tmpFile" :file="tmpFile" />
     </form>
 </template>
 
