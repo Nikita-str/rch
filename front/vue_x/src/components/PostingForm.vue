@@ -92,6 +92,9 @@ export default {
         onRejected(files) {
             console.log('TODO:DEL:[REJECT]:', files)
         },
+        onCancel(index) {
+            console.log('TODO:DEL:[CANCEL]', index)
+        },
     },
 }
 
@@ -154,7 +157,7 @@ function wrapSelectedTag(tag) {
         <DragAndDropField :needCompress=false @selected="onSelected" @rejected="onRejected" />
         <DragAndDropFieldX @selected="onSelected" />
 
-        <PicView v-if="tmpFiles.length > 0" :files="tmpFiles" />
+        <PicView v-if="tmpFiles.length > 0" :files="tmpFiles" @pic-cancel="(index) => { onCancel(index) }" />
     </form>
 </template>
 

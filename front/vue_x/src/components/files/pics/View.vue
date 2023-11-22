@@ -1,9 +1,14 @@
 <script setup>
 import ViewSingle from './ViewSingle.vue'
 
-import { ref } from 'vue'
+import { ref, defineEmits } from 'vue'
 let outer = ref(null)
 let em_to_px = ref(null)
+
+const emit = defineEmits(['pic-cancel'])
+function onCancel(index) {
+    emit('pic-cancel', index)
+}
 </script>
 
 <script>
@@ -38,7 +43,7 @@ export default {
             let single_sz = 6.4 * em + 3
             let n = Math.floor((new_w - 3) / single_sz)
             this.columns = Math.max(n, MIN_COLUMNS)
-        }
+        },
     }
 }
 </script>
@@ -47,7 +52,7 @@ export default {
     <div ref="outer">
         <div class="pic-view-grid">
             <template v-for="(file, index) in files">
-                <ViewSingle :file="file" />
+                <ViewSingle :file="file" @pic-cancel="onCancel(index)" />
             </template>
         </div>
     </div>
