@@ -5,6 +5,8 @@ const emit = defineEmits(['pic-cancel'])
 function onCancel() {
     emit('pic-cancel')
 }
+
+const MIN_DIM_SZ = '10px'
 </script>
 
 <script>
@@ -52,8 +54,11 @@ export default {
     margin-bottom: 3px;
     margin-right: 3px;
     width: v-bind(maxDimSz);
+    height: v-bind(maxDimSz);
 }
 .pic-sinlge-view-max-sz {
+    min-width: v-bind(MIN_DIM_SZ);
+    min-height: v-bind(MIN_DIM_SZ);
     max-width: v-bind(maxDimSz);
     max-height: v-bind(maxDimSz);
 }

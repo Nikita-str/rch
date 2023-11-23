@@ -87,10 +87,24 @@ export default {
         },
         onSelected(files) {
             console.log('TODO:DEL:[pic-selected]:', files)
-            files.forEach((file) => {
-                this.tmpFiles.push(new FileX(file))
+            
+            new Promise(async (resolve) => {
+                const MIN_DIM_SZ = 10
+                const MAX_DIM_SZ = 250
+                const canvas = document.createElement("canvas")
+                let imgs = new Array()
+                for (const file of files) {
+                    let f = new FileX(file)
+                    await f.compress(canvas, MIN_DIM_SZ, MAX_DIM_SZ)
+                    imgs.push(f)
+                }
+                canvas.remove()
+                resolve(imgs)
+            }).then((imgs) => {
+                this.tmpFiles = this.tmpFiles.concat(imgs)
+                this.recalcMsgWidth()
             })
-            this.recalcMsgWidth()
+            
         },
         onRejected(files) {
             console.log('TODO:DEL:[REJECT]:', files)

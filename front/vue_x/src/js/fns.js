@@ -50,3 +50,5 @@ export function boardUrlCalc(obj) {
     var path = (typeof(obj) == 'string') ? obj : obj.$route.path;
     return trim(path, "/").split('/')[0]
 }
+
+export const IS_SAFARI = navigator.userAgent.toLowerCase().indexOf("Safari") > -1

@@ -6,7 +6,7 @@ defineProps({
 })
 const emit = defineEmits(['selected'])
 
-let fileInput = ref(null)  //TODO:NEED? //TODO:DEL
+let fileInput = ref(null)
 
 let active = ref(false)
 function setActive() {
