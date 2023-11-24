@@ -36,7 +36,7 @@ pub async fn handler(
     };
 
     if params.post_img.is_some() { todo!("img case") }
-    let post = Post::new_anon(post_text, params.post_img);
+    let post = Post::new_anon(post_text, vec![]);
 
     {
         let mut w_state = state.write().unwrap();

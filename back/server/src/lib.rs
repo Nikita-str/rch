@@ -7,6 +7,7 @@ mod preproc;
 mod utility;
 
 const VUE_DIST_PATH: &str = "../../front/vue_x/dist";
+// const PIC_PATH: &str = "../../front/vue_x/dist/imgs/pp"; // pp stands for post pics 
 
 const KB: usize = 1024;
 const MB: usize = 1024 * KB;
@@ -52,7 +53,7 @@ mod fns {
             let std_thr_qty = 100;
             let small_thr_qty = 20;
 
-            let mut open_boards = crate::app_state::OpenBoards::new();
+            let mut open_boards = crate::app_state::OpenBoards::new(VUE_DIST_PATH);
             let tag = crate::app_state::open_boards::BoardTag { tag: "Разное".into() };
             let url = "b".into();
             let name = "Бред".into();
@@ -177,6 +178,7 @@ mod fns {
 
         let state_all = Arc::new(RwLock::new(state_all));
 
+        // std::fs::create_dir(PIC_PATH).unwrap();
         let index_file = ServeFile::new(format!("{}/index.html", VUE_DIST_PATH));
         let serve_dir = ServeDir::new(VUE_DIST_PATH).fallback(index_file);
 

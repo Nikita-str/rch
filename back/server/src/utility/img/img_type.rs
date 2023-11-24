@@ -72,28 +72,3 @@ impl ImgType {
         }
     }
 }
-
-pub fn base_to_img(base64_data: &str) -> Option<(ImgType, Vec<u8>)> {
-    let img_ty = ImgType::base64_seems_like(base64_data)?;
-    let mut bytes = Vec::with_capacity(base64::decoded_len_estimate(base64_data.len()));
-    let r = base64::engine::general_purpose::STANDARD.decode_vec(base64_data, &mut bytes);
-    if r.is_err() { return None }
-    
-    Some((img_ty, bytes))
-}
-
-
-
-// #[cfg(test)]
-// #[test]
-// fn example_01() {
-//     use std::io::Write;
-
-//     let base64_s = "...";
-    
-//     if let Some((ty, bytes)) = img::base_to_img(base64_s) {
-//         let path = format!("base64_img_01.{}", ty.to_format());
-//         let mut f = std::fs::File::create(path).unwrap();
-//         f.write_all(&bytes).unwrap();
-//     }
-// }

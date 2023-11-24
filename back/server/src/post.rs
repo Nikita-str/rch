@@ -1,4 +1,6 @@
 use serde::Serialize;
+use crate::utility::img::ImgLoadInfo;
+
 pub type PostN = u64;
 
 #[derive(Serialize, Debug, Clone)]
@@ -9,7 +11,7 @@ pub enum Poster {
 #[derive(Serialize, Debug, Clone)]
 pub struct Post {
     text: String,
-    img: Option<String>,
+    img: Vec<ImgLoadInfo>,
     time: i64,
     n: PostN,
     poster: Poster,
@@ -18,7 +20,7 @@ pub struct Post {
 impl Post {
     pub fn new_anon(
         text: String,
-        img: Option<String>,
+        img: Vec<ImgLoadInfo>,
     ) -> Self {
         Self {
             text,

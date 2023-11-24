@@ -41,4 +41,11 @@ impl CommonInfoState {
     pub fn open_boards(&self) -> &OpenBoards {
         &self.open_boards
     }
+
+    // pub fn pic_path(&self) -> String {
+    //     self.open_boards.pic_path()
+    // }    
+    pub fn use_n_pic(&mut self, n: u64) -> (String, std::ops::Range<u64>) {
+        (self.open_boards.pic_path(), self.open_boards.use_n_pic(n))
+    }
 }

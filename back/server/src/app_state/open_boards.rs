@@ -136,10 +136,15 @@ pub struct OpenBoards {
     next_board_id: BoardId,    
     board_qty: u32,
     pop_board_qty: u32,
+    pic_n: u64,
+    pic_path: String,
 }
 
 impl OpenBoards {
-    pub fn new() -> Self {
+    pub fn new(dist_path: &str) -> Self {
+        let pic_path = format!("{dist_path}/imgs/pp"); // pp stands for post pics 
+        std::fs::create_dir(&pic_path).unwrap();
+
         Self {
             boards: HashMap::new(),
             board_tags: HashMap::new(),
@@ -147,7 +152,19 @@ impl OpenBoards {
             next_board_id: BoardId::first(),
             board_qty: 0,
             pop_board_qty: 0,
+            pic_n: 0,
+            pic_path,
         }
+    }
+
+    pub fn pic_path(&self) -> String {
+        self.pic_path.clone()
+    }
+    pub fn use_n_pic(&mut self, n: u64) -> std::ops::Range<u64> {
+        let from = self.pic_n;
+        let to = self.pic_n + n;
+        self.pic_n += n;
+        from..to
     }
 
     /// # WARNING
