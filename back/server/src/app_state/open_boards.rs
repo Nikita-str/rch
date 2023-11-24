@@ -143,7 +143,7 @@ pub struct OpenBoards {
 impl OpenBoards {
     pub fn new(dist_path: &str) -> Self {
         let pic_path = format!("{dist_path}/imgs/pp"); // pp stands for post pics 
-        std::fs::create_dir(&pic_path).unwrap();
+        let _ = std::fs::create_dir(&pic_path);
 
         Self {
             boards: HashMap::new(),

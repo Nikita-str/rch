@@ -41,7 +41,7 @@ export default {
   },
   data() {
     return {
-        tmpFiles: new Array(),
+        tmpFiles: new Array(), //TODO: move into global
         msgMinWidthByFile: 2,
     }
   },
@@ -61,7 +61,12 @@ export default {
             postingForm.value.post_text = el.value; // because `wrapSelected` not update v-modeled value
             let data = toRaw(postingForm.value);
             // console.log('TODO:DEL:raw[data][B]', data, postingForm.value.post_text)
+            data.post_imgs = []
+            for (const img of this.tmpFiles) {
+                data.post_imgs.push(img.to_post_img())
+            }
             
+            this.tmpFiles = new Array()
             postingForm.value = newPostingFormContent();
             data.board_url = this.boardUrl;
 
@@ -95,6 +100,7 @@ export default {
                 let imgs = new Array()
                 for (const file of files) {
                     let f = new FileX(file)
+                    await f.add_base64()
                     await f.compress(canvas, MIN_DIM_SZ, MAX_DIM_SZ)
                     imgs.push(f)
                 }

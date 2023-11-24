@@ -7,9 +7,7 @@ headers = {
     'content-type': "application/json;charset=UTF-8"
 }
 
-payload = "{\"board_url\":\"b\", \"post_header\":\"Выясняем чо происходит\", \"post_text\":\"предлагаю выяснить что всё-же происходит...\"}"
-
-
+payload = "{\"board_url\":\"b\", \"post_header\":\"Выясняем чо происходит\", \"post_text\":\"предлагаю выяснить что всё-же происходит...\", \"post_imgs\":[]}"
 conn.request("POST", "/api/board/thr_new", payload.encode('utf-8'), headers)
 
 res = conn.getresponse()
@@ -18,7 +16,7 @@ print(data.decode("utf-8"))
 
 ###
 
-payload = "{\"board_url\":\"b\", \"post_text\":\"А чо кстати заголовок то сам добавиться к посту, а? не знаете? ща узнаем\"}"
+payload = "{\"board_url\":\"b\", \"post_text\":\"А чо кстати заголовок то сам добавиться к посту, а? не знаете? ща узнаем\", \"post_imgs\":[]}"
 conn.request("POST", "/api/board/thr_new", payload.encode('utf-8'), headers)
 
 res = conn.getresponse()

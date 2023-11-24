@@ -15,7 +15,7 @@ def resp(conn):
     data = res.read()
     print(data.decode("utf-8"))
 
-payload = f"{{\"board_url\":\"{board_url}\", \"post_header\":\"Давайте потестируем маняме борду!!!\", \"post_text\":\"что-нибудь типо такого ~~nyan~~ UwU :3 и даже такого ^w^ хехе\"}}"
+payload = f"{{\"board_url\":\"{board_url}\", \"post_header\":\"Давайте потестируем маняме борду!!!\", \"post_text\":\"что-нибудь типо такого ~~nyan~~ UwU :3 и даже такого ^w^ хехе\", \"post_imgs\":[]}}"
 conn.request("POST", "/api/board/thr_new", payload.encode('utf-8'), headers)
 resp(conn)
 ###

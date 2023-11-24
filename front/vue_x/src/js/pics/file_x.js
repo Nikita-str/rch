@@ -42,4 +42,23 @@ export class FileX {
         this.compressed = canvas.toDataURL(compress_ty, 0.7) // webp DON't work in Safari?? 
         this.compress_ty = IS_SAFARI ? "jpeg" : "webp"
     }
+
+    add_base64() {
+        new Promise((_, reject) => {
+            const reader = new FileReader();
+            reader.readAsDataURL(this.file);
+            reader.onload = () => {
+                this.base64 = reader.result;
+            }
+            reader.onerror = reject;
+        })
+    }
+
+    to_post_img() {
+        return {
+            file: this.base64.substring(this.base64.indexOf(',') + 1),
+            compressed_file: this.compressed.substring(this.compressed.indexOf(',') + 1),
+            name: this.name,
+        }
+    }
 }
