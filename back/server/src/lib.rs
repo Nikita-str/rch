@@ -4,9 +4,12 @@ mod api;
 mod thread;
 mod thread_usage_rate;
 mod preproc;
+mod utility;
 
 const VUE_DIST_PATH: &str = "../../front/vue_x/dist";
 
+const KB: usize = 1024;
+const MB: usize = 1024 * KB;
 
 #[allow(unused)] use fns::{delay, delay_ms};
 pub use fns::server;

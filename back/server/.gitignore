@@ -1,6 +1,7 @@
 /target/
 Cargo.lock
 
+test/base64
 test/REST/*
 !test/REST/create_a.py
 !test/REST/create_b.py

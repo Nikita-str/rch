@@ -14,11 +14,6 @@ pub struct HandlerParams{
     post_img: Option<String /* [?] Type [\?] */>,
 }
 
-#[derive(Serialize, Debug)]
-pub struct ResultOk {
-    thrs: Vec<Vec<Post>>,
-}
-
 pub async fn handler(
     State(state): State<HandlerState>,
     Json(params): Json<HandlerParams>,

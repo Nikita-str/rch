@@ -11,7 +11,7 @@ pub struct HandlerParams {
     board_url: String,
     post_header: Option<String>,
     post_text: String,
-    post_img: Option<String /* [?] Type [\?] */>,
+    post_imgs: Vec<String>,
 }
 
 #[derive(Serialize, Debug)]
@@ -64,10 +64,11 @@ pub async fn handler(
         preproc.preproc(&params.post_text)
     };
 
-    if params.post_img.is_some() {
-        todo!("img case")
-    }
-    let op_post = Post::new_anon(post_text, params.post_img);
+    // if params.post_img.is_some() {
+    //     todo!("img case")
+    // }
+    // let op_post = Post::new_anon(post_text, params.post_img);
+    let op_post = Post::new_anon(post_text, None);
     let infinity = false;
 
 
@@ -83,8 +84,15 @@ pub async fn handler(
 }
 
 pub fn router(state: &HandlerState) -> Router {
+    use crate::{KB, MB};
+    const MAX_PIC_SZ: usize = 2 * MB;
+    const MAX_MINI_PIC_SZ: usize = 50 * KB;
+    const MAX_PIC_AMOUNT: usize = 4;
+    const MAX_ADDITIONAL_SZ: usize = 25 * KB;
+    const MAX_TOTAL_SZ: usize = (MAX_PIC_SZ + MAX_MINI_PIC_SZ) * MAX_PIC_AMOUNT + MAX_ADDITIONAL_SZ; 
+
     Router::new().route(
         "/thr_new",
         routing::post(handler).with_state(Arc::clone(state)),
-    )
+    ).layer(tower_http::limit::RequestBodyLimitLayer::new(MAX_TOTAL_SZ))
 }
