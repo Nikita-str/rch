@@ -116,10 +116,16 @@ export default {
 
 <style>
 .post {
-    max-width: 65vw;
+    /* max-width: 65vw; */
+    max-width: 70vw;
     border-width: 1px;
     border-radius: 0;
     padding: 0.3em 1em 1.2em 0.6em;
+}
+@media screen and (max-width: 1200px) {
+    .post {
+        max-width: 85vw;
+    }
 }
 .post--not-op {
     border-style: solid;
