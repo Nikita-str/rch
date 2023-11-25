@@ -1,6 +1,6 @@
 <script setup>
     import { pad, boardUrlCalc } from '../js/fns'
-    import PostPic from './files/pics/PostPic.vue'
+    import PostPics from './files/pics/PostPics.vue'
 </script>
 
 <script> 
@@ -101,10 +101,8 @@ export default {
             <span class="post-thr-n">{{ msgThrN }}</span>
         </div>
         <div class="post-inner">
-            <template v-for="imgInfo in imgsInfo">
-              <PostPic :imgInfo="imgInfo" />
-            </template>
-            <span class="post-text" v-html="msg"></span>
+              <PostPics :imgsInfo="imgsInfo" />
+              <div class="post-text" :style="{'padding-top': (imgsInfo.length == 1) ? '2.4em' : '' }" v-html="msg" />
         </div>
         <template v-if="msgReplies">
             <div class="post-replies">
@@ -118,7 +116,7 @@ export default {
 
 <style>
 .post {
-    max-width: 70vw;
+    max-width: 65vw;
     border-width: 1px;
     border-radius: 0;
     padding: 0.3em 1em 1.2em 0.6em;
@@ -161,6 +159,7 @@ export default {
 
 .post-text {
     word-wrap: break-word;
+    display: inline-block;
 }
 </style>
 

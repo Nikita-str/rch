@@ -12,6 +12,10 @@ export default {
             type: Object,
             required: true,
         },
+        single: {
+            type: Boolean,
+            required: true,
+        }
     },
     computed: {
         imgPathCompressed() {
@@ -39,13 +43,37 @@ export default {
 </script>
 
 <template>
-    <figure>
+    <figure :style="{'margin-right': single ? '2ch' : '10px'}">
+        <div style="height: 2.4em; display: flex; float: left; margin-right: 5px;">
+            <div class="post-pic-info-strip" />
+        </div>
         <figcaption>
-            <a :href="imgPath" :title="nameFull" target="_blank">{{ nameAbbr }}</a>
-            <div>{{ imgInfo.orig_kb_sz }} | {{ dimSz }}</div>
+            <a class="post-pic-caption-ref" :href="imgPath" :title="nameFull" target="_blank">{{ nameAbbr }}</a>
+            <div class="post-pic-caption-info">{{ imgInfo.orig_kb_sz }} | {{ dimSz }}</div>
         </figcaption>
         <a :href="imgPath" target="_blank">
             <img :src="imgPathCompressed" :alt="dimSz">
         </a>
     </figure>
 </template>
+
+<style scoped>
+.post-pic-caption-ref {
+    font-size: 1em;
+    line-height: 1;
+}
+.post-pic-caption-info {
+    font-size: 0.7em;
+    color: var(--r-col-bg-light-blue);
+    line-height: 1;
+    margin-bottom: 3px;
+}
+.post-pic-info-strip {
+    width: 2px;
+    background: var(--r-col-crab-light);
+    margin-left: 3px;
+    
+    margin-top: 6px;
+    margin-bottom: 3px;
+}
+</style>
