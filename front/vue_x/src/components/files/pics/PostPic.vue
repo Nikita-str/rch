@@ -4,7 +4,7 @@ import { img_ext_abbr } from '../../../js/pics/file_x'
 
 <script>
 const MAX_NAME_LEN = 26
-const IMG_PATH_PREFIX = "imgs/pp"
+const IMG_PATH_PREFIX = "/imgs/pp"
 
 export default {
     props: {

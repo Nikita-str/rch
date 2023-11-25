@@ -1,4 +1,4 @@
-import { createRouter, createWebHashHistory } from 'vue-router'
+import { createRouter, createWebHistory, createWebHashHistory } from 'vue-router'
 import App from '../App.vue'
 import Tmp from '../Tmp.vue'
 import PageNotFound from '../components/PageNotFound.vue'
@@ -172,7 +172,8 @@ const routes = [
 ]
 
 export default createRouter({
-    history: createWebHashHistory(),
+    // history: createWebHashHistory(),
+    history: createWebHistory(),
     routes,
     sensitive: true,
 })
