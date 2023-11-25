@@ -5,7 +5,9 @@
   "scripts": {
     "dev": "vite",
     "build": "vite build",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "prebuild":  "python ./build_helper.py pre",
+    "postbuild": "python ./build_helper.py post"
   },
   "dependencies": {
     "@vueuse/components": "^10.5.0",
