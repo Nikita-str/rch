@@ -1,4 +1,4 @@
-import { IS_SAFARI } from "../fns"
+import { IS_SAFARI, IS_FIREFOX } from "../fns"
 
 export class FileX {
     constructor(file) {
@@ -31,13 +31,26 @@ export class FileX {
         if (w < min_dim_sz) w = min_dim_sz
         if (h < min_dim_sz) h = min_dim_sz
 
-        var canvas = document.createElement('canvas')
         canvas.width = w
         canvas.height = h
         let ctx = canvas.getContext("2d")
-        ctx.drawImage(img, 0, 0, w, h)
+        ctx.imageSmoothingEnabled = true
+        ctx.imageSmoothingQuality = "high" // not work in Firefox :(
+        
+        if (IS_FIREFOX) {
+            const canvas_big = document.createElement('canvas')
+            const ctx_big = canvas_big.getContext('2d')
+            canvas_big.width = img.width
+            canvas_big.height = img.height
+            const blur_size = (canvas_big.width / canvas.width) >> 1
+            ctx_big.filter = `blur(${blur_size}px)`
+            ctx_big.drawImage(img, 0, 0)
 
-
+            ctx.drawImage(canvas_big, 0, 0, img.width, img.height, 0, 0, w, h)
+        } else {
+            ctx.drawImage(img, 0, 0, w, h)
+        }
+        
         let compress_ty = IS_SAFARI ? "image/jpeg" : "image/webp"
         this.compressed = canvas.toDataURL(compress_ty, 0.7) // webp DON't work in Safari?? 
         this.compress_ty = IS_SAFARI ? "jpeg" : "webp"

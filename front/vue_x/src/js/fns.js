@@ -52,3 +52,4 @@ export function boardUrlCalc(obj) {
 }
 
 export const IS_SAFARI = navigator.userAgent.toLowerCase().indexOf("Safari") > -1
+export const IS_FIREFOX = navigator.userAgent.toLowerCase().indexOf("firefox") > -1
