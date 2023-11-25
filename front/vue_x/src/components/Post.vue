@@ -1,5 +1,6 @@
 <script setup>
     import { pad, boardUrlCalc } from '../js/fns'
+    import PostPic from './files/pics/PostPic.vue'
 </script>
 
 <script> 
@@ -25,10 +26,6 @@ export default {
       type: String,
       required: true,
     },
-    msgPic: {
-      type: String,
-      required: false,
-    },
     msgReplies: {
       type: Array,
       required: false,
@@ -42,6 +39,10 @@ export default {
       type: Number,
       required: false,
       default: null,
+    },
+    imgsInfo: {
+      type: Array,
+      default: [],
     },
   },
   computed: {
@@ -100,7 +101,9 @@ export default {
             <span class="post-thr-n">{{ msgThrN }}</span>
         </div>
         <div class="post-inner">
-            <span v-if="msgPic" class="post-img">TODO</span>
+            <template v-for="imgInfo in imgsInfo">
+              <PostPic :imgInfo="imgInfo" />
+            </template>
             <span class="post-text" v-html="msg"></span>
         </div>
         <template v-if="msgReplies">

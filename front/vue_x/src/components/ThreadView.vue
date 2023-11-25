@@ -55,6 +55,7 @@ export default {
                     :msgThrN="1"
                     :msgWho="posts[0].poster"
                     :isOP="true"
+                    :imgsInfo="posts[0].imgs"
                 />
             </div>
             <div v-if="posts_qty > posts.length" class="thr-view-skip-info">пропущено постов: {{ posts_qty - posts.length }}</div>
@@ -65,6 +66,7 @@ export default {
                     :msgBoardN="posts[post_index].n" 
                     :msgThrN="msgThrNumHelper + post_index"
                     :msgWho="posts[post_index].poster"
+                    :imgsInfo="posts[post_index].imgs"
                     :nBoardOP="posts[0].n"
                 />
                 <Post v-else
@@ -73,6 +75,7 @@ export default {
                     :msgBoardN="posts[post_index].n" 
                     :msgThrN="msgThrNumHelper + post_index"
                     :msgWho="posts[post_index].poster"
+                    :imgsInfo="posts[post_index].imgs"
                     :nBoardOP="posts[0].n"
 
                     v-element-visibility="(visible) => onNextLoadVis(visible, posts[post_index].n)"

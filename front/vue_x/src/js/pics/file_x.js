@@ -62,3 +62,10 @@ export class FileX {
         }
     }
 }
+
+export function img_ext_abbr(c) {
+    if (c == 'j') { return 'jpg' }
+    if (c == 'p') { return 'png' }
+    if (c == 'w') { return 'webp' }
+    return null
+}

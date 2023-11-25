@@ -11,7 +11,7 @@ pub enum Poster {
 #[derive(Serialize, Debug, Clone)]
 pub struct Post {
     text: String,
-    img: Vec<ImgLoadInfo>,
+    imgs: Vec<ImgLoadInfo>,
     time: i64,
     n: PostN,
     poster: Poster,
@@ -20,11 +20,11 @@ pub struct Post {
 impl Post {
     pub fn new_anon(
         text: String,
-        img: Vec<ImgLoadInfo>,
+        imgs: Vec<ImgLoadInfo>,
     ) -> Self {
         Self {
             text,
-            img,
+            imgs,
             time: chrono::offset::Utc::now().timestamp(),
             n: 0,
             poster: Poster::Anon,
