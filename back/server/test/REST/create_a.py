@@ -21,31 +21,31 @@ resp(conn)
 ###
 
 
-payload = f"{{\"board_url\":\"{board_url}\", \"op_post_n\": {op_post}, \"post_text\":\"ааа??\\nКотики я не пони+мяу что происходит?!\"}}"
+payload = f"{{\"board_url\":\"{board_url}\", \"op_post_n\": {op_post}, \"post_text\":\"ааа??\\nКотики я не пони+мяу что происходит?!\", \"post_imgs\":[]}}"
 conn.request("POST", "/api/thread/post_new", payload.encode('utf-8'), headers)
 resp(conn)
 
 ###
 
-payload = f"{{\"board_url\":\"{board_url}\", \"op_post_n\": {op_post}, \"post_text\":\"няшки\\nстесняшки\\nкотики\\nне выкупают...\\nжесть блин, кавайно так...\"}}"
+payload = f"{{\"board_url\":\"{board_url}\", \"op_post_n\": {op_post}, \"post_text\":\"няшки\\nстесняшки\\nкотики\\nне выкупают...\\nжесть блин, кавайно так...\", \"post_imgs\":[]}}"
 conn.request("POST", "/api/thread/post_new", payload.encode('utf-8'), headers)
 resp(conn)
 
 ###
 
-payload = f"{{\"board_url\":\"{board_url}\", \"op_post_n\": {op_post}, \"post_text\":\"cute-kawaii\\ncute-kawaii\\ncute-kawaii\\ncute-kawaii\\ncute-kawaii\\ncute-kawaii\"}}"
+payload = f"{{\"board_url\":\"{board_url}\", \"op_post_n\": {op_post}, \"post_text\":\"cute-kawaii\\ncute-kawaii\\ncute-kawaii\\ncute-kawaii\\ncute-kawaii\\ncute-kawaii\", \"post_imgs\":[]}}"
 conn.request("POST", "/api/thread/post_new", payload.encode('utf-8'), headers)
 resp(conn)
 
 ###
 
-payload = f"{{\"board_url\":\"{board_url}\", \"op_post_n\": {op_post}, \"post_text\":\"UwU ~~nyan~~\\n^w^ :3 <-- это же котик!\\nкавайно вот!\"}}"
+payload = f"{{\"board_url\":\"{board_url}\", \"op_post_n\": {op_post}, \"post_text\":\"UwU ~~nyan~~\\n^w^ :3 <-- это же котик!\\nкавайно вот!\", \"post_imgs\":[]}}"
 conn.request("POST", "/api/thread/post_new", payload.encode('utf-8'), headers)
 resp(conn)
 
 ###
 
-payload = f"{{\"board_url\":\"{board_url}\", \"op_post_n\": {op_post}, \"post_text\":\"~~няв мяв няк~~\\nя все сказал\\n~~nyaaa~~\"}}"
+payload = f"{{\"board_url\":\"{board_url}\", \"op_post_n\": {op_post}, \"post_text\":\"~~няв мяв няк~~\\nя все сказал\\n~~nyaaa~~\", \"post_imgs\":[]}}"
 conn.request("POST", "/api/thread/post_new", payload.encode('utf-8'), headers)
 resp(conn)
 

@@ -25,7 +25,7 @@ print(data.decode("utf-8"))
 
 ###
 
-payload = "{\"board_url\":\"b\", \"op_post_n\": 244, \"post_text\":\"первый\"}"
+payload = "{\"board_url\":\"b\", \"op_post_n\": 244, \"post_text\":\"первый\", \"post_imgs\":[]}"
 conn.request("POST", "/api/thread/post_new", payload.encode('utf-8'), headers)
 
 res = conn.getresponse()
@@ -35,7 +35,7 @@ print(data.decode("utf-8"))
 
 ###
 
-payload = "{\"board_url\":\"b\", \"op_post_n\": 244, \"post_text\":\"второй\"}"
+payload = "{\"board_url\":\"b\", \"op_post_n\": 244, \"post_text\":\"второй\", \"post_imgs\":[]}"
 conn.request("POST", "/api/thread/post_new", payload.encode('utf-8'), headers)
 
 res = conn.getresponse()
@@ -45,7 +45,7 @@ print(data.decode("utf-8"))
 
 ###
 
-payload = "{\"board_url\":\"b\", \"op_post_n\": 245, \"post_text\":\"хех, там в другом треде расчет дурочков короче идет, ахаха!\"}"
+payload = "{\"board_url\":\"b\", \"op_post_n\": 245, \"post_text\":\"хех, там в другом треде расчет дурочков короче идет, ахаха!\", \"post_imgs\":[]}"
 
 conn.request("POST", "/api/thread/post_new", payload.encode('utf-8'), headers)
 res = conn.getresponse()
@@ -55,7 +55,7 @@ print(data.decode("utf-8"))
 
 ###
 
-payload = "{\"board_url\":\"b\", \"op_post_n\": 244, \"post_text\":\"совсем уже обленились!!! третий! да! мне не лень!\"}"
+payload = "{\"board_url\":\"b\", \"op_post_n\": 244, \"post_text\":\"совсем уже обленились!!! третий! да! мне не лень!\", \"post_imgs\":[]}"
 conn.request("POST", "/api/thread/post_new", payload.encode('utf-8'), headers)
 
 res = conn.getresponse()
@@ -66,7 +66,7 @@ print(data.decode("utf-8"))
 ###
 
 for i in range(0, 50): 
-    payload = f"{{\"board_url\":\"b\", \"op_post_n\": 244, \"post_text\":\"начинаем дудос: {i}!\"}}"
+    payload = f"{{\"board_url\":\"b\", \"op_post_n\": 244, \"post_text\":\"начинаем дудос: {i}!\", \"post_imgs\":[]}}"
     conn.request("POST", "/api/thread/post_new", payload.encode('utf-8'), headers)
 
     res = conn.getresponse()
