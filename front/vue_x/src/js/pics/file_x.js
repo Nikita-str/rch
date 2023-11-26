@@ -13,6 +13,9 @@ export class FileX {
         img.src = this.url
         await img.decode()
 
+        this.orig_w = img.width
+        this.orig_h = img.height
+
         let w = img.width
         let h = img.height
         if (w < 1) { w = 1 }
@@ -72,6 +75,8 @@ export class FileX {
             file: this.base64.substring(this.base64.indexOf(',') + 1),
             compressed_file: this.compressed.substring(this.compressed.indexOf(',') + 1),
             name: this.name,
+            orig_w: this.orig_w,
+            orig_h: this.orig_h,
         }
     }
 }

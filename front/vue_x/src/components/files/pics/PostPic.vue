@@ -36,8 +36,28 @@ export default {
             let ext = img_ext_abbr(this.imgInfo.f_ty)
             return `${this.imgInfo.name}.${ext}`
         },
+        /** longest case is `99 bytes` / `99.99 MB` */
+        sz() {
+            let sz = this.imgInfo.byte_sz
+            if (!sz || sz == 0) {
+                return `o_0?`
+            } else if (sz < 100) {
+                return `${sz} bytes`
+            } else if (sz < 1024 * 100) {
+                let kb = (sz / 1024).toFixed(2)
+                return `${kb} KB`
+            } else if (sz < 1024 * 512) {
+                let kb = (sz / 1024).toFixed(0)
+                return `${kb} KB`
+            } else {
+                let mb = (sz / 1024 / 1024).toFixed(2)
+                return `${mb} MB`
+            }
+        },
         dimSz() {
-            return `${this.imgInfo.orig_w}x${this.imgInfo.orig_h}`
+            let w = this.imgInfo.w ? this.imgInfo.w : '???'
+            let h = this.imgInfo.h ? this.imgInfo.h : '???'
+            return `${w}x${h}`
         },
     }
 }
@@ -51,7 +71,7 @@ export default {
             </div>
             <div style="white-space: nowrap;">
                 <a class="post-pic-caption-ref" :href="imgPath" :title="nameFull" target="_blank">{{ nameAbbr }}</a>
-                <div class="post-pic-caption-info">{{ imgInfo.orig_kb_sz }} | {{ dimSz }}</div>
+                <div class="post-pic-caption-info">{{ sz }} | {{ dimSz }}</div>
             </div>
         </figcaption>
         <a class="post-pic-a" :href="imgPath" target="_blank">

@@ -39,10 +39,35 @@ impl ImgProccesed {
             cf_ty,
         })
     }
+
+    fn byte_sz(&self) -> u32 {
+        self.bytes.len() as u32
+    }
+}
+
+
+struct SinglePreparedImg {
+    img_p: ImgProccesed,
+    name: String,
+    w: u16,
+    h: u16,
+}
+impl SinglePreparedImg {
+    fn new(img_p: ImgProccesed, img: &PostImg) -> Self {
+        Self {
+            img_p,
+            name: img.take_valid_name(),
+            w: img.orig_w,
+            h: img.orig_h,
+        }
+    }
+    fn save(&self, dir: &str, n: u64) -> bool {
+        self.img_p.save(dir, n)
+    }
 }
 
 pub struct ImgsPreparerSealed {
-    valid: Vec<(ImgProccesed, /* name: */String)>,
+    valid: Vec<SinglePreparedImg>,
 }
 impl ImgsPreparerSealed {
     /// # why `max_imgs_n`
@@ -54,7 +79,7 @@ impl ImgsPreparerSealed {
         for img in imgs {
             if valid.len() == max_imgs_n { break }
             let Some(img_p) = ImgProccesed::try_by_post_img(img) else { continue };
-            valid.push((img_p, img.take_valid_name()))
+            valid.push(SinglePreparedImg::new(img_p, &img))
         }
         
         return Self{ valid }
@@ -68,13 +93,16 @@ impl ImgsPreparerSealed {
     pub fn to_img_load_info(self, pic_dir: &str, pic_n: std::ops::Range<u64>) -> Vec<ImgLoadInfo> {
         let valid = self.valid;
         let mut imgs = Vec::with_capacity(valid.len());
-        for (n, (img, name)) in pic_n.zip(valid.into_iter()) {
+        for (n, img) in pic_n.zip(valid.into_iter()) {
             if img.save(&pic_dir, n) {
                 imgs.push(ImgLoadInfo{
-                    name,
+                    name: img.name,
                     n,
-                    f_ty: img.f_ty.to_char(),
-                    cf_ty: img.cf_ty.to_char(),
+                    w: img.w,
+                    h: img.h,
+                    byte_sz: img.img_p.byte_sz(),
+                    f_ty: img.img_p.f_ty.to_char(),
+                    cf_ty: img.img_p.cf_ty.to_char(),
                 })
             }
         }

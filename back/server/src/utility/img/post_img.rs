@@ -7,6 +7,8 @@ pub struct PostImg {
     pub file: Base64,
     pub compressed_file: Base64,
     pub name: String,
+    pub orig_w: u16,
+    pub orig_h: u16,
 }
 
 impl PostImg {
