@@ -129,7 +129,8 @@ export default {
 }
 .post--not-op {
     border-style: solid;
-    background-color: var(--r-col-transparent-dbg);
+    /* background-color: var(--r-col-transparent-dbg); */
+    background-color: var(--r-col-bg-dark);
     border-color: var(--r-col-blue);    
 }
 

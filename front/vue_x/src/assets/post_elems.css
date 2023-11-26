@@ -1,7 +1,14 @@
 
 :root {
+    
+    /*
+    --rand-color: #88A5; 
     --spoiler-color: #B1CAE3;
-    --rand-color: #88A5;
+    */
+    /* [TO PURPLE] */
+    --rand-color: #b0b0ec; /* stay the same as `--spoiler-color` */ /* #66A5; */
+    --spoiler-color: #b0b0ec;
+    
 
     --a--nyan-color: #eb39be;
     --a--nyan-color-from: #9e68ff;
