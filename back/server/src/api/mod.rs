@@ -22,6 +22,22 @@ mod fns {
         board::upd_allow_methods(methods);
         thread::upd_allow_methods(methods);
     }
+
+    pub fn create_img_load_info(
+        state: &super::header_use::HandlerStateCommon, 
+        imgs: &Vec<crate::utility::img::PostImg>, 
+        max_imgs_n: usize
+    ) -> Vec<crate::utility::img::ImgLoadInfo> {
+        let img_preparer = crate::utility::img::ImgsPreparerSealed::new_by_imgs(imgs, max_imgs_n);
+
+        let (pic_dir, pic_n) = {
+            let mut w_state = state.write().unwrap();
+            w_state.use_n_pic(img_preparer.n_pics())
+        };
+    
+        let imgs = img_preparer.to_img_load_info(&pic_dir, pic_n);
+        imgs
+    }
 }
 
 mod header_use {
@@ -37,3 +53,5 @@ mod header_use {
 
     pub type HandlerStateCommon = Arc<RwLock<crate::app_state::CommonInfoState>>;
 }
+
+const MAX_PIC_AMOUNT: usize = 4;

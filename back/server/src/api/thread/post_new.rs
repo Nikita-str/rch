@@ -1,4 +1,7 @@
 use crate::api::header_use::*;
+use crate::api::fns::create_img_load_info;
+use crate::api::MAX_PIC_AMOUNT;
+use crate::utility::img::PostImg;
 use crate::post::Post;
 
 // ../api/thread/post_new?board_url=b&op_post_n=244&post_text=heheh%20in%20tuturu%20!!!!!!
@@ -11,12 +14,12 @@ pub struct HandlerParams{
     board_url: String,
     op_post_n: u64,
     post_text: String,
-    post_img: Option<String /* [?] Type [\?] */>,
+    post_imgs: Vec<PostImg>,
 }
 
 pub async fn handler(
     State(state): State<HandlerState>,
-    Json(params): Json<HandlerParams>,
+    Json(mut params): Json<HandlerParams>,
 ) -> Json<()>
 {
     crate::delay_ms(300);
@@ -35,8 +38,12 @@ pub async fn handler(
         preproc.preproc(&params.post_text)
     };
 
-    if params.post_img.is_some() { todo!("img case") }
-    let post = Post::new_anon(post_text, vec![]);
+    // [+] IMGS
+    params.post_imgs.truncate(MAX_PIC_AMOUNT);
+    let imgs = create_img_load_info(&state, &params.post_imgs, MAX_PIC_AMOUNT);
+    // [-] IMGS
+    
+    let post = Post::new_anon(post_text, imgs);
 
     {
         let mut w_state = state.write().unwrap();

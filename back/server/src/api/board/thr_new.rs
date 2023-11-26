@@ -1,11 +1,11 @@
 use crate::api::header_use::*;
+use crate::api::fns::create_img_load_info;
+use crate::api::MAX_PIC_AMOUNT;
+use crate::utility::img::PostImg;
 use crate::post::Post;
 use crate::KB;
-use crate::utility::img::{PostImg, ImgLoadInfo};
 
 // http://127.0.0.1:5173/api/board/thr_new?board_url=b&post_header=Post%20Header&post_text=tuturu
-
-const MAX_PIC_AMOUNT: usize = 4;
 
 pub const REQ_METHOD: Method = Method::POST;
 pub type HandlerState = HandlerStateCommon;
@@ -22,35 +22,6 @@ pub struct HandlerParams {
 pub struct ResultOk {
     thrs: Vec<Vec<Post>>,
 }
-
-pub struct ImgProccesed {
-    pub bytes: Vec<u8>,
-    pub compressed_bytes: Vec<u8>,
-    pub f_ty: crate::utility::img::ImgType,
-    pub cf_ty: crate::utility::img::ImgType,
-}
-
-
-impl ImgProccesed {
-    fn save_prepared(bytes: &Vec<u8>, ty: crate::utility::img::ImgType, dir: &str, n: u64, compress: bool) -> bool {
-        use std::io::Write;
-
-        let postfix = if compress { "_c" } else { "" };
-        let ext = ty.to_format();
-        let path = format!("{dir}/{n}{postfix}.{ext}");
-        
-        let Ok(mut f) = std::fs::File::create(path) else { return false };
-        let Ok(_) = f.write_all(&bytes) else { return false };
-        true
-    }
-
-    #[must_use]
-    pub fn save(&self, dir: &str, n: u64) -> bool {
-        Self::save_prepared(&self.compressed_bytes, self.cf_ty, dir, n, true)
-        && Self::save_prepared(&self.bytes, self.f_ty, dir, n, false)
-    }
-}
-
 
 pub async fn handler(
     // Query(params): Query<HandlerParams>,
@@ -69,41 +40,12 @@ pub async fn handler(
         }
     }
 
+    // [+] IMGS
     params.post_imgs.truncate(MAX_PIC_AMOUNT);
-    let mut valid = Vec::with_capacity(MAX_PIC_AMOUNT);
-    // let in_valid = Vec::with_capacity(params.post_imgs.len()); //TODO: for notify about unloaded imgs
-    for img in &params.post_imgs {
-        if valid.len() == MAX_PIC_AMOUNT { break }
+    let imgs = create_img_load_info(&state, &params.post_imgs, MAX_PIC_AMOUNT);
+    // [-] IMGS
 
-        if img.size_verify() {
-            let Some((cf_ty, compressed_bytes)) = crate::utility::img::base_to_img(&img.compressed_file) else { continue };
-            let Some((f_ty, bytes)) = crate::utility::img::base_to_img(&img.file) else { continue };
-            valid.push((ImgProccesed{
-                bytes,
-                compressed_bytes,
-                f_ty,
-                cf_ty,
-            }, img.take_valid_name()))
-        }
-    }
-
-    let (pic_dir, n) = {
-        let mut w_state = state.write().unwrap();
-        w_state.use_n_pic(valid.len() as u64)
-    };
-
-    let mut imgs = Vec::with_capacity(valid.len());
-    for (n, (img, name)) in n.zip(valid.into_iter()) {
-        if img.save(&pic_dir, n) {
-            imgs.push(ImgLoadInfo{
-                name,
-                n,
-                f_ty: img.f_ty.to_char(),
-                cf_ty: img.cf_ty.to_char(),
-            })
-        }
-    }
-
+    // [+] HEADER
     let post_header = {
         macro_rules! make_valid_s {
             ($s:expr) => {{
@@ -125,6 +67,7 @@ pub async fn handler(
         };
         preproc.preproc(&header)
     };
+    // [-] HEADER
 
     let post_text = {
         // TODO: Pool of preproc?!
