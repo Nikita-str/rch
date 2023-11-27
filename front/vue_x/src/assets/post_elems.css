@@ -80,7 +80,50 @@ span.P-a-cat {
 }
 /* <span class=\"P-a-cat\">:3</span>" */
 
+/* for d in ds: print("span.P-d"+str(d), end = ', ') */
+span.P-d4, span.P-d6, span.P-d8, span.P-d10, span.P-d12, span.P-d20, span.P-d100 {
+    margin-left: 0.1em;
+    margin-right: 0.1em;
+    padding-left: 0.4em;
+    padding-right: 0.4em;
 
+    font-weight: bold;
+  
+    -webkit-clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
+    clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
+
+    /* clip-path: polygon(20% 0, 80% 0, 100% 20%, 100% 80%, 80% 100%, 20% 100%, 0 80%); */
+    /* clip-path: polygon(50% 0%, 100% 38%, 82% 100%, 18% 100%); // 5gon */
+    /* clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%); // 6gon */
+    /* clip-path: polygon(20% 0, 0 50%, 20% 100%, 80% 100%, 100% 50%, 80% 0); // 6gon */
+}
+span.P-d4, span.P-d6, span.P-d8, span.P-d10, span.P-d12 {
+    color: #5555F0;
+}
+span.P-d4 {
+    background-color: #FC0;
+}
+span.P-d6 {
+    background-color: #880C0C;
+}
+span.P-d8 {
+    background-color: #FA8A1A;
+}
+span.P-d10 {
+    background-color: #6B9;
+}
+span.P-d12 {
+    background-color: #1ADAFA;
+}
+span.P-d20 {
+    background-color: #9038A0;
+    color: #1ADAFA;  
+}
+span.P-d100 {
+    background-color: #000;
+    color: #1ADAFA;  
+}
+/* <span class="P-d6" title="d6">3</span> */
 
 /* `E` stands for `elememnt` */
 :root {
