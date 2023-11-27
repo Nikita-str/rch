@@ -40,6 +40,8 @@ span.P-rand {
     color: var(--r-col-crab-light);
 }
 span.P-rand, span.H-rand {
+    display: inline-block;
+
     margin-left: 0.1em;
     margin-right: 0.1em;
     background-color: var(--rand-color);
@@ -82,6 +84,8 @@ span.P-a-cat {
 
 /* for d in ds: print("span.P-d"+str(d), end = ', ') */
 span.P-d4, span.P-d6, span.P-d8, span.P-d10, span.P-d12, span.P-d20, span.P-d100 {
+    display: inline-block;
+
     margin-left: 0.1em;
     margin-right: 0.1em;
     padding-left: 0.4em;
