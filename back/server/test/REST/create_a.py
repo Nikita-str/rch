@@ -1,6 +1,4 @@
-import http.client
-
-conn = http.client.HTTPConnection("127.0.0.1:5173")
+from rest import conn 
 
 board_url = "a"
 op_post = 30

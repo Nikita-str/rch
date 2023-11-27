@@ -5,6 +5,7 @@ mod thread;
 mod thread_usage_rate;
 mod preproc;
 mod utility;
+mod config;
 
 const VUE_DIST_PATH: &str = "../../front/vue_x/dist";
 // const PIC_PATH: &str = "../../front/vue_x/dist/imgs/pp"; // pp stands for post pics 
@@ -191,7 +192,10 @@ mod fns {
         let router = router.nest("/api", api::router(&state_all));
         let router = router.layer(cors).into_make_service();
 
-        let server = Server::bind(&"127.0.0.1:5173".parse().unwrap());
+        let config = crate::config::Config::open().unwrap();
+        config.gen_rest_test_py().unwrap();
+        let addr = config.socket_addr().unwrap();
+        let server = Server::bind(&addr);
         let server = server.serve(router);
 
         let upd_speed_post_loop = upd_speed_post_loop(&state_all, dt_sec / 2);
