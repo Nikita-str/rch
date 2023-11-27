@@ -4,10 +4,11 @@
 
     import PostingFormButton from "./micro/PostingFormButton.vue";
     import DragAndDropField from "./files/pics/DragAndDropField.vue";
-    import {REJECT_TY} from "./files/pics/DragAndDropField.vue";
+    import { make_reject_notify_txt } from "./files/pics/DragAndDropField.vue";
     import DragAndDropFieldX from "./files/DragAndDropField.vue";
 
     import { FileX } from "../js/pics/file_x";
+    import { notific_ctor, NOTIFIC_TY_WARN } from "../js/elems/notific";
     import PicView from "./files/pics/View.vue";
 
     const SUBJ_MAX_LEN = 80;
@@ -114,6 +115,9 @@ export default {
         },
         onRejected(files) {
             console.log('TODO:DEL:[REJECT]:', files)
+            for (const file of files) {
+                notific_ctor(NOTIFIC_TY_WARN, make_reject_notify_txt(file), 4_000)
+            }
         },
         onCancel(index) {
             console.log('TODO:DEL:[CANCEL]', index)

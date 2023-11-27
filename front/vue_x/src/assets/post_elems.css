@@ -1,6 +1,5 @@
 
 :root {
-    
     /*
     --rand-color: #88A5; 
     --spoiler-color: #B1CAE3;
@@ -80,3 +79,33 @@ span.P-a-cat {
     color: #fff;
 }
 /* <span class=\"P-a-cat\">:3</span>" */
+
+
+
+/* `E` stands for `elememnt` */
+:root {
+    --E--notific-err-bg: #EECCEE;
+    --E--notific-err-border: #E8A8DD;
+
+    --E--notific-warn-bg: #FFEEC0;
+    --E--notific-warn-border: #875B93;
+    
+    --E--notific-info-bg: #D6E8FF;
+    --E--notific-info-border: #98A0D8;
+}
+.E-notific {
+    height: 1.5em;
+    min-width: 1.2em;
+    max-width: 80vw;
+    position: fixed;
+    padding: 2px;
+    right: 0.6em;
+    /* font-weight: bold; */
+    color: var(--r-col-bg-light-blue);
+    border: solid 2px;
+    line-height: 1;
+    font-size: 1em;
+    white-space: nowrap;
+    overflow-x: hidden;
+    z-index: 20;
+}

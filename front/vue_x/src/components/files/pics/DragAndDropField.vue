@@ -66,6 +66,22 @@ export const REJECT_TY = 'BAD_TY'
 export const REJECT_PIC_QTY = 'PIC_QTY'
 export const REJECT_TOTAL_SZ = 'TOTAL_SZ'
 export const REJECT_SINGLE_SZ = 'SINGLE_SZ'
+
+export function make_reject_notify_txt(rej_info) {
+    let name = rej_info.name
+    if (rej_info.err == REJECT_TY) {
+        return `чо ето за формат ${name} ты чо дебил?!`
+    }
+    if (rej_info.err == REJECT_PIC_QTY) {
+        return `многовато файлов: '${name}' не приму`
+    }
+    if (rej_info.err == REJECT_TOTAL_SZ) {
+        return `перегруз: файл ${name} не приму`
+    }
+    if (rej_info.err == REJECT_SINGLE_SZ) {
+        return `${name} много весит — не поднять`
+    }
+}
 </script>
 
 
