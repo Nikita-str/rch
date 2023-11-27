@@ -6,3 +6,4 @@ test/REST/*
 !test/REST/create_a.py
 !test/REST/create_b.py
 !test/REST/create_b_threads.py
+!test/REST/create_rp.py
