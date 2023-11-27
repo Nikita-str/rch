@@ -8,6 +8,7 @@ use crate::preproc::board_specific as board;
 use board::a::Cat as CatFromA;
 use board::a::Nyan as NyanFromA;
 use board::a::Kawaii as KawaiiFromA;
+use board::rp::StdDices as StdDicesFromRp;
 
 macro_rules! all_gen {
     ($name:ident $type_enum_name:ident [$( $preproc:ident; )*]) => {
@@ -65,6 +66,9 @@ all_gen!{
 
         // board = `/a/`
         CatFromA; NyanFromA; KawaiiFromA;
+        
+        // board = `/rp/`
+        StdDicesFromRp;
     ]
 }
 
@@ -85,6 +89,8 @@ pub enum AllPreprocCtor {
     CatFromA,
     NyanFromA,
     KawaiiFromA,
+
+    StdDicesFromRp,
 }
 
 impl AllPreprocCtor {
@@ -131,6 +137,8 @@ impl AllPreproc {
             AllPreprocCtor::CatFromA => Self::CatFromA(CatFromA::default()),
             AllPreprocCtor::NyanFromA => Self::NyanFromA(NyanFromA::default()),
             AllPreprocCtor::KawaiiFromA => Self::KawaiiFromA(KawaiiFromA::default()),
+
+            AllPreprocCtor::StdDicesFromRp => Self::StdDicesFromRp(StdDicesFromRp::default()),
         }
     }
 }

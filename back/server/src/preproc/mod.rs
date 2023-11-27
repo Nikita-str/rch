@@ -23,6 +23,18 @@ mod inner {
         Maybe,
         Matched,
     }
+    impl PreprocVerdict {
+        /// # return 
+        /// * `Self::Matched` if `matched`
+        /// * `Self::Maybe` otherwise
+        #[inline]
+        pub fn new(matched: bool) -> Self {
+            match matched {
+                true => Self::Matched,
+                _ => Self::Maybe,
+            }
+        }
+    }
 
     pub trait Preproc<State = ()> {
         /// called on end of stream: we need close all open tag or smth like this

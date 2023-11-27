@@ -100,6 +100,14 @@ mod fns {
                 Board::new(url, name, descr, post_qty, small_thr_qty),
                 Some(tag.clone()),
             );
+            let url = "rp".into();
+            let name = "role play".into();
+            let descr = "кидани d20 на капчевание в часах!".into();
+            let post_qty = 7;
+            open_boards.add_board(
+                Board::new(url, name, descr, post_qty, small_thr_qty),
+                Some(tag.clone()),
+            );
             
             let tag = crate::app_state::open_boards::BoardTag { tag: "Всякое".into() };
             let url = "car".into();

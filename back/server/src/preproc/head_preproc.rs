@@ -6,6 +6,14 @@ pub enum StdHeadPreprocType {
     Std,
     Header,
 }
+impl StdHeadPreprocType {
+    pub fn new(header: bool) -> Self {
+        match header {
+            true => Self::Header,
+            _ => Self::Std,
+        }
+    }
+}
 
 // pub struct HeadPreproc {
 //     preprocers: Vec<Box<dyn Preproc>>, // OR `Vec<enum AllPreproc>`,
@@ -51,6 +59,11 @@ impl HeadPreproc {
 
     pub fn new_by_board(board: &str, header: bool) -> Self {
         match (board, header) {
+            ("rp", _) => {
+                let mut head_preproc = Self::new_std(StdHeadPreprocType::new(header));              
+                head_preproc.add_preproc(AllPreprocCtor::StdDicesFromRp); // can be both in Header and in Msg
+                head_preproc
+            }
             ("a", false) => {
                 let mut head_preproc = Self::new_std(StdHeadPreprocType::Std);
                 head_preproc.add_preproc(AllPreprocCtor::CatFromA);
