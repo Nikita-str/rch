@@ -124,7 +124,14 @@
         back-link-text="выяс>>ня<<ть"
     />
     <div class="board-inner" v-else-if="boardExist.name">
-        <BoardHeader :boardName="boardExist.name" :boardUrl="boardUrl" :isCatalog="true" :onNewThrClick="onNewThrClick" headerNewMsg="Ответить в тред" />
+        <BoardHeader 
+            :boardName="boardExist.name" 
+            :boardUrl="boardUrl" 
+            :isCatalog="true" 
+            :onNewThrClick="onNewThrClick" 
+            headerNewMsg="Ответить в тред" 
+            :offNewMsg="err ? 'Некуда отвечать' : (posts ? null : '???')"
+        />
         <ThreadBar :upperBar="true" :onUpdate="thrLoad" :curLoad="curLoad" />
 
         <AwaitDots v-if="posts === null && err === null" />

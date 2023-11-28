@@ -25,6 +25,11 @@ export default {
             type: String,
             default: "Создать тред",
         },
+        offNewMsg: {
+            type: String,
+            default: null,
+        },
+
     },
     computed: {
         catalogRouteTo() {
@@ -42,7 +47,12 @@ export default {
         <router-link v-if="isCatalog" class="b-head-catalog" :to="'/'+boardUrl+'/'">←←← на доску</router-link>
         <router-link v-else           class="b-head-catalog"   to="catalog/" append>→→→ каталог ←←←</router-link>
         
-        <div class="b-head-new-thr">[<span @click="onNewThrClick"><router-link to="" append>{{headerNewMsg}}</router-link></span>]</div>
+        <div class="b-head-new-thr">
+            <span>[</span>
+            <span v-if="!offNewMsg" @click="onNewThrClick"><router-link to="" append>{{headerNewMsg}}</router-link></span>
+            <span v-else style="font-weight: bold;">{{offNewMsg}}</span>
+            <span>]</span>
+        </div>
         <HorizontalLine />
     </div>
 </template>
