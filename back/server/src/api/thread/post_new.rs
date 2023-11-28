@@ -27,8 +27,11 @@ pub async fn handler(
 
     {
         let r_state = state.read().unwrap();
-        if !r_state.open_boards().is_board_exist(board_url) {
-            return Json(()) // ERROR
+        let Some(board) = r_state.open_boards().board(board_url) else { 
+            return Json(()) // ERROR // no board
+        };
+        if board.thr(params.op_post_n).is_none() {
+            return Json(()) // ERROR // no OP
         }
     }
 
