@@ -28,8 +28,8 @@ export default {
 
         cursor: pointer;
 
-        width: 1.6em;
-        height: 1.6em;
+        width: 1.8em;
+        height: 1.8em;
         display: inline-block;
         
         text-align: center;

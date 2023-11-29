@@ -82,6 +82,19 @@ span.P-a-cat {
 }
 /* <span class=\"P-a-cat\">:3</span>" */
 
+
+:root {
+    --rp--d-txt: #5555F0;
+    --rp--dx-txt: #1ADAFA;
+
+    --rp--d4-bg: #FC0;
+    --rp--d6-bg: #880C0C;
+    --rp--d8-bg: #FA8A1A;
+    --rp--d10-bg: #6B9;
+    --rp--d12-bg: #1ADAFA;
+    --rp--d20-bg: #9038A0;
+    --rp--d100-bg: #000;
+}
 /* for d in ds: print("span.P-d"+str(d), end = ', ') */
 span.P-d4, span.P-d6, span.P-d8, span.P-d10, span.P-d12, span.P-d20, span.P-d100 {
     display: inline-block;
@@ -102,32 +115,21 @@ span.P-d4, span.P-d6, span.P-d8, span.P-d10, span.P-d12, span.P-d20, span.P-d100
     /* clip-path: polygon(20% 0, 0 50%, 20% 100%, 80% 100%, 100% 50%, 80% 0); // 6gon */
 }
 span.P-d4, span.P-d6, span.P-d8, span.P-d10, span.P-d12 {
-    color: #5555F0;
+    color: var(--rp--d-txt);
 }
-span.P-d4 {
-    background-color: #FC0;
+span.P-d20, span.P-d100 {
+    color: var(--rp--dx-txt);
 }
-span.P-d6 {
-    background-color: #880C0C;
-}
-span.P-d8 {
-    background-color: #FA8A1A;
-}
-span.P-d10 {
-    background-color: #6B9;
-}
-span.P-d12 {
-    background-color: #1ADAFA;
-}
-span.P-d20 {
-    background-color: #9038A0;
-    color: #1ADAFA;  
-}
-span.P-d100 {
-    background-color: #000;
-    color: #1ADAFA;  
-}
+span.P-d4 { background-color: var(--rp--d4-bg); }
+span.P-d6 { background-color: var(--rp--d6-bg); }
+span.P-d8 { background-color: var(--rp--d8-bg); }
+span.P-d10 { background-color: var(--rp--d10-bg); }
+span.P-d12 { background-color: var(--rp--d12-bg); }
+span.P-d20 { background-color: var(--rp--d20-bg); }
+span.P-d100 { background-color: var(--rp--d100-bg); }
 /* <span class="P-d6" title="d6">3</span> */
+
+
 
 /* `E` stands for `elememnt` */
 :root {
