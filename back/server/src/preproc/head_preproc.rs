@@ -1,5 +1,5 @@
 use std::collections::HashSet;
-use super::{Span, Preproc, PreprocVerdict, Tokenizer};
+use super::{Span, Preproc, PreprocVerdict, SimpleTokenizer};
 use crate::preproc::all_available_preproc::*;
 
 pub enum StdHeadPreprocType {
@@ -106,7 +106,7 @@ impl HeadPreproc {
         
         let state = ();
         let mut output = Self::init_output(input); 
-        let mut tokenizer = Tokenizer::new(input);
+        let mut tokenizer = SimpleTokenizer::new(input);
         
         let mut unwrited_span = Span::new_empty(0);
         let mut prev_is_maybe = HashSet::new();

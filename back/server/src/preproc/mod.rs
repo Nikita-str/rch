@@ -10,7 +10,7 @@ mod tokenizer;
 mod span;
 
 use span::Span;
-use tokenizer::Tokenizer;
+use tokenizer::SimpleTokenizer;
 use inner::{Preproc, PreprocVerdict};
 
 mod all_available_preproc;
