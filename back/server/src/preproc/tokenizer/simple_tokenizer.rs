@@ -55,7 +55,7 @@ impl<'s> SimpleTokenizer<'s> {
         
         return SimpleToken {
             token,
-            ty: seq_type
+            ty: seq_type.unwrap_or(SimpleTokenType::Empty),
         }
     }
 

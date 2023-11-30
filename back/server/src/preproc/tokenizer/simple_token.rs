@@ -8,6 +8,11 @@ pub enum SimpleTokenType {
     Spaces,
     NewLine,
     SpecialChar,
+
+    /// aka EOF (EOS acrually // end of stream)
+    Empty,
+    Unkn,
+    // Err,
 }
 
 impl SimpleTokenType {
@@ -20,15 +25,31 @@ impl SimpleTokenType {
             _ => false,
         }
     }
+
+    pub const fn is_eof(self) -> bool {
+        matches!(self, Self::Empty)
+    }
+    
+    pub const fn is_unkn(self) -> bool {
+        matches!(self, Self::Unkn)
+    }
 }
 
 #[derive(Debug, Clone)]
 pub struct SimpleToken<'s> {
     pub token: Token<'s>,
-    pub ty: Option<SimpleTokenType>,
+    pub ty: SimpleTokenType,
 }
 impl<'s> SimpleToken<'s> {
     pub fn span(&self) -> Span {
         self.token.span
+    }
+
+    pub fn is_eof(&self) -> bool {
+        self.ty.is_eof()
+    }
+
+    pub const fn is_empty_std_predicate(&self) -> bool {
+        self.ty.is_eof() || (self.ty.is_unkn() && self.token.token.is_empty())
     }
 }

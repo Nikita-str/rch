@@ -7,11 +7,17 @@ pub struct MultiToken<'s> {
     tokens: VecDeque<SimpleToken<'s>>,
 }
 
+const DFAULT_CAPACITY: usize = 16;
+
 impl<'s> MultiToken<'s> {
+    pub fn new_empty() -> Self {
+        Self { tokens: VecDeque::with_capacity(DFAULT_CAPACITY) }
+    }
+
     pub fn new_single(token: SimpleToken<'s>) -> Self {
-        let mut tokens = VecDeque::new();
-        tokens.push_back(token);
-        Self { tokens }
+        let mut ret = Self::new_empty();
+        ret.add_token(token);
+        ret
     }
 
     pub fn add_token(&mut self, token: SimpleToken<'s>) {
@@ -27,6 +33,14 @@ impl<'s> MultiToken<'s> {
 
     pub fn first_token_ref(&self) -> &SimpleToken {
         self.tokens.front().unwrap()
+    }
+
+    pub fn use_n(&mut self, n: usize) {
+        self.tokens.drain(0..n);
+    }
+    
+    pub fn remove_first(&mut self) -> Option<SimpleToken<'s>> {
+        self.tokens.pop_front()
     }
 }
 
