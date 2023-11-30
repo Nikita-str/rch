@@ -48,3 +48,11 @@ conn.request("POST", "/api/thread/post_new", payload.encode('utf-8'), headers)
 resp(conn)
 
 ###
+
+post_text = """> hehe\\n > > haha\\n>~< heh\\n>~< > hah\\nwahahah"""
+
+payload = f"{{\"board_url\":\"{board_url}\", \"op_post_n\": {op_post}, \"post_text\":\"{post_text}\", \"post_imgs\":[]}}"
+conn.request("POST", "/api/thread/post_new", payload.encode('utf-8'), headers)
+resp(conn)
+
+###
