@@ -26,6 +26,10 @@ impl SimpleTokenType {
         }
     }
 
+    pub const fn is_number(self) -> bool {
+        matches!(self, Self::Number)
+    }
+
     pub const fn is_spaces(self) -> bool {
         matches!(self, Self::Spaces)
     }

@@ -93,10 +93,10 @@ impl Preproc for KawaiiPreproc {
     
     fn state_upd_multi_token(&mut self, token: &crate::preproc::tokenizer::MultiToken) -> PreprocVerdictInfo {
         let kawaii_center = |s:&str|s == "~" || s == "w" || s == ".";
-        let center = token.test_token_seq_never_empty(&[
-            &|t|t.token() == ">",
-            &|t|kawaii_center(t.token()),
-            &|t|t.token() == "<",
+        let center = token.test_token_seq_never_empty(&mut[
+            &mut|t|t.token() == ">",
+            &mut|t|kawaii_center(t.token()),
+            &mut|t|t.token() == "<",
         ]);
         if center {
             self.is_xd = true;

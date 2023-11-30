@@ -58,11 +58,11 @@ impl<'s> MultiToken<'s> {
         self.tokens.get(index)
     }
     
-    pub fn test_token_seq_never_empty(&self, predicates: &[&dyn Fn(&SimpleToken<'s>) -> bool]) -> bool {
+    pub fn test_token_seq_never_empty(&self, predicates: &mut[&mut dyn FnMut(&SimpleToken<'s>) -> bool]) -> bool {
         self.test_token_seq(predicates, SimpleToken::is_empty_never_predicate)
     }
 
-    pub fn test_token_seq<IsEmpty: Fn(&SimpleToken<'s>) -> bool>(&self, predicates: &[&dyn Fn(&SimpleToken<'s>) -> bool], is_empty: IsEmpty) -> bool {
+    pub fn test_token_seq<IsEmpty: Fn(&SimpleToken<'s>) -> bool>(&self, predicates: &mut[&mut dyn FnMut(&SimpleToken<'s>) -> bool], is_empty: IsEmpty) -> bool {
         if self.tokens.len() < predicates.len() { return false }
 
         let mut index = 0;

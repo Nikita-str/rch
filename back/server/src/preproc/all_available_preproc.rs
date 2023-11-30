@@ -1,4 +1,4 @@
-use crate::preproc::general::{QuotePreproc};
+use crate::preproc::general::{QuotePreproc, ReplyPreproc};
 use crate::preproc::general::{Bold, Italic, Strike, Spoiler};
 use crate::preproc::general::{SubText, SupText};
 use crate::preproc::general::{NewLinePreproc as NewLine, ReservedSymbsPreproc as ReservedSymbs};
@@ -79,7 +79,7 @@ macro_rules! all_gen {
 
 all_gen!{
     AllPreproc AllPreprocType [
-        QuotePreproc;
+        QuotePreproc; ReplyPreproc;
         Bold; Italic; Strike; Spoiler;
         SupText; SubText;
         NewLine; ReservedSymbs;
@@ -95,7 +95,8 @@ all_gen!{
 
 pub enum AllPreprocCtor {
     QuotePreproc,
-    
+    ReplyPreproc,
+
     Bold{ ignore: bool },
     Italic{ ignore: bool },
     Strike{ ignore: bool },
@@ -133,6 +134,7 @@ impl AllPreproc {
     pub fn new(ctor: AllPreprocCtor) -> Self {
         match ctor {
             AllPreprocCtor::QuotePreproc => Self::QuotePreproc(QuotePreproc::default()),
+            AllPreprocCtor::ReplyPreproc => Self::ReplyPreproc(ReplyPreproc::default()),
 
             AllPreprocCtor::Bold { ignore } => all_preproc_new!(IGN Bold ignore),
             AllPreprocCtor::Italic { ignore } => all_preproc_new!(IGN Italic ignore),

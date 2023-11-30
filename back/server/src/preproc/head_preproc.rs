@@ -39,7 +39,13 @@ impl HeadPreproc {
             StdHeadPreprocType::Header => (true, true, RandomMode::HeaderClass),
         };
         
-        self.add_preproc(AllPreprocCtor::QuotePreproc);
+        match std_ty {
+            StdHeadPreprocType::Std => {
+                self.add_preproc(AllPreprocCtor::ReplyPreproc);
+                self.add_preproc(AllPreprocCtor::QuotePreproc);
+            }
+            _ => {}
+        }
 
         self.add_preproc(AllPreprocCtor::Bold { ignore });
         self.add_preproc(AllPreprocCtor::Italic { ignore });
