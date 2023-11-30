@@ -31,6 +31,24 @@ resp(conn)
 
 ###
 
+post_text = """> hehe\\n > > haha\\n>~< heh\\n>~< > hah\\nwahahah"""
+
+payload = f"{{\"board_url\":\"{board_url}\", \"op_post_n\": {op_post}, \"post_text\":\"{post_text}\", \"post_imgs\":[]}}"
+conn.request("POST", "/api/thread/post_new", payload.encode('utf-8'), headers)
+resp(conn)
+
+###
+
+###
+
+post_text = """>>30\\n>>39\\n>>32>>31\\n>>~<<\\n>heheh"""
+
+payload = f"{{\"board_url\":\"{board_url}\", \"op_post_n\": {op_post}, \"post_text\":\"{post_text}\", \"post_imgs\":[]}}"
+conn.request("POST", "/api/thread/post_new", payload.encode('utf-8'), headers)
+resp(conn)
+
+###
+
 payload = f"{{\"board_url\":\"{board_url}\", \"op_post_n\": {op_post}, \"post_text\":\"cute-kawaii\\ncute-kawaii\\ncute-kawaii\\ncute-kawaii\\ncute-kawaii\\ncute-kawaii\", \"post_imgs\":[]}}"
 conn.request("POST", "/api/thread/post_new", payload.encode('utf-8'), headers)
 resp(conn)
@@ -44,14 +62,6 @@ resp(conn)
 ###
 
 payload = f"{{\"board_url\":\"{board_url}\", \"op_post_n\": {op_post}, \"post_text\":\"~~няв мяв няк~~\\nя все сказал\\n~~nyaaa~~\", \"post_imgs\":[]}}"
-conn.request("POST", "/api/thread/post_new", payload.encode('utf-8'), headers)
-resp(conn)
-
-###
-
-post_text = """> hehe\\n > > haha\\n>~< heh\\n>~< > hah\\nwahahah"""
-
-payload = f"{{\"board_url\":\"{board_url}\", \"op_post_n\": {op_post}, \"post_text\":\"{post_text}\", \"post_imgs\":[]}}"
 conn.request("POST", "/api/thread/post_new", payload.encode('utf-8'), headers)
 resp(conn)
 
