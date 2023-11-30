@@ -67,7 +67,7 @@ impl Preproc for CatPreproc {
         output.push_str(&matched_tokens[case.word().len()..]);
     }
 
-    fn state_upd(&mut self, token: &str) -> PreprocVerdict {
+    fn state_upd_str(&mut self, token: &str) -> PreprocVerdict {
         self.case = CatCase::from_token(token);
         if self.case.is_some() {
             PreprocVerdict::Matched

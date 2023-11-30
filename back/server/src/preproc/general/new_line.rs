@@ -23,7 +23,7 @@ impl Preproc for NewLinePreproc {
         }
     }
 
-    fn state_upd(&mut self, token: &str) -> PreprocVerdict {
+    fn state_upd_str(&mut self, token: &str) -> PreprocVerdict {
         if token == "\n" {
             PreprocVerdict::Matched
         } else {

@@ -5,7 +5,7 @@ fn test_helper(s: &str, expected_tokens: &[(usize, &str)]) {
 
     let mut prev_pos = 0;
     for x in expected_tokens {
-        let token = tokenizer.next_token();
+        let token = tokenizer.next_token().token;
         assert_eq!(token, ((prev_pos, x.0), x.1));
         if prev_pos == x.0 {
             assert!(tokenizer.is_ended());
@@ -75,9 +75,9 @@ fn test_tokenizer_03() {
     let expected_words = s.split(' ');
     let mut tokenizer = SimpleTokenizer::new(s);
     for word in expected_words {
-        let mut token = tokenizer.next_token();
+        let mut token = tokenizer.next_token().token;
         if token.token == " " {
-            token = tokenizer.next_token()
+            token = tokenizer.next_token().token
         }
         assert_eq!(token.token, word)
     }

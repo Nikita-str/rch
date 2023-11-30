@@ -116,7 +116,7 @@ impl Preproc for __InnerPreproc {
         };
     }
 
-    fn state_upd(&mut self, token: &str) -> PreprocVerdict {
+    fn state_upd_str(&mut self, token: &str) -> PreprocVerdict {
         let state = self.state.state_upd(token);
         if state.is_err() {
             return PreprocVerdict::No

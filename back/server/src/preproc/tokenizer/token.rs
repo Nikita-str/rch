@@ -1,6 +1,6 @@
 use crate::preproc::Span;
 
-#[derive(Debug)]
+#[derive(Debug, Clone)]
 pub struct Token<'s> {
     pub token: &'s str,
     pub span: Span,

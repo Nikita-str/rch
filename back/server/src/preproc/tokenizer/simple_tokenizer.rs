@@ -1,26 +1,7 @@
 use crate::preproc::Span;
 use crate::preproc::tokenizer::Token;
+use crate::preproc::tokenizer::simple_token::{SimpleToken, SimpleTokenType};
 
-#[derive(Clone, Copy, PartialEq, Eq)]
-enum CharSeqType {
-    Number,
-    Text,
-    Spaces,
-    NewLine,
-    SpecialChar,
-}
-
-impl CharSeqType {
-    fn is_single_char_seq(self) -> bool {
-        match self {
-            | Self::SpecialChar 
-            | Self::NewLine
-            => true,
-
-            _ => false,
-        }
-    }
-}
 
 pub struct SimpleTokenizer<'s> {
     token_stream: &'s str,
@@ -35,17 +16,17 @@ impl<'s> SimpleTokenizer<'s> {
         }
     }
 
-    pub fn next_token(&mut self) -> Token<'s> {
+    pub fn next_token(&mut self) -> SimpleToken<'s> {
         let token_stream = &self.token_stream[self.byte_pos..];
-        let mut seq_type: Option<CharSeqType> = None;
+        let mut seq_type: Option<SimpleTokenType> = None;
         let mut span = Span::new_empty(self.byte_pos);
         for c in token_stream.chars() {
             let c_type = match c {
-                '\n' => CharSeqType::NewLine,
-                '0'..='9' => CharSeqType::Number,
-                c if c.is_ascii_punctuation() => CharSeqType::SpecialChar,
-                c if c.is_whitespace() => CharSeqType::Spaces,
-                _ => CharSeqType::Text,
+                '\n' => SimpleTokenType::NewLine,
+                '0'..='9' => SimpleTokenType::Number,
+                c if c.is_ascii_punctuation() => SimpleTokenType::SpecialChar,
+                c if c.is_whitespace() => SimpleTokenType::Spaces,
+                _ => SimpleTokenType::Text,
             };
             
             let finish;
@@ -67,9 +48,14 @@ impl<'s> SimpleTokenizer<'s> {
             if finish { break; }
         }
 
-        return Token {
+        let token = Token {
             token: span.extract_str(self.token_stream),
             span,
+        };
+        
+        return SimpleToken {
+            token,
+            ty: seq_type
         }
     }
 

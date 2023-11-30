@@ -111,7 +111,8 @@ impl HeadPreproc {
         let mut unwrited_span = Span::new_empty(0);
         let mut prev_is_maybe = HashSet::new();
         loop {
-            let token = tokenizer.next_token();
+            // let token = tokenizer.next_token();
+            let token = tokenizer.next_token().token;
             let (token, token_span) = (token.token, token.span);
             
             if token.is_empty() {
@@ -139,11 +140,11 @@ impl HeadPreproc {
                     }};
                 }
 
-                match preproc.state_upd(token) {
+                match preproc.state_upd_str(token) {
                     PreprocVerdict::No => {
                         preproc.reset();
                         if prev_is_maybe.remove(&iprep) {
-                            match preproc.state_upd(token) {
+                            match preproc.state_upd_str(token) {
                                 PreprocVerdict::No => {}
                                 PreprocVerdict::Maybe => {
                                     cur_token_in_use = true;

@@ -48,7 +48,7 @@ impl Preproc for KawaiiPreproc {
         output.push_str("</span>");
     }
 
-    fn state_upd(&mut self, token: &str) -> PreprocVerdict {
+    fn state_upd_str(&mut self, token: &str) -> PreprocVerdict {
         match (self.state, token) {
             (
                 State::NotStarted,

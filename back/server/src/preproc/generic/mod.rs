@@ -18,7 +18,7 @@ macro_rules! define_opcl {
 
         impl Preproc<State> for __InnerPreproc {
             fn reset(&mut self) { }
-            fn state_upd(&mut self, token: &str) -> PreprocVerdict {
+            fn state_upd_str(&mut self, token: &str) -> PreprocVerdict {
                 match token {
                     $( | $expect_inner )* => PreprocVerdict::Matched,
                     _ => PreprocVerdict::No,
@@ -57,7 +57,7 @@ macro_rules! define_opcl {
 
         impl Preproc<State> for __InnerPreproc {
             fn reset(&mut self) { }
-            fn state_upd(&mut self, token: &str) -> PreprocVerdict {
+            fn state_upd_str(&mut self, token: &str) -> PreprocVerdict {
                 match token {
                     $( | $expect_inner )* => PreprocVerdict::Matched,
                     _ => PreprocVerdict::No,

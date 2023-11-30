@@ -166,7 +166,7 @@ impl<Inner: Preproc<InnerState> + Default> Preproc for OpclPreproc<Inner> {
         self.changed = false;
     }
 
-    fn state_upd(&mut self, token: &str) -> PreprocVerdict {
+    fn state_upd_str(&mut self, token: &str) -> PreprocVerdict {
         if !self.cur_inner {
             if self.state.transfer_ctrl_to_inner(token) {
                 self.cur_inner = true;
@@ -188,7 +188,7 @@ impl<Inner: Preproc<InnerState> + Default> Preproc for OpclPreproc<Inner> {
                 return PreprocVerdict::Matched
             }
         } else {
-            match self.inner.state_upd(token) {
+            match self.inner.state_upd_str(token) {
                 PreprocVerdict::No => return PreprocVerdict::No,
                 PreprocVerdict::Maybe => { }
                 PreprocVerdict::Matched => {

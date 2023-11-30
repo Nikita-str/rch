@@ -43,9 +43,21 @@ macro_rules! all_gen {
                 }
             }
 
-            fn state_upd(&mut self, token: &str) -> PreprocVerdict {
+            fn state_upd_str(&mut self, token: &str) -> PreprocVerdict {
                 match self {
-                    $( Self::$preproc(x) => x.state_upd(token), )*
+                    $( Self::$preproc(x) => x.state_upd_str(token), )*
+                }
+            }
+            
+            fn state_upd_simple_token(&mut self, token: &crate::preproc::tokenizer::SimpleToken) -> PreprocVerdict {
+                match self {
+                    $( Self::$preproc(x) => x.state_upd_simple_token(token), )*
+                }
+            }
+            
+            fn state_upd_multi_token(&mut self, token: &crate::preproc::tokenizer::MultiToken) -> PreprocVerdict {
+                match self {
+                    $( Self::$preproc(x) => x.state_upd_multi_token(token), )*
                 }
             }
         }

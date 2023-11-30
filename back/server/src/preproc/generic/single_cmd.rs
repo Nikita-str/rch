@@ -97,7 +97,7 @@ impl<Inner: Preproc + Default> Preproc for SingleCmd<Inner> {
         self.inner.action(output, matched_tokens, state)
     }
 
-    fn state_upd(&mut self, token: &str) -> PreprocVerdict {
+    fn state_upd_str(&mut self, token: &str) -> PreprocVerdict {
         if !self.cur_inner {
             if self.state.transfer_ctrl_to_inner() {
                 self.cur_inner = true;
@@ -118,7 +118,7 @@ impl<Inner: Preproc + Default> Preproc for SingleCmd<Inner> {
                 return PreprocVerdict::Matched
             }
         } else {
-            match self.inner.state_upd(token) {
+            match self.inner.state_upd_str(token) {
                 PreprocVerdict::No => return PreprocVerdict::No,
                 PreprocVerdict::Maybe => { }
                 PreprocVerdict::Matched => {
