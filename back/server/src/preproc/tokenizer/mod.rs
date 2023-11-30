@@ -9,6 +9,7 @@ pub use simple_tokenizer::SimpleTokenizer;
 mod multi_token;
 mod multi_tokenizer;
 pub use multi_token::MultiToken;
+pub use multi_tokenizer::MultiTokenTokenizer;
 
 // mod generic_token;
 // pub use generic_token::GenericToken;

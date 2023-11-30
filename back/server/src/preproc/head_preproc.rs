@@ -1,5 +1,5 @@
 use std::collections::HashSet;
-use super::{Span, Preproc, PreprocVerdict, SimpleTokenizer};
+use super::{Span, Preproc, PreprocVerdict, MultiTokenTokenizer, inner::PreprocVerdictInfo};
 use crate::preproc::all_available_preproc::*;
 
 pub enum StdHeadPreprocType {
@@ -106,27 +106,31 @@ impl HeadPreproc {
         
         let state = ();
         let mut output = Self::init_output(input); 
-        let mut tokenizer = SimpleTokenizer::new(input);
+        let mut tokenizer = MultiTokenTokenizer::<_, 4>::new_std(input);
         
         let mut unwrited_span = Span::new_empty(0);
         let mut prev_is_maybe = HashSet::new();
         loop {
             // let token = tokenizer.next_token();
-            let token = tokenizer.next_token().token;
-            let (token, token_span) = (token.token, token.span);
+            let token = tokenizer.next_token();
+            // let (token, token_span) = (token.token, token.span);
             
             if token.is_empty() {
-                assert!(tokenizer.is_ended());
+                // assert!(tokenizer.is_ended());
                 break;
             }
 
             let mut maybe_once = false;
-            let mut matched = false;
+            let mut matched: Option<PreprocVerdictInfo> = None;
             let mut cur_token_in_use = false;
             for (iprep, preproc) in self.preprocers.iter_mut().enumerate() {
                 macro_rules! on_matched {
-                    () => {{
-                        matched = true;
+                    ($info: ident) => {{
+                        let token_span = token.span_n_tokens($info.n_tokens);
+
+                        if matched.is_none() {
+                            matched = Some($info);
+                        }
                         // bad bug fix ... but for ours cases +- k
                         // (in good case we must save pos of start for each preproc...)
                         // ((and allow them work +- independent))
@@ -140,11 +144,13 @@ impl HeadPreproc {
                     }};
                 }
 
-                match preproc.state_upd_str(token) {
+                let info = preproc.state_upd_multi_token(token);
+                match info.verdict {
                     PreprocVerdict::No => {
                         preproc.reset();
                         if prev_is_maybe.remove(&iprep) {
-                            match preproc.state_upd_str(token) {
+                            let info = preproc.state_upd_multi_token(token);
+                            match info.verdict {
                                 PreprocVerdict::No => {}
                                 PreprocVerdict::Maybe => {
                                     cur_token_in_use = true;
@@ -152,7 +158,7 @@ impl HeadPreproc {
                                 }
                                 PreprocVerdict::Matched => {
                                     // write prev unwrited
-                                    on_matched!()
+                                    on_matched!(info)
                                 }
                             }
                         }
@@ -161,21 +167,28 @@ impl HeadPreproc {
                         maybe_once = true;
                         prev_is_maybe.insert(iprep);
                     }
-                    PreprocVerdict::Matched => on_matched!(),
+                    PreprocVerdict::Matched => on_matched!(info),
                 }
             }
 
-            if matched {
+            let use_n = matched.as_ref().map_or(1, |x|x.n_tokens);
+
+            if let Some(matched) = matched {
+                let token_span = token.span_n_tokens(matched.n_tokens);
                 unwrited_span = Span::new_empty(token_span.end());
                 prev_is_maybe.clear();
             } else if maybe_once /* !prev_is_maybe.is_empty() */ {
+                let token_span = token.first_token_ref().span();
                 unwrited_span.union(token_span);
             } else {
+                let token_span = token.first_token_ref().span();
                 if !cur_token_in_use { unwrited_span.union(token_span); }
                 output.push_str(unwrited_span.extract_str(input));
                 unwrited_span = Span::new_empty(token_span.end());
                 if cur_token_in_use { unwrited_span.union(token_span); }
             }
+
+            tokenizer.use_n(use_n);
         }
         
         output.push_str(unwrited_span.extract_str(input));

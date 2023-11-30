@@ -31,6 +31,17 @@ impl<'s> MultiToken<'s> {
         )
     }
 
+    pub fn span_n_tokens(&self, n_tokens: usize) -> Span {
+        Span::new_union(
+            self.tokens[0].span(),
+            self.tokens[n_tokens - 1].span(),
+        )
+    }
+
+    pub fn is_empty(&self) -> bool {
+        self.tokens.is_empty()
+    }
+
     pub fn first_token_ref(&self) -> &SimpleToken {
         self.tokens.front().unwrap()
     }
