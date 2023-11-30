@@ -41,6 +41,10 @@ pub struct SimpleToken<'s> {
     pub ty: SimpleTokenType,
 }
 impl<'s> SimpleToken<'s> {
+    pub fn token(&self) -> &str {
+        self.token.token
+    }
+
     pub fn span(&self) -> Span {
         self.token.span
     }
@@ -51,5 +55,8 @@ impl<'s> SimpleToken<'s> {
 
     pub const fn is_empty_std_predicate(&self) -> bool {
         self.ty.is_eof() || (self.ty.is_unkn() && self.token.token.is_empty())
+    }
+    pub const fn is_empty_never_predicate(&self) -> bool {
+        false
     }
 }

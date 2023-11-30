@@ -1,4 +1,4 @@
-use crate::preproc::{Preproc, PreprocVerdict};
+use crate::preproc::{Preproc, PreprocVerdict, PreprocVerdictInfo};
 use rand::Rng;
 
 #[derive(Clone, Copy, Default)]
@@ -80,5 +80,23 @@ impl Preproc for KawaiiPreproc {
         }
 
         PreprocVerdict::Maybe
+    }
+    
+    fn state_upd_multi_token(&mut self, token: &crate::preproc::tokenizer::MultiToken) -> PreprocVerdictInfo {
+        let kawaii_center = |s:&str|s == "~" || s == "w" || s == ".";
+        let center = token.test_token_seq_never_empty(&[
+            &|t|t.token() == ">",
+            &|t|kawaii_center(t.token()),
+            &|t|t.token() == "<",
+        ]);
+        if center {
+            return PreprocVerdictInfo {
+                verdict: PreprocVerdict::Matched,
+                n_tokens: 3,
+                propagate: false,
+            } 
+        }
+
+        PreprocVerdictInfo::new_by_verdict(self.state_upd_str(token.first_token_ref().token()))
     }
 }

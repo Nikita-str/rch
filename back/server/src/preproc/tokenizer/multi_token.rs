@@ -42,6 +42,30 @@ impl<'s> MultiToken<'s> {
     pub fn remove_first(&mut self) -> Option<SimpleToken<'s>> {
         self.tokens.pop_front()
     }
+    
+    pub fn get_simple_token(&self, index: usize) -> Option<&SimpleToken> {
+        self.tokens.get(index)
+    }
+    
+    pub fn test_token_seq_never_empty(&self, predicates: &[&dyn Fn(&SimpleToken<'s>) -> bool]) -> bool {
+        self.test_token_seq(predicates, SimpleToken::is_empty_never_predicate)
+    }
+
+    pub fn test_token_seq<IsEmpty: Fn(&SimpleToken<'s>) -> bool>(&self, predicates: &[&dyn Fn(&SimpleToken<'s>) -> bool], is_empty: IsEmpty) -> bool {
+        if self.tokens.len() < predicates.len() { return false }
+
+        let mut index = 0;
+        for predicate in predicates {
+            loop {
+                let Some(token) = self.tokens.get(index) else { return false };
+                index += 1;
+                if (is_empty)(token) { continue }
+                if !(predicate)(token) { return false }
+                break
+            }
+        }
+        return  true
+    }
 }
 
 

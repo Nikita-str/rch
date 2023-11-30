@@ -11,7 +11,7 @@ mod span;
 
 use span::Span;
 use tokenizer::SimpleTokenizer;
-use inner::{Preproc, PreprocVerdict};
+use inner::{Preproc, PreprocVerdict, PreprocVerdictInfo};
 
 mod all_available_preproc;
 pub use all_available_preproc::*;
@@ -67,7 +67,24 @@ mod inner {
     //     }
     // }
 
+    pub struct PreprocVerdictInfo {
+        pub verdict: PreprocVerdict,
+        pub n_tokens: usize,
+        pub propagate: bool,
+    }
+    impl PreprocVerdictInfo {
+        pub fn new_by_verdict(verdict: PreprocVerdict) -> Self {
+            Self {
+                verdict,
+                n_tokens: 1,
+                propagate: true,
+            }
+        }
+    }
+
     pub trait Preproc<State = ()> {
+        // const MAX_NON_EMTY_TOKENS: usize = 1;
+
         /// called on end of stream: we need close all open tag or smth like this
         fn close(&mut self, output: &mut String, state: State);
         /// called after unsuitable subseq for this preprocesor
@@ -75,12 +92,15 @@ mod inner {
         fn reset(&mut self);
         /// called after successful match
         fn action(&mut self, output: &mut String, matched_tokens: &str, state: State);
+        //TODO: fn action_full(&mut self, output: &mut Metadata, matched_tokens: &str, state: State);
+
         fn state_upd_str(&mut self, token: &str) -> PreprocVerdict;
         fn state_upd_simple_token(&mut self, token: &super::tokenizer::SimpleToken) -> PreprocVerdict {
             self.state_upd_str(token.token.token)
         }
-        fn state_upd_multi_token(&mut self, token: &super::tokenizer::MultiToken) -> PreprocVerdict {
-            self.state_upd_simple_token(token.first_token_ref())
+        fn state_upd_multi_token(&mut self, token: &super::tokenizer::MultiToken) -> PreprocVerdictInfo {
+            let verdict = self.state_upd_simple_token(token.first_token_ref());
+            PreprocVerdictInfo::new_by_verdict(verdict)
         }
     }
 

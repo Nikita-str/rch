@@ -3,6 +3,7 @@ use crate::preproc::general::{SubText, SupText};
 use crate::preproc::general::{NewLinePreproc as NewLine, ReservedSymbsPreproc as ReservedSymbs};
 use crate::preproc::general::Random;
 use crate::preproc::{Preproc, PreprocVerdict};
+use crate::preproc::inner::PreprocVerdictInfo;
 
 use crate::preproc::board_specific as board;
 use board::a::Cat as CatFromA;
@@ -55,7 +56,7 @@ macro_rules! all_gen {
                 }
             }
             
-            fn state_upd_multi_token(&mut self, token: &crate::preproc::tokenizer::MultiToken) -> PreprocVerdict {
+            fn state_upd_multi_token(&mut self, token: &crate::preproc::tokenizer::MultiToken) -> PreprocVerdictInfo {
                 match self {
                     $( Self::$preproc(x) => x.state_upd_multi_token(token), )*
                 }
