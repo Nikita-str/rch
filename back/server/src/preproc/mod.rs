@@ -80,6 +80,20 @@ mod inner {
                 propagate: true,
             }
         }
+        pub fn new_single_matched_no_propagate() -> Self {
+            Self {
+                verdict: PreprocVerdict::Matched,
+                n_tokens: 1,
+                propagate: false,
+            }
+        }
+        pub fn new_no() -> Self {
+            Self {
+                verdict: PreprocVerdict::No,
+                n_tokens: 1,
+                propagate: true,
+            }
+        }
     }
 
     pub trait Preproc<State = ()> {
@@ -90,6 +104,9 @@ mod inner {
         /// called after unsuitable subseq for this preprocesor
         /// (when current unwrited seq is not suitable) 
         fn reset(&mut self);
+        fn reset_by_no_propagate(&mut self, _token: &super::tokenizer::MultiToken, _n_tokens: usize) {
+            self.reset()
+        }
         /// called after successful match
         fn action(&mut self, output: &mut String, matched_tokens: &str, state: State);
         //TODO: fn action_full(&mut self, output: &mut Metadata, matched_tokens: &str, state: State);

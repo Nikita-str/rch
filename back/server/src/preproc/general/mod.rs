@@ -25,3 +25,6 @@ pub use reserved_symbs::ReservedSymbsPreproc;
 mod random;
 pub use random::RandomPreproc as Random;
 pub(in crate::preproc) use random::Mode as RandomMode; 
+
+mod quote;
+pub use quote::QuotePreproc as QuotePreproc;

@@ -16,7 +16,7 @@ pub enum SimpleTokenType {
 }
 
 impl SimpleTokenType {
-    pub fn is_single_char_seq(self) -> bool {
+    pub const fn is_single_char_seq(self) -> bool {
         match self {
             | Self::SpecialChar 
             | Self::NewLine
@@ -24,6 +24,10 @@ impl SimpleTokenType {
 
             _ => false,
         }
+    }
+
+    pub const fn is_spaces(self) -> bool {
+        matches!(self, Self::Spaces)
     }
 
     pub const fn is_eof(self) -> bool {

@@ -38,6 +38,8 @@ impl HeadPreproc {
             StdHeadPreprocType::Std => (false, false, RandomMode::Std),
             StdHeadPreprocType::Header => (true, true, RandomMode::HeaderClass),
         };
+        
+        self.add_preproc(AllPreprocCtor::QuotePreproc);
 
         self.add_preproc(AllPreprocCtor::Bold { ignore });
         self.add_preproc(AllPreprocCtor::Italic { ignore });
@@ -129,7 +131,7 @@ impl HeadPreproc {
             for (iprep, preproc) in self.preprocers.iter_mut().enumerate() {
                 if let Some(matched) = &matched {
                     if !matched.propagate {
-                        preproc.reset();
+                        preproc.reset_by_no_propagate(token, matched.n_tokens);
                         continue
                     }
                 }

@@ -3,7 +3,7 @@ pub use token::Token;
 
 mod simple_token;
 mod simple_tokenizer;
-pub use simple_token::SimpleToken;
+pub use simple_token::{SimpleToken, SimpleTokenType};
 pub use simple_tokenizer::SimpleTokenizer;
 
 mod multi_token;

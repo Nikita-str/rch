@@ -1,3 +1,4 @@
+use crate::preproc::general::{QuotePreproc};
 use crate::preproc::general::{Bold, Italic, Strike, Spoiler};
 use crate::preproc::general::{SubText, SupText};
 use crate::preproc::general::{NewLinePreproc as NewLine, ReservedSymbsPreproc as ReservedSymbs};
@@ -38,6 +39,12 @@ macro_rules! all_gen {
                 }
             }
 
+            fn reset_by_no_propagate(&mut self, token: &crate::preproc::tokenizer::MultiToken, n_tokens: usize) {
+                match self {
+                    $( Self::$preproc(x) => x.reset_by_no_propagate(token, n_tokens), )*
+                }
+            }
+
             fn action(&mut self, output: &mut String, matched_tokens: &str, state: ()) {
                 match self {
                     $( Self::$preproc(x) => x.action(output, matched_tokens, state), )*
@@ -72,6 +79,7 @@ macro_rules! all_gen {
 
 all_gen!{
     AllPreproc AllPreprocType [
+        QuotePreproc;
         Bold; Italic; Strike; Spoiler;
         SupText; SubText;
         NewLine; ReservedSymbs;
@@ -86,6 +94,8 @@ all_gen!{
 }
 
 pub enum AllPreprocCtor {
+    QuotePreproc,
+    
     Bold{ ignore: bool },
     Italic{ ignore: bool },
     Strike{ ignore: bool },
@@ -122,6 +132,8 @@ macro_rules! all_preproc_new {
 impl AllPreproc {
     pub fn new(ctor: AllPreprocCtor) -> Self {
         match ctor {
+            AllPreprocCtor::QuotePreproc => Self::QuotePreproc(QuotePreproc::default()),
+
             AllPreprocCtor::Bold { ignore } => all_preproc_new!(IGN Bold ignore),
             AllPreprocCtor::Italic { ignore } => all_preproc_new!(IGN Italic ignore),
             AllPreprocCtor::Strike { ignore } => all_preproc_new!(IGN Strike ignore),
