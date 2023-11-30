@@ -31,29 +31,31 @@ impl HeadPreproc {
         }
     }
 
-    pub fn new_std(std_ty: StdHeadPreprocType) -> Self {
+    pub fn add_std(&mut self, std_ty: StdHeadPreprocType) {
         use crate::preproc::general::RandomMode as RandomMode;
-
-        let mut head_preproc = Self::new();
 
         let (ignore, space_mode, random_mode) = match std_ty {
             StdHeadPreprocType::Std => (false, false, RandomMode::Std),
             StdHeadPreprocType::Header => (true, true, RandomMode::HeaderClass),
         };
 
-        head_preproc.add_preproc(AllPreprocCtor::Bold { ignore });
-        head_preproc.add_preproc(AllPreprocCtor::Italic { ignore });
-        head_preproc.add_preproc(AllPreprocCtor::Strike { ignore });
-        head_preproc.add_preproc(AllPreprocCtor::Spoiler { ignore });
+        self.add_preproc(AllPreprocCtor::Bold { ignore });
+        self.add_preproc(AllPreprocCtor::Italic { ignore });
+        self.add_preproc(AllPreprocCtor::Strike { ignore });
+        self.add_preproc(AllPreprocCtor::Spoiler { ignore });
 
-        head_preproc.add_preproc(AllPreprocCtor::SupText { ignore });
-        head_preproc.add_preproc(AllPreprocCtor::SubText { ignore });
+        self.add_preproc(AllPreprocCtor::SupText { ignore });
+        self.add_preproc(AllPreprocCtor::SubText { ignore });
 
-        head_preproc.add_preproc(AllPreprocCtor::NewLine { space_mode });
-        head_preproc.add_preproc(AllPreprocCtor::ReservedSymbs);
+        self.add_preproc(AllPreprocCtor::NewLine { space_mode });
+        self.add_preproc(AllPreprocCtor::ReservedSymbs);
 
-        head_preproc.add_preproc(AllPreprocCtor::Random { mode: random_mode });
+        self.add_preproc(AllPreprocCtor::Random { mode: random_mode });
+    }
 
+    pub fn new_std(std_ty: StdHeadPreprocType) -> Self {
+        let mut head_preproc = Self::new();
+        head_preproc.add_std(std_ty);
         head_preproc
     }
 
@@ -65,10 +67,11 @@ impl HeadPreproc {
                 head_preproc
             }
             ("a", false) => {
-                let mut head_preproc = Self::new_std(StdHeadPreprocType::Std);
+                let mut head_preproc = Self::new();
+                head_preproc.add_preproc(AllPreprocCtor::KawaiiFromA);
+                head_preproc.add_std(StdHeadPreprocType::Std);
                 head_preproc.add_preproc(AllPreprocCtor::CatFromA);
                 head_preproc.add_preproc(AllPreprocCtor::NyanFromA);
-                head_preproc.add_preproc(AllPreprocCtor::KawaiiFromA);
                 head_preproc
             }
             (_, false) => Self::new_std(StdHeadPreprocType::Std),
@@ -124,6 +127,13 @@ impl HeadPreproc {
             let mut matched: Option<PreprocVerdictInfo> = None;
             let mut cur_token_in_use = false;
             for (iprep, preproc) in self.preprocers.iter_mut().enumerate() {
+                if let Some(matched) = &matched {
+                    if !matched.propagate {
+                        preproc.reset();
+                        continue
+                    }
+                }
+
                 macro_rules! on_matched {
                     ($info: ident) => {{
                         let token_span = token.span_n_tokens($info.n_tokens);
@@ -393,5 +403,16 @@ mod tests {
         let mut head_preproc = HeadPreproc::new_by_board("a", false);
         let output = head_preproc.preproc(input);
         assert_eq!(output, expected_output);
+    }
+        
+    #[test]
+    fn test_preproc_15_board_a_2() { 
+        let input = "waaa! >~< sooo cool!!";
+        let mut head_preproc = HeadPreproc::new_by_board("a", false);
+        let output = head_preproc.preproc(input);
+        let prefix = format!("waaa! <span style=\"color: ");
+        assert!(output.starts_with(&prefix));
+        let postfix = ">&#62;~&#60;</span> sooo cool!!";
+        assert!(output.ends_with(postfix));
     }
 }

@@ -23,6 +23,8 @@ enum State {
 #[derive(Default)]
 pub struct KawaiiPreproc {
     state: State,
+    /// `>%smth%<` case
+    is_xd: bool,
 }
 
 impl Preproc for KawaiiPreproc {
@@ -32,6 +34,7 @@ impl Preproc for KawaiiPreproc {
 
     fn reset(&mut self) {
         self.state = State::NotStarted;
+        self.is_xd = false;
     }
 
     fn action(&mut self, output: &mut String, matched_tokens: &str, _: ()) {
@@ -44,7 +47,13 @@ impl Preproc for KawaiiPreproc {
         output.push_str("<span style=\"color: ");
         output.push_str(color);
         output.push_str("\";>");
-        output.push_str(matched_tokens);
+        if self.is_xd {
+            output.push_str("&#62;"); // '>'
+            output.push_str(&matched_tokens[1..=matched_tokens.len() - 2]);
+            output.push_str("&#60;"); // '<'
+        } else {
+            output.push_str(matched_tokens);
+        }
         output.push_str("</span>");
     }
 
@@ -90,6 +99,7 @@ impl Preproc for KawaiiPreproc {
             &|t|t.token() == "<",
         ]);
         if center {
+            self.is_xd = true;
             return PreprocVerdictInfo {
                 verdict: PreprocVerdict::Matched,
                 n_tokens: 3,
