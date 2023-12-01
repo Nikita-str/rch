@@ -54,8 +54,13 @@ impl Preproc for QuotePreproc {
         let t0 = token.first_token_ref();
     
         match t0.ty {
-            crate::preproc::tokenizer::SimpleTokenType::NewLine => {
+            crate::preproc::tokenizer::SimpleTokenType::NewLine if self.open => {
                 PreprocVerdictInfo::new_by_verdict(PreprocVerdict::Matched)
+            }
+            crate::preproc::tokenizer::SimpleTokenType::NewLine => {
+                self.is_new_line = true;
+                self.open = false;
+                PreprocVerdictInfo::new_no()
             }
             crate::preproc::tokenizer::SimpleTokenType::Spaces if self.is_new_line => {
                 PreprocVerdictInfo::new_by_verdict(PreprocVerdict::Maybe)
