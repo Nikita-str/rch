@@ -1,8 +1,10 @@
+use crate::preproc::general::{QuotePreproc, ReplyPreproc};
 use crate::preproc::general::{Bold, Italic, Strike, Spoiler};
 use crate::preproc::general::{SubText, SupText};
 use crate::preproc::general::{NewLinePreproc as NewLine, ReservedSymbsPreproc as ReservedSymbs};
 use crate::preproc::general::Random;
-use crate::preproc::{Preproc, PreprocVerdict};
+use crate::preproc::{Preproc, PreprocVerdict, FullActInfo};
+use crate::preproc::inner::PreprocVerdictInfo;
 
 use crate::preproc::board_specific as board;
 use board::a::Cat as CatFromA;
@@ -37,15 +39,38 @@ macro_rules! all_gen {
                 }
             }
 
+            fn reset_by_no_propagate(&mut self, token: &crate::preproc::tokenizer::MultiToken, n_tokens: usize) {
+                match self {
+                    $( Self::$preproc(x) => x.reset_by_no_propagate(token, n_tokens), )*
+                }
+            }
+
             fn action(&mut self, output: &mut String, matched_tokens: &str, state: ()) {
                 match self {
                     $( Self::$preproc(x) => x.action(output, matched_tokens, state), )*
                 }
             }
-
-            fn state_upd(&mut self, token: &str) -> PreprocVerdict {
+            fn action_full(&mut self, act_info: FullActInfo, matched_tokens: &str, state: ()) {
                 match self {
-                    $( Self::$preproc(x) => x.state_upd(token), )*
+                    $( Self::$preproc(x) => x.action_full(act_info, matched_tokens, state), )*
+                }
+            }
+
+            fn state_upd_str(&mut self, token: &str) -> PreprocVerdict {
+                match self {
+                    $( Self::$preproc(x) => x.state_upd_str(token), )*
+                }
+            }
+            
+            fn state_upd_simple_token(&mut self, token: &crate::preproc::tokenizer::SimpleToken) -> PreprocVerdict {
+                match self {
+                    $( Self::$preproc(x) => x.state_upd_simple_token(token), )*
+                }
+            }
+            
+            fn state_upd_multi_token(&mut self, token: &crate::preproc::tokenizer::MultiToken) -> PreprocVerdictInfo {
+                match self {
+                    $( Self::$preproc(x) => x.state_upd_multi_token(token), )*
                 }
             }
         }
@@ -59,6 +84,7 @@ macro_rules! all_gen {
 
 all_gen!{
     AllPreproc AllPreprocType [
+        QuotePreproc; ReplyPreproc;
         Bold; Italic; Strike; Spoiler;
         SupText; SubText;
         NewLine; ReservedSymbs;
@@ -73,6 +99,9 @@ all_gen!{
 }
 
 pub enum AllPreprocCtor {
+    QuotePreproc,
+    ReplyPreproc,
+
     Bold{ ignore: bool },
     Italic{ ignore: bool },
     Strike{ ignore: bool },
@@ -109,6 +138,9 @@ macro_rules! all_preproc_new {
 impl AllPreproc {
     pub fn new(ctor: AllPreprocCtor) -> Self {
         match ctor {
+            AllPreprocCtor::QuotePreproc => Self::QuotePreproc(QuotePreproc::default()),
+            AllPreprocCtor::ReplyPreproc => Self::ReplyPreproc(ReplyPreproc::default()),
+
             AllPreprocCtor::Bold { ignore } => all_preproc_new!(IGN Bold ignore),
             AllPreprocCtor::Italic { ignore } => all_preproc_new!(IGN Italic ignore),
             AllPreprocCtor::Strike { ignore } => all_preproc_new!(IGN Strike ignore),

@@ -94,8 +94,8 @@ impl Board {
         self.thrs.get_mut(&ThreadOpN::from(op_post_n))
     }
 
-    pub fn add_post(&mut self, op_post_n: u64, mut post: Post) /* TODO: ret Result */ {
-        post.upd_n(self.next_post_n());
+    pub fn add_post(&mut self, op_post_n: u64, mut post: Post) -> Option<PostN> /* TODO: ret Result */ {
+        let post_n = post.upd_n(self.next_post_n());
 
         if let Some(thr) = self.thr_mut(op_post_n) {
             thr.add_post(post);
@@ -104,7 +104,10 @@ impl Board {
                 let thr_op_n = thr.op_n();
                 self.thrs_usage.upd_rates(thr_op_n, post_rate)
             }
-        };
+            Some(post_n)
+        } else {
+            None
+        }
     }
 
     pub fn thr_iter(&self) -> impl Iterator<Item = &Thread> {

@@ -73,7 +73,7 @@ impl Preproc for NyanPreproc {
         output.push_str("</span>");
     }
 
-    fn state_upd(&mut self, token: &str) -> PreprocVerdict {
+    fn state_upd_str(&mut self, token: &str) -> PreprocVerdict {
         self.state = self.state.state_upd(token);
         if self.state.is_err() {
             return PreprocVerdict::No

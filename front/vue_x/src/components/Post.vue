@@ -75,7 +75,37 @@ export default {
       } else {
         return ""
       }
-    }
+    },
+    msgUnpacked() {
+        var ret = ""
+        var index = 0
+        while(true) {
+            const start = "<pkg "
+            const i_start = this.msg.indexOf(start, index)
+            if (i_start < 0) break
+
+            const end = "></pkg>"
+            const i_end = this.msg.indexOf(end, i_start + start.length)
+            if (i_end < 0) break
+
+            ret += this.msg.substring(index, i_start)
+            let info = this.msg.substring(i_start + start.length, i_end).split(' ')
+            let cmd = info[0]
+            if (cmd == "reply") {
+              let n = info[1]
+              let maybe_OP = (n == this.nBoardOP) ? '(OP)' : ''
+              
+              let bUrl = boardUrlCalc(this)
+              let href = '/' + bUrl + '/' + (this.isOP ? this.msgBoardN : this.nBoardOP)
+              
+              ret += `<a class="P-rep" href="${href}#${n}">&gt;&gt;${n}${maybe_OP}</a>`
+            }
+            
+            index = i_end + end.length
+        }
+        ret += this.msg.substring(index)
+        return ret
+    },
     // msgThrNumX() {
     //     const PREFIX = '<span style="opacity:0;">' 
     //     const POSTFIX = '</span>' 
@@ -102,7 +132,7 @@ export default {
         </div>
         <div class="post-inner">
               <PostPics :imgsInfo="imgsInfo" />
-              <div class="post-text" :style="{'padding-top': (imgsInfo.length == 1) ? '2.4em' : '' }" v-html="msg" />
+              <div class="post-text" :style="{'padding-top': (imgsInfo.length == 1) ? '2.4em' : '' }" v-html="msgUnpacked" />
         </div>
         <template v-if="msgReplies">
             <div class="post-replies">
@@ -151,6 +181,7 @@ export default {
 }
 
 .post-replies {
+    padding-right: 0.6em;
     top: 0.5em;
     left: 1.5em;
     /* max-width: 90%; */

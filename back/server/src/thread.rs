@@ -1,5 +1,5 @@
-use std::collections::VecDeque;
-use crate::post::Post;
+use std::collections::{VecDeque, HashSet};
+use crate::post::{Post, PostN};
 use super::thread_usage_rate::ThreadUsageRate as ThrRate;
 
 crate::define_id!(ThreadOpN: u64 [NO IMPL]);
@@ -11,11 +11,65 @@ const BUMP_LIMIT: usize = 300;
 
 pub const MAX_HEADER_LEN: usize = 42;
 
+struct ThreadPosts {
+    posts: VecDeque<Post>,
+    posts_n: HashSet<PostN>,
+}
+impl ThreadPosts {
+    pub fn __new_helper() -> Self {
+        let posts = VecDeque::with_capacity(BUMP_LIMIT);
+        let posts_n = HashSet::with_capacity(BUMP_LIMIT);        
+        Self {
+            posts,
+            posts_n,
+        }
+    }
+
+    pub fn new(op_post: Post) -> Self {
+        let mut ret = Self::__new_helper();
+        ret.push_back(op_post);
+        ret
+    }
+
+    pub fn len(&self) -> usize {
+        self.posts.len()
+    }
+    
+    pub fn get(&self, index: usize) -> Option<&Post> {
+        self.posts.get(index)
+    }
+    
+    pub fn get_mut_by_n(&mut self, post_n: u64) -> Option<&mut Post> {
+        match self.posts.binary_search_by(|post|post.n().cmp(&post_n)) {
+            Ok(index) => Some(&mut self.posts[index]),
+            Err(_) => None,
+        }
+    }
+    
+    pub fn push_back(&mut self, post: Post) {
+        let post_n = post.n();
+        self.posts.push_back(post);
+        self.posts_n.insert(post_n);
+    }
+
+    pub fn swap_remove_front(&mut self, index: usize) -> Option<Post> {
+        let post = self.posts.swap_remove_front(index);
+        if let Some(post) = &post {
+            self.posts_n.remove(&post.n());
+        }
+        post
+    }
+    
+    pub fn iter_posts(&self) -> std::collections::vec_deque::Iter<Post> {
+        self.posts.iter()
+    }
+}
+
 pub struct Thread {
     op_n: ThreadOpN,
     header: String,
     /// * `VecDeque` for inf threads
-    posts: VecDeque<Post>,
+    posts: ThreadPosts,
     infinity: bool,
 }
 
@@ -61,15 +115,11 @@ impl Thread {
     pub fn new_preproced(header: String, op_post: Post, infinity: bool) -> Self {
         let op_n = op_post.n();
         assert!(op_n != 0);
-        let op_n = ThreadOpN::from(op_n);
-
-        let mut posts = VecDeque::with_capacity(BUMP_LIMIT);
-        posts.push_back(op_post);
 
         Self {
-            op_n,
+            op_n: ThreadOpN::from(op_n),
+            posts: ThreadPosts::new(op_post),
             header,
-            posts,
             infinity,
         }
     }
@@ -123,12 +173,27 @@ impl Thread {
 
     pub fn last_post_rate(&self) -> f32 {
         let post_n = self.posts.len() - 1;
-        let mut iter = self.posts.iter();
+        let mut iter = self.posts.iter_posts();
         let post = iter.next_back().unwrap();
         let Some(prev_post) = iter.next_back() 
         else { return ThrRate::post_rate(post_n, 0.) };
         
         let dt_sec = post.dt(prev_post);
         ThrRate::post_rate(post_n, dt_sec)
+    }
+
+    pub fn add_reply(&mut self, reply_from_post_n: PostN, reply_to_post_n: PostN) {
+        if let Some(post) = self.posts.get_mut_by_n(reply_to_post_n) {
+            post.add_reply(reply_from_post_n);
+        }
+    }
+    pub fn add_replies<I, T>(&mut self, reply_from_post_n: PostN, reply_to_post_ns: I)
+    where 
+        I: IntoIterator<Item = T>,
+        T: Into<u64>,
+    {
+        for reply_to_post_n in reply_to_post_ns {
+            self.add_reply(reply_from_post_n, reply_to_post_n.into())    
+        }
     }
 }

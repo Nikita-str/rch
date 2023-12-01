@@ -18,7 +18,7 @@ impl Preproc for ReservedSymbsPreproc {
         }
     }
 
-    fn state_upd(&mut self, token: &str) -> PreprocVerdict {
+    fn state_upd_str(&mut self, token: &str) -> PreprocVerdict {
         if token.len() != 1 {
             return PreprocVerdict::No;
         }
