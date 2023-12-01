@@ -35,10 +35,11 @@ pub async fn handler(
         }
     }
 
-    let post_text = {
+    let (post_text, reply_to) = {
         // TODO: Pool of preproc?!
         let mut preproc = crate::preproc::HeadPreproc::new_by_board(board_url, false);
-        preproc.preproc(&params.post_text)
+        let result = preproc.preproc(&params.post_text);
+        (result.output, result.reply_to)
     };
 
     // [+] IMGS
@@ -48,11 +49,17 @@ pub async fn handler(
     
     let post = Post::new_anon(post_text, imgs);
 
-    {
+    'write_state: {
         let mut w_state = state.write().unwrap();
-        w_state.mut_open_boards()
-            .board_mut(board_url)
-            .map(|board|board.add_post(params.op_post_n, post));
+        let board = w_state.mut_open_boards().board_mut(board_url);
+        if let Some(board) = board {
+            let Some(new_post_n) = board.add_post(params.op_post_n, post) else { break 'write_state };
+            if !reply_to.is_empty() {
+                if let Some(thr) = board.thr_mut(params.op_post_n) {
+                    thr.add_replies(new_post_n, reply_to)
+                }
+            }
+        }
     }
 
     Json(())

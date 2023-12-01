@@ -15,6 +15,7 @@ pub struct Post {
     time: i64,
     n: PostN,
     poster: Poster,
+    replies: Vec<PostN>,
 }
 
 impl Post {
@@ -28,12 +29,14 @@ impl Post {
             time: chrono::offset::Utc::now().timestamp(),
             n: 0,
             poster: Poster::Anon,
+            replies: Vec::new(),
         }
     }
 
-    pub fn upd_n(&mut self, n: PostN) {
+    pub fn upd_n(&mut self, n: PostN) -> PostN {
         if self.n != 0 { panic!("post n already setted") }
         self.n = n;
+        self.n
     } 
 
     pub fn text(&self) -> &str {
@@ -46,5 +49,9 @@ impl Post {
 
     pub fn dt(&self, prev: &Self) -> f32 {
         (prev.time - self.time) as f32
+    }
+
+    pub fn add_reply(&mut self, reply_from: PostN) {
+        self.replies.push(reply_from)
     }
 }

@@ -54,6 +54,7 @@ export default {
                     :msgBoardN="posts[0].n"
                     :msgThrN="1"
                     :msgWho="posts[0].poster"
+                    :msgReplies="posts[0].replies"
                     :isOP="true"
                     :imgsInfo="posts[0].imgs"
                 />
@@ -66,6 +67,7 @@ export default {
                     :msgBoardN="posts[post_index].n" 
                     :msgThrN="msgThrNumHelper + post_index"
                     :msgWho="posts[post_index].poster"
+                    :msgReplies="posts[post_index].replies"
                     :imgsInfo="posts[post_index].imgs"
                     :nBoardOP="posts[0].n"
                 />
@@ -75,6 +77,7 @@ export default {
                     :msgBoardN="posts[post_index].n" 
                     :msgThrN="msgThrNumHelper + post_index"
                     :msgWho="posts[post_index].poster"
+                    :msgReplies="posts[post_index].replies"
                     :imgsInfo="posts[post_index].imgs"
                     :nBoardOP="posts[0].n"
 

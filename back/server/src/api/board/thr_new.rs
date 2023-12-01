@@ -65,14 +65,14 @@ pub async fn handler(
         } else {
             make_valid_s!(&params.post_text)
         };
-        preproc.preproc(&header)
+        preproc.preproc(&header).output
     };
     // [-] HEADER
 
     let post_text = {
         // TODO: Pool of preproc?!
         let mut preproc = crate::preproc::HeadPreproc::new_by_board(board_url, false);
-        preproc.preproc(&params.post_text)
+        preproc.preproc(&params.post_text).output
     };
 
     // if params.post_img.is_some() {

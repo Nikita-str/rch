@@ -19,6 +19,8 @@ pub use all_available_preproc::*;
 
 
 mod inner {
+    use std::collections::HashSet;
+
     pub enum PreprocVerdict {
         No,
         Maybe,
@@ -99,7 +101,7 @@ mod inner {
 
     pub struct FullActInfo<'x> {
         pub output: &'x mut String,
-        pub reply_to: &'x mut Vec<u64>,
+        pub reply_to: &'x mut HashSet<u64>,
     }
 
     pub trait Preproc<State = ()> {

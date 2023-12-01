@@ -16,6 +16,19 @@ impl StdHeadPreprocType {
     }
 }
 
+pub struct PreprocResult {
+    pub output: String,
+    pub reply_to: HashSet<u64>,
+}
+impl PreprocResult {
+    pub fn new_no_reply(output: impl ToString) -> Self {
+        Self {
+            output: output.to_string(),
+            reply_to: HashSet::new(),
+        }
+    }
+}
+
 // pub struct HeadPreproc {
 //     preprocers: Vec<Box<dyn Preproc>>, // OR `Vec<enum AllPreproc>`,
 // }
@@ -110,14 +123,14 @@ impl HeadPreproc {
         String::with_capacity(output_exp_capacity)
     }
 
-    pub fn preproc(&mut self, input: &str) -> String {
+    pub fn preproc(&mut self, input: &str) -> PreprocResult {
         if self.preprocers.is_empty() {
             println!("[ALGO WARN]: no preprocessors");
-            return String::from(input)
+            return PreprocResult::new_no_reply(input)
         }
         
         let state = ();
-        let mut reply_to = Vec::new();
+        let mut reply_to = HashSet::new();
         let mut output = Self::init_output(input); 
         let mut tokenizer = MultiTokenTokenizer::<_, 4>::new_std(input);
         
@@ -218,7 +231,10 @@ impl HeadPreproc {
         output.push_str(unwrited_span.extract_str(input));
         self.preprocers.iter_mut().for_each(|preproc|preproc.close(&mut output, state));
 
-        output
+        PreprocResult {
+            output,
+            reply_to,
+        }
     }
 }
 
@@ -230,19 +246,19 @@ mod tests {
     fn help_only_italic(input: &str, expected_output: &str) {
         let mut head_preproc = HeadPreproc::new();
         head_preproc.add_preproc(AllPreprocCtor::Italic { ignore: false });
-        let output = head_preproc.preproc(input);
+        let output = head_preproc.preproc(input).output;
         assert_eq!(output, expected_output);
     }
 
     fn help_all(input: &str, expected_output: &str) {
         let mut head_preproc = HeadPreproc::new_std(StdHeadPreprocType::Std);
-        let output = head_preproc.preproc(input);
+        let output = head_preproc.preproc(input).output;
         assert_eq!(output, expected_output);
     }
 
     fn help_header(input: &str, expected_output: &str) {
         let mut head_preproc = HeadPreproc::new_std(StdHeadPreprocType::Header);
-        let output = head_preproc.preproc(input);
+        let output = head_preproc.preproc(input).output;
         assert_eq!(output, expected_output);
     }
 
@@ -376,19 +392,19 @@ mod tests {
             } else {
                 "[random(50, -42)]" 
             };
-            let output = head_preproc.preproc(input);
+            let output = head_preproc.preproc(input).output;
             assert_rand(&output, -42, 50);
         }
         
         for _ in 0..10 {
             let input = "[random( -1245,  -1245  )]";
-            let output = head_preproc.preproc(input);
+            let output = head_preproc.preproc(input).output;
             assert_rand(&output, -1245, -1245);
         }
         
         for _ in 0..10 {
             let input = "[random(-103:-101)]";
-            let output = head_preproc.preproc(input);
+            let output = head_preproc.preproc(input).output;
             assert_rand(&output, -103, -101);
         }
 
@@ -397,7 +413,7 @@ mod tests {
             let to = 4200 + i * 2;
             let delim = if i % 2 == 0 { ":" } else { ", " };
             let input = format!("[random({from}{delim}{to})]");
-            let output = head_preproc.preproc(&input);
+            let output = head_preproc.preproc(&input).output;
             assert_rand(&output, from, to);
         }
     }
@@ -415,7 +431,7 @@ mod tests {
         let input = "какие ~~сладкие~~ Котики!!!";
         let expected_output = "какие <span class=\"P-a-nyan\">~~сладкие~~</span> <span class=\"P-a-cat\">:3</span>и!!!";
         let mut head_preproc = HeadPreproc::new_by_board("a", false);
-        let output = head_preproc.preproc(input);
+        let output = head_preproc.preproc(input).output;
         assert_eq!(output, expected_output);
     }
         
@@ -423,7 +439,7 @@ mod tests {
     fn test_preproc_15_board_a_2() { 
         let input = "waaa! >~< sooo cool!!";
         let mut head_preproc = HeadPreproc::new_by_board("a", false);
-        let output = head_preproc.preproc(input);
+        let output = head_preproc.preproc(input).output;
         let prefix = format!("waaa! <span style=\"color: ");
         assert!(output.starts_with(&prefix));
         let postfix = ">&#62;~&#60;</span> sooo cool!!";
