@@ -1,5 +1,6 @@
 use std::collections::HashSet;
-use super::{Span, Preproc, PreprocVerdict, MultiTokenTokenizer, inner::PreprocVerdictInfo};
+use super::{Span, MultiTokenTokenizer};
+use super::{Preproc, PreprocVerdict, PreprocVerdictInfo, FullActInfo};
 use crate::preproc::all_available_preproc::*;
 
 pub enum StdHeadPreprocType {
@@ -102,7 +103,7 @@ impl HeadPreproc {
 
 
     fn init_output(input: &str) -> String {
-        const OUT_COEF_99_PROC_CASE: f64 = 1.2;
+        const OUT_COEF_99_PROC_CASE: f64 = 1.35;
         const OUT_ADDITIONAL_BYTES: usize = 300;
         let output_exp_capacity = ((input.len() as f64 * OUT_COEF_99_PROC_CASE) as usize) + OUT_ADDITIONAL_BYTES;
 
@@ -116,6 +117,7 @@ impl HeadPreproc {
         }
         
         let state = ();
+        let mut reply_to = Vec::new();
         let mut output = Self::init_output(input); 
         let mut tokenizer = MultiTokenTokenizer::<_, 4>::new_std(input);
         
@@ -127,7 +129,7 @@ impl HeadPreproc {
             // let (token, token_span) = (token.token, token.span);
             
             if token.is_empty() {
-                // assert!(tokenizer.is_ended());
+                assert!(tokenizer.is_ended());
                 break;
             }
 
@@ -157,7 +159,11 @@ impl HeadPreproc {
                             unwrited_span = Span::new_empty(unwrited_span.end());
                         }
                         let matched_tokens = Span::new_union(unwrited_span, token_span).extract_str(input);
-                        preproc.action(&mut output, matched_tokens, state);
+                        let act_info = FullActInfo {
+                            output: &mut output,
+                            reply_to: &mut reply_to,
+                        };
+                        preproc.action_full(act_info, matched_tokens, state);
                         preproc.reset();    
                     }};
                 }

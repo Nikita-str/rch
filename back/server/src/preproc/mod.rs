@@ -10,8 +10,9 @@ mod tokenizer;
 mod span;
 
 use span::Span;
+#[allow(unused)]
 use tokenizer::{SimpleTokenizer, MultiTokenTokenizer};
-use inner::{Preproc, PreprocVerdict, PreprocVerdictInfo};
+use inner::{Preproc, PreprocVerdict, PreprocVerdictInfo, FullActInfo};
 
 mod all_available_preproc;
 pub use all_available_preproc::*;
@@ -96,6 +97,11 @@ mod inner {
         }
     }
 
+    pub struct FullActInfo<'x> {
+        pub output: &'x mut String,
+        pub reply_to: &'x mut Vec<u64>,
+    }
+
     pub trait Preproc<State = ()> {
         // const MAX_NON_EMTY_TOKENS: usize = 1;
 
@@ -109,7 +115,13 @@ mod inner {
         }
         /// called after successful match
         fn action(&mut self, output: &mut String, matched_tokens: &str, state: State);
-        //TODO: fn action_full(&mut self, output: &mut Metadata, matched_tokens: &str, state: State);
+        
+        /// called after successful match but with more info than `action`
+        /// # !
+        /// instead if `act_info: FullActInfo` we can change default State... `state: &mut FullActInfo`(by default)
+        fn action_full(&mut self, act_info: FullActInfo, matched_tokens: &str, state: State) {
+            self.action(act_info.output, matched_tokens, state)
+        }
 
         fn state_upd_str(&mut self, token: &str) -> PreprocVerdict;
         fn state_upd_simple_token(&mut self, token: &super::tokenizer::SimpleToken) -> PreprocVerdict {

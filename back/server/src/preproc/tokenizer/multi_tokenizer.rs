@@ -56,4 +56,8 @@ impl<'s, IsEmpty: Fn(&SimpleToken<'s>) -> bool, const MAX_NON_EMTY_TOKENS: usize
             }
         }
     }
+    
+    pub fn is_ended(&self) -> bool {
+        self.tokenizer.is_ended() && self.multi_token.is_empty()
+    }
 }

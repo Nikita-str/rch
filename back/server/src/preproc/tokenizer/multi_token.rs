@@ -14,21 +14,13 @@ impl<'s> MultiToken<'s> {
         Self { tokens: VecDeque::with_capacity(DFAULT_CAPACITY) }
     }
 
-    pub fn new_single(token: SimpleToken<'s>) -> Self {
-        let mut ret = Self::new_empty();
-        ret.add_token(token);
-        ret
-    }
-
     pub fn add_token(&mut self, token: SimpleToken<'s>) {
         self.tokens.push_back(token)
     }
 
+    #[allow(unused)]
     pub fn span(&self) -> Span {
-        Span::new_union(
-            self.tokens[0].span(),
-            self.tokens[self.tokens.len() - 1].span(),
-        )
+        self.span_n_tokens(self.tokens.len())
     }
 
     pub fn span_n_tokens(&self, n_tokens: usize) -> Span {
@@ -46,9 +38,9 @@ impl<'s> MultiToken<'s> {
         self.tokens.front().unwrap()
     }
 
-    pub fn use_n(&mut self, n: usize) {
-        self.tokens.drain(0..n);
-    }
+    // pub fn use_n(&mut self, n: usize) {
+    //     self.tokens.drain(0..n);
+    // }
     
     pub fn remove_first(&mut self) -> Option<SimpleToken<'s>> {
         self.tokens.pop_front()
@@ -80,16 +72,16 @@ impl<'s> MultiToken<'s> {
 }
 
 
-pub struct MultiTokenRef<'s, 'mt> {
-    multi_token: &'mt MultiToken<'s>,
-    to: usize,
-}
+// pub struct MultiTokenRef<'s, 'mt> {
+//     multi_token: &'mt MultiToken<'s>,
+//     to: usize,
+// }
 
-impl<'s, 'mt> MultiTokenRef<'s, 'mt> {
-    pub fn span(&self) -> Span {
-        Span::new_union(
-            self.multi_token.tokens[0].span(),
-            self.multi_token.tokens[self.to].span(),
-        )
-    }
-}
+// impl<'s, 'mt> MultiTokenRef<'s, 'mt> {
+//     pub fn span(&self) -> Span {
+//         Span::new_union(
+//             self.multi_token.tokens[0].span(),
+//             self.multi_token.tokens[self.to].span(),
+//         )
+//     }
+// }

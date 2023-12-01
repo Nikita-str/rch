@@ -1,4 +1,4 @@
-use crate::preproc::{Preproc, PreprocVerdict, PreprocVerdictInfo};
+use crate::preproc::{Preproc, PreprocVerdict, PreprocVerdictInfo, FullActInfo};
 use crate::preproc::tokenizer::MultiToken;
 use std::fmt::Write;
 
@@ -11,15 +11,15 @@ impl Preproc for ReplyPreproc {
     fn close(&mut self, _: &mut String, _: ()) {}
     fn reset(&mut self) {}
 
-    fn action(&mut self, output: &mut String, _: &str, _: ()) {
+    fn action_full(&mut self, act_info: FullActInfo, _: &str, _: ()) {
         let n = self.n;
-        // let _ = write!(output, "<a class=\"P-rep\">{n}</a>");
-        // let _ = write!(output, "<pkg reply {n}/>");
-        let _ = write!(output, "<pkg reply {n}></pkg>");
+        let _ = write!(act_info.output, "<pkg reply {n}></pkg>");
+        act_info.reply_to.push(n);
     }
-    fn state_upd_str(&mut self, _: &str) -> PreprocVerdict {
-        unimplemented!("use `multi_token` fn")
+    fn action(&mut self, _: &mut String, _: &str, _: ()) {
+        unimplemented!("use `action_full` fn");
     }
+
 
     fn state_upd_multi_token(&mut self, token: &MultiToken) -> PreprocVerdictInfo {
         let ok = token.test_token_seq_never_empty(&mut[
@@ -45,5 +45,8 @@ impl Preproc for ReplyPreproc {
             },
             false => PreprocVerdictInfo::new_no(),
         }
+    }
+    fn state_upd_str(&mut self, _: &str) -> PreprocVerdict {
+        unimplemented!("use `multi_token` fn")
     }
 }

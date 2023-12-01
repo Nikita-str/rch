@@ -3,7 +3,7 @@ use crate::preproc::general::{Bold, Italic, Strike, Spoiler};
 use crate::preproc::general::{SubText, SupText};
 use crate::preproc::general::{NewLinePreproc as NewLine, ReservedSymbsPreproc as ReservedSymbs};
 use crate::preproc::general::Random;
-use crate::preproc::{Preproc, PreprocVerdict};
+use crate::preproc::{Preproc, PreprocVerdict, FullActInfo};
 use crate::preproc::inner::PreprocVerdictInfo;
 
 use crate::preproc::board_specific as board;
@@ -48,6 +48,11 @@ macro_rules! all_gen {
             fn action(&mut self, output: &mut String, matched_tokens: &str, state: ()) {
                 match self {
                     $( Self::$preproc(x) => x.action(output, matched_tokens, state), )*
+                }
+            }
+            fn action_full(&mut self, act_info: FullActInfo, matched_tokens: &str, state: ()) {
+                match self {
+                    $( Self::$preproc(x) => x.action_full(act_info, matched_tokens, state), )*
                 }
             }
 
