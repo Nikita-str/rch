@@ -1,5 +1,6 @@
 <script setup>
 import { img_ext_abbr } from '../../../js/pics/file_x'
+import { pad, rand_i } from '@/js/fns'
 </script>
 
 <script>
@@ -15,9 +16,19 @@ export default {
         single: {
             type: Boolean,
             required: true,
+        },
+        spoiler: {
+            type: Boolean,
+            default: false,
         }
     },
     computed: {
+        spoilerPic() {
+            const ZEROS = 2
+            const IMGS = ['webp', 'jpg']
+            let pic_n = rand_i(1, IMGS.length)
+            return `/imgs/spoiler/${pad(pic_n, ZEROS)}.${IMGS[pic_n - 1]}`
+        },
         imgPathCompressed() {
             let ext = img_ext_abbr(this.imgInfo.cf_ty)
             return `${IMG_PATH_PREFIX}/${this.imgInfo.n}_c.${ext}`
@@ -75,7 +86,10 @@ export default {
             </div>
         </figcaption>
         <a class="post-pic-a" :href="imgPath" target="_blank">
-            <img class="post-pic-img post-pic-max-sz" :src="imgPathCompressed" :alt="dimSz">
+            <div class="post-pic-max-sz" style="text-align: center;">
+                <img class="post-pic-img" :src="spoiler ? spoilerPic : imgPathCompressed" :alt="dimSz">
+                <p v-if="spoiler" class="centered pic-spoiler-text" style="transform: translate(-50%,-50%) rotate(-20deg);">!SPOILER!</p>
+            </div>
         </a>
     </figure>
 </template>
@@ -124,9 +138,19 @@ export default {
 }
 .post-pic-img {
     border: #0000 2px solid;
+    max-width: calc(max(15.4vw, 150px));
 }
 .post-pic-img:hover {
     /* border-color: var(--r-col-blue); */
     outline: solid 1px var(--r-col-blue);
+}
+.pic-spoiler-text {
+    padding: 3px;
+    border: dashed 3px var(--r-col-crab-light);
+    background-color: var(--r-col-bg-dark);
+    color: var(--r-col-crab-light);
+    font-weight: bold;
+    box-shadow: 0 0 3px 3px var(--r-col-bg-dark);
+    /* font-size: 0.9em; */
 }
 </style>
