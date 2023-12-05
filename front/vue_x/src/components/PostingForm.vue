@@ -70,8 +70,6 @@ export default {
                 data.post_imgs.push(img.to_post_img())
             }
             
-            console.log('TODO:DEL', data)
-
             this.tmpFiles = new Array()
             postingForm.value = newPostingFormContent();
             data.board_url = this.boardUrl;

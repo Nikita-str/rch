@@ -17,12 +17,11 @@ export default {
             type: Boolean,
             required: true,
         },
-        spoiler: {
-            type: Boolean,
-            default: false,
-        }
     },
     computed: {
+        spoiler() {
+            return this.imgInfo.cf_ty == '#'
+        },
         spoilerPic() {
             const ZEROS = 2
             const IMGS = ['webp', 'jpg']
@@ -96,7 +95,7 @@ export default {
 
 <style scoped>
 .post-pic-max-sz {
-    max-width: 15.4vw;
+    max-width: calc(min(15.4vw, 250px));
     min-width: 150px;
 }
 .post-pic-caption-ref {
@@ -138,7 +137,7 @@ export default {
 }
 .post-pic-img {
     border: #0000 2px solid;
-    max-width: calc(max(15.4vw, 150px));
+    max-width: calc(min(max(15.4vw, 150px), 250px));
 }
 .post-pic-img:hover {
     /* border-color: var(--r-col-blue); */
