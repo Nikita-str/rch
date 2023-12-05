@@ -44,6 +44,16 @@ export default {
         <img class="pic-sinlge-view-max-sz" :src="file.url" :alt="file.name" :title="file.name" />
         <div class="pic-sinlge-view-bottom">{{sizeText}}</div>
         <button class="pic-sinlge-view-bottom-x" @click.left.stop.prevent="onCancel">X</button>
+        <div class="pic-sinlge-view-spoiler">
+            <input
+            type="checkbox"
+            class="x-checker nonselectable pic-sinlge-view-spoiler-checkbox"
+            title="SPOILER!ALERT"
+            v-model="file.spoiler"
+            style="border-color: var(--r-col-bg-dark);"
+            />
+        </div>
+        <p v-if="file.spoiler" class="centered pic-spoiler-text" style="transform: translate(-50%,-50%) rotate(20deg); font-size: 0.8em;">!SPOILER!</p>
     </div>
 </template>
 
@@ -92,5 +102,17 @@ export default {
 }
 .pic-sinlge-view-bottom-x:hover {
     color: var(--r-col-crab-light);
+}
+.pic-sinlge-view-spoiler {
+    display: flex;
+    position: absolute;
+    top: 0;
+    right: 0;
+    z-index: 3;
+    background: var(--r-col-blue-80);
+    padding: 3px;
+}
+.pic-sinlge-view-spoiler-checkbox:checked {
+    background-color: var(--r-col-bg-dark);
 }
 </style>

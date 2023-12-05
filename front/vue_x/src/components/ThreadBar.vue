@@ -129,7 +129,7 @@ function scrollId(upperBar) {
         <span class="thr-bar-elem" @click="onScroll"><router-link class="thr-bar-rl" :to="scrollUrlPostfix" append>{{ scrollText }}</router-link></span>
         <span class="thr-bar-elem" @click="onUpdate"><router-link class="thr-bar-rl" to="" append>обновить</router-link></span>
         <span class="thr-bar-elem thr-bar-rl">
-            <input type="checkbox" class="thr-bar-auto-upd nonselectable" v-model="autoUpd" @change="onCheckerChange()" />
+            <input type="checkbox" class="x-checker nonselectable" v-model="autoUpd" @change="onCheckerChange()" style="margin-right: 0.5em;" />
             <span>{{updText}}
                 <span class="thr-bar-auto-upd-timer">{{ curLoad ? '??!' : (autoUpd ?  autoUpdIn : '...') }}</span>
             </span>
@@ -156,23 +156,6 @@ function scrollId(upperBar) {
     padding-right: 0.5em;
 }
 
-.thr-bar-auto-upd {
-    -webkit-appearance: none;
-    appearance: none;
-    margin: 0;
-    margin-right: 0.5em;
-    width: 1.2em;
-    height: 1.2em;
-    display: inline-block;
-    vertical-align: sub;
-    border: 3px solid var(--r-col-blue);
-}
-.thr-bar-auto-upd:hover {
-    background-color: var(--r-col-crab-light);
-}
-.thr-bar-auto-upd:checked {
-    background-color: var(--r-col-blue);
-}
 .thr-bar-auto-upd-timer {
     display: inline-block;
     text-align: right;

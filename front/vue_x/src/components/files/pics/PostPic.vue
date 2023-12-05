@@ -144,13 +144,4 @@ export default {
     /* border-color: var(--r-col-blue); */
     outline: solid 1px var(--r-col-blue);
 }
-.pic-spoiler-text {
-    padding: 3px;
-    border: dashed 3px var(--r-col-crab-light);
-    background-color: var(--r-col-bg-dark);
-    color: var(--r-col-crab-light);
-    font-weight: bold;
-    box-shadow: 0 0 3px 3px var(--r-col-bg-dark);
-    /* font-size: 0.9em; */
-}
 </style>

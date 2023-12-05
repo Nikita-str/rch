@@ -71,12 +71,14 @@ export class FileX {
     }
 
     to_post_img() {
+        let spoiler = this.spoiler ? true : false
         return {
             file: this.base64.substring(this.base64.indexOf(',') + 1),
-            compressed_file: this.compressed.substring(this.compressed.indexOf(',') + 1),
+            compressed_file: spoiler ? '' : this.compressed.substring(this.compressed.indexOf(',') + 1),
             name: this.name,
             orig_w: this.orig_w,
             orig_h: this.orig_h,
+            spoiler,
         }
     }
 }
