@@ -1,16 +1,27 @@
 use super::{PostImg, ImgType, ImgLoadInfo};
 use super::base_to_img;
 
-struct ImgProccesed {
+struct SingleImgProc {
     pub bytes: Vec<u8>,
-    pub compressed_bytes: Vec<u8>,
-    pub f_ty: ImgType,
-    pub cf_ty: ImgType,
+    pub ty: ImgType,
+}
+impl SingleImgProc {
+    fn new(bytes: Vec<u8>, ty: ImgType) -> Self {
+        Self { bytes, ty }
+    }
+}
+
+struct ImgProccesed {
+    pub img: SingleImgProc,
+    pub compressed_img: Option<SingleImgProc>,
 }
 
 impl ImgProccesed {
-    fn save_prepared(bytes: &Vec<u8>, ty: ImgType, dir: &str, n: u64, compress: bool) -> bool {
+    fn save_prepared(img: &SingleImgProc, dir: &str, n: u64, compress: bool) -> bool {
         use std::io::Write;
+
+        let bytes = &img.bytes;
+        let ty = img.ty;
 
         let postfix = if compress { "_c" } else { "" };
         let ext = ty.to_format();
@@ -23,25 +34,29 @@ impl ImgProccesed {
 
     #[must_use]
     pub fn save(&self, dir: &str, n: u64) -> bool {
-        Self::save_prepared(&self.compressed_bytes, self.cf_ty, dir, n, true)
-        && Self::save_prepared(&self.bytes, self.f_ty, dir, n, false)
+        let compressed_save = self.compressed_img.as_ref().map_or(true, |img|Self::save_prepared(&img, dir, n, true));
+        compressed_save && Self::save_prepared(&self.img, dir, n, false)
     }
 
     fn try_by_post_img(img: &PostImg)  -> Option<ImgProccesed> {
         if !img.size_verify() { return None }
 
-        let Some((cf_ty, compressed_bytes)) = base_to_img(&img.compressed_file) else { return None };
-        let Some((f_ty, bytes)) = base_to_img(&img.file) else { return None };
+        let compressed_img = if img.spoiler { None } else {
+            let Some((ty, bytes)) = base_to_img(&img.compressed_file) else { return None };
+            Some(SingleImgProc::new(bytes, ty))
+        };
+
+        let Some((ty, bytes)) = base_to_img(&img.file) else { return None };
+        let img = SingleImgProc::new(bytes, ty);
+
         return Some(ImgProccesed{
-            bytes,
-            compressed_bytes,
-            f_ty,
-            cf_ty,
+            img,
+            compressed_img,
         })
     }
 
     fn byte_sz(&self) -> u32 {
-        self.bytes.len() as u32
+        self.img.bytes.len() as u32
     }
 }
 
@@ -101,8 +116,8 @@ impl ImgsPreparerSealed {
                     w: img.w,
                     h: img.h,
                     byte_sz: img.img_p.byte_sz(),
-                    f_ty: img.img_p.f_ty.to_char(),
-                    cf_ty: img.img_p.cf_ty.to_char(),
+                    f_ty: img.img_p.img.ty.to_char(),
+                    cf_ty: img.img_p.compressed_img.map_or('#', |x|x.ty.to_char()),
                 })
             }
         }

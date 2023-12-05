@@ -9,6 +9,7 @@ pub struct PostImg {
     pub name: String,
     pub orig_w: u16,
     pub orig_h: u16,
+    pub spoiler: bool,
 }
 
 impl PostImg {
