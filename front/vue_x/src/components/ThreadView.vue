@@ -6,8 +6,9 @@ import AwaitDots from './micro/awaiters/BigAwaitDots.vue'
 import { vElementVisibility } from '@vueuse/components'
 import { defineEmits } from 'vue'
 
-const emit = defineEmits(['post-n-click'])
+const emit = defineEmits(['post-n-click', 'img-click'])
 function onPostRefClick(n) { emit('post-n-click', n) }
+function imgClick(info) { emit('img-click', info) }
 </script> 
 
 <script>
@@ -63,6 +64,7 @@ export default {
                     :imgsInfo="posts[0].imgs"
 
                     @post-n-click="onPostRefClick"
+                    @img-click="imgClick"
                 />
             </div>
             <div v-if="posts_qty > posts.length" class="thr-view-skip-info">пропущено постов: {{ posts_qty - posts.length }}</div>
@@ -78,6 +80,7 @@ export default {
                     :nBoardOP="posts[0].n"
 
                     @post-n-click="onPostRefClick"
+                    @img-click="imgClick"
                 />
                 <Post v-else
                     :msg="posts[post_index].text" 
@@ -91,6 +94,7 @@ export default {
 
                     v-element-visibility="(visible) => onNextLoadVis(visible, posts[post_index].n)"
                     @post-n-click="onPostRefClick"
+                    @img-click="imgClick"
                 />
                 <!-- or default value for `onNextLoadVis` set to `(_) => {},` ? -->
                 <!-- :msgThrN="999" for `msgThrN` padding test -->

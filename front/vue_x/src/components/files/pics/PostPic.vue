@@ -1,6 +1,9 @@
 <script setup>
 import { img_ext_abbr } from '../../../js/pics/file_x'
 import { pad, rand_i } from '@/js/fns'
+import { defineEmits } from 'vue'
+
+defineEmits(['img-click'])
 </script>
 
 <script>
@@ -32,9 +35,12 @@ export default {
             let ext = img_ext_abbr(this.imgInfo.cf_ty)
             return `${IMG_PATH_PREFIX}/${this.imgInfo.n}_c.${ext}`
         },
-        imgPath() {
+        imgPathWoPrefix() {
             let ext = img_ext_abbr(this.imgInfo.f_ty)
-            return `${IMG_PATH_PREFIX}/${this.imgInfo.n}.${ext}`
+            return `${this.imgInfo.n}.${ext}`
+        },
+        imgPath() {
+            return `${IMG_PATH_PREFIX}/${this.imgPathWoPrefix}`
         },
         nameAbbr() {
             let ext = img_ext_abbr(this.imgInfo.f_ty)
@@ -69,7 +75,18 @@ export default {
             let h = this.imgInfo.h ? this.imgInfo.h : '???'
             return `${w}x${h}`
         },
-    }
+    },
+    methods: {
+        imgClick() {
+            let info = {
+                name: this.imgInfo.name,
+                img_path: this.imgPathWoPrefix,
+                expected_w: this.imgInfo.w ? this.imgInfo.w : 0,
+                expected_h: this.imgInfo.h ? this.imgInfo.h : 0,
+            }
+            this.$emit('img-click', info)
+        }
+    },
 }
 </script>
 
@@ -84,7 +101,7 @@ export default {
                 <div class="post-pic-caption-info">{{ sz }} | {{ dimSz }}</div>
             </div>
         </figcaption>
-        <a class="post-pic-a" :href="imgPath" target="_blank">
+        <a class="post-pic-a" :href="imgPath" target="_blank" @click.left.prevent="imgClick">
             <div class="post-pic-max-sz" style="text-align: center;">
                 <img class="post-pic-img" :src="spoiler ? spoilerPic : imgPathCompressed" :alt="dimSz">
                 <p v-if="spoiler" class="centered pic-spoiler-text" style="transform: translate(-50%,-50%) rotate(-20deg);">!SPOILER!</p>

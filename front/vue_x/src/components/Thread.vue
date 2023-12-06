@@ -16,6 +16,8 @@
     import BottomIndent from './micro/BottomIndent.vue'
 
     import ThreadBar from './ThreadBar.vue'
+
+    import PicCloseView from './files/pics/PicCloseView.vue'
 </script>
 
 <script>
@@ -31,6 +33,9 @@ function dataRecalc() {
         nextN: 0,
 
         draggableFormVisivle: false,
+
+        picCloseViewInfo: new Object(),
+        picCloseViewVisible: false,
     }
 }
 
@@ -117,6 +122,13 @@ export default {
             this.draggableFormVisivle = true
             onPostRefClick(n)
         },
+        onPostImgClick(info) {
+            this.picCloseViewInfo = info
+            this.picCloseViewVisible = true
+        },
+        onPicCloseViewClose() {
+            this.picCloseViewVisible = false
+        },
     },
 }
 
@@ -170,6 +182,7 @@ function onPostRefClick(n) {
             :allLoaded="allLoaded"
             :onNextLoadVis="onNextLoadVisX"
             @post-n-click="onPostRefClickX"
+            @img-click="onPostImgClick"
         />
         
         <ThreadBar :upperBar="false" :onUpdate="thrLoad" :curLoad="curLoad" />
@@ -178,5 +191,11 @@ function onPostRefClick(n) {
     <PageNotFound v-else />
 
     <DraggablePostingForm :boardUrl="boardUrl" :opPostN="parseInt(thrN)" :visible="draggableFormVisivle" :afterPostInThr="thrLoad" />
+    <PicCloseView v-if="picCloseViewVisible" @close="onPicCloseViewClose" 
+        :name="picCloseViewInfo.name"
+        :img_path="picCloseViewInfo.img_path"
+        :expected_w="picCloseViewInfo.expected_w"
+        :expected_h="picCloseViewInfo.expected_h"
+    />
 </template>
 

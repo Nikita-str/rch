@@ -8,6 +8,8 @@
     import AwaitText from './micro/awaiters/BigAwaitText.vue'
 
     import { vElementVisibility } from '@vueuse/components'
+    
+    import PicCloseView from './files/pics/PicCloseView.vue'
 </script> 
 
 <script> 
@@ -24,6 +26,9 @@ function dataRecalc(_new_path) {
         last_visible: false,
         all_loaded: false,
         last_loaded_time: new Date(),
+        
+        picCloseViewInfo: new Object(),
+        picCloseViewVisible: false,
     }
 }
 
@@ -105,6 +110,13 @@ export default {
                 this.auto_upd_timer = null
             }
         },
+        onPostImgClick(info) {
+            this.picCloseViewInfo = info
+            this.picCloseViewVisible = true
+        },
+        onPicCloseViewClose() {
+            this.picCloseViewVisible = false
+        },
     },
     mounted() {
         this.thrLoad()
@@ -128,15 +140,23 @@ export default {
         <!-- <ThreadView v-for="thr in thrs" :posts="thr.posts" :posts_qty="thr.posts_qty" :header="thr.header" /> -->
 
         <template v-for="(thr, index) in thrs" >
-            <ThreadView :posts="thr.posts" :posts_qty="thr.posts_qty" :header="thr.header" v-if="index + THR_LAST_N_UPD < thrs.length"/>
+            <ThreadView :posts="thr.posts" :posts_qty="thr.posts_qty" :header="thr.header" @img-click="onPostImgClick" v-if="index + THR_LAST_N_UPD < thrs.length"/>
             <ThreadView :posts="thr.posts" :posts_qty="thr.posts_qty" :header="thr.header" v-else
-                    v-element-visibility="(vis) => { 
-                        if (index == thrs.length - 1) { last_visible = vis } 
-                        onElementVisibility(vis) 
-                    }"
+                v-element-visibility="(vis) => { 
+                    if (index == thrs.length - 1) { last_visible = vis } 
+                    onElementVisibility(vis)
+                }"
+                @img-click="onPostImgClick"
             />
         </template>
 
     </template>
     <AwaitDots v-if="thrs !== null && cur_load_more" />
+
+    <PicCloseView v-if="picCloseViewVisible" @close="onPicCloseViewClose" 
+        :name="picCloseViewInfo.name"
+        :img_path="picCloseViewInfo.img_path"
+        :expected_w="picCloseViewInfo.expected_w"
+        :expected_h="picCloseViewInfo.expected_h"
+    />
 </template>

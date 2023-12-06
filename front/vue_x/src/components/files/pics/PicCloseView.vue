@@ -2,11 +2,7 @@
 import { ref, defineEmits, defineProps, computed } from 'vue'
 
 const emit = defineEmits(['close'])
-
-function onClose() {
-    console.log("TODO:DEL:IMG VIEW:CLOSE")
-    emit('close')
-}
+function onClose() { emit('close') }
 
 const props = defineProps({
     name: {type: String, default: ""},
@@ -156,7 +152,7 @@ function onWheel(e) {
     var w = Math.max(1, Math.floor(w * new_coef))
     scaleCoef.value = new_coef
     let {el, img} = getElImg()
-    if (new_coef >= 2.0 - EPS) {
+    if (new_coef >= 4.0 - EPS) {
         img.style.imageRendering = 'pixelated';
     } else {
         img.style.imageRendering = 'auto';
@@ -178,8 +174,6 @@ function onWheel(e) {
     el.style.left = (el.offsetLeft + (c_dx - c_dx_scaled)) + PX
     el.style.top = (el.offsetTop + (c_dy - c_dy_scaled)) + PX
 
-    console.log('WHEEL', e, el,)
-    
     img.style.width = `${w}px`
 }
 </script>
@@ -201,6 +195,8 @@ function onWheel(e) {
     z-index: 15;
     width: 100%;
     height: 100%;
+    left: 0;
+    top: 0;
     background-color: var(--r-col-bg-img-view);
 }
 .pic-close-view {
@@ -210,7 +206,8 @@ function onWheel(e) {
     padding: 0.5em;
     padding-top: 0em;
     padding-bottom: 0.3em;
-    background: var(--r-col-bg-light-blue-50);
+    /* background: var(--r-col-bg-light-blue-50); */
+    background: var(--r-col-img-view-border);
     cursor: move;
 }
 .pic-cview-h {
@@ -224,7 +221,7 @@ function onWheel(e) {
     right: 0;
     top: 0;
     line-height: 1.3;
-    color: var(--r-col-bg-dark);
+    color: var(--r-col-bg);
     background: #0000;
     padding: 2px;
     font-weight: bold;

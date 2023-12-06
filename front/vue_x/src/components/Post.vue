@@ -3,7 +3,8 @@ import { pad, boardUrlCalc } from '../js/fns'
 import PostPics from './files/pics/PostPics.vue'
 import { defineEmits } from 'vue'
 
-const emit = defineEmits(['post-n-click'])
+const emit = defineEmits(['post-n-click', 'img-click'])
+function imgClick(info) { emit('img-click', info) }
 </script>
 
 <script> 
@@ -138,7 +139,7 @@ export default {
             <span class="post-thr-n">{{ msgThrN }}</span>
         </div>
         <div class="post-inner">
-              <PostPics :imgsInfo="imgsInfo" />
+              <PostPics :imgsInfo="imgsInfo" @img-click="imgClick" />
               <div class="post-text" :style="{'padding-top': (imgsInfo.length == 1) ? '2.4em' : '' }" v-html="msgUnpacked" />
         </div>
         <template v-if="msgReplies">
