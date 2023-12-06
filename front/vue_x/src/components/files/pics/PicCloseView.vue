@@ -13,8 +13,9 @@ const props = defineProps({
     expected_w: {type: Number, default: 0},
     expected_h: {type: Number, default: 0},
 })
-const PIC_CVIEW_IMG_ID = 'pic-cview-img'
-
+const PIC_CVIEW_ID = 'pic-cview'
+const MOUSE_LB = 0x1
+const PX = 'px'
 
 const img_exp_sz = computed(() => {
     if (props.expected_w == 0) return null
@@ -53,8 +54,6 @@ function calcWidth(w, h) {
 //async 
 function onImgLoad(e) {
     // await new Promise(r => setTimeout(r, 2000))
-
-    // let el = document.getElementById(PIC_CVIEW_IMG_ID)
     
     let img = e.target
     let real_w = img.naturalWidth
@@ -65,19 +64,56 @@ function onImgLoad(e) {
     let w = calcWidth(real_w, real_h)
     img.style.width = `${w}px`
 }
+
+function onMouseDown(e) {
+    e.preventDefault();
+
+    if (e.target.classList.contains("pic-cview-x")) return
+
+    let el = document.getElementById(PIC_CVIEW_ID)
+    let img = el.getElementsByTagName('img')[0]
+    img.style.cursor = 'move'
+
+    el.style.left = el.offsetLeft + PX
+    el.style.top = el.offsetTop + PX
+    
+    document.addEventListener('mousemove', onMouseMove)
+    document.addEventListener('mouseup', onMouseUp)
+}
+        
+function onMouseUp(e) {
+    if((e.buttons & MOUSE_LB) == 0x0) {
+        e.preventDefault();
+        
+        let el = document.getElementById(PIC_CVIEW_ID)
+        let img = el.getElementsByTagName('img')[0]
+        img.style.cursor = 'default'
+
+        document.removeEventListener('mousemove', onMouseMove)
+        document.removeEventListener('mouseup', onMouseUp)
+    }
+}
+
+function onMouseMove(e) {
+    let el = document.getElementById(PIC_CVIEW_ID)
+
+    el.style.left = el.offsetLeft + e.movementX + PX
+    el.style.top = el.offsetTop+ e.movementY + PX
+}
 </script>
 
 <template>
-    <div tabindex="0" id="pic-cview-x" class="nonselectable" @keyup.esc="onClose" @click.left.self="onClose">
-        <div class="centered pic-close-view">
+    <div tabindex="0" id="pic-cview-outer" class="nonselectable" @keyup.esc="onClose" @click.left.self="onClose">
+        <div :id="PIC_CVIEW_ID" class="centered pic-close-view" @mousedown.left.prevent="onMouseDown">
             <h4 class="pic-cview-h">{{img_path}}{{ imgRealSz ? ` | ${imgRealSz.w}x${imgRealSz.h}` : img_exp_sz ? ` | ${img_exp_sz.w}x${img_exp_sz.h}` : '' }}</h4>
-            <img :id="PIC_CVIEW_IMG_ID" ref="imgRef" :src="img_full_path" @load="onImgLoad" :alt="img_path" :style="inti_style" />
+            <h4 class="pic-cview-x" @click.left.self.prevent="onClose">X</h4>
+            <img ref="imgRef" class="pic-cview-img" :src="img_full_path" @load="onImgLoad" :alt="img_path" :style="inti_style" />
         </div>
     </div>
 </template>
 
 <style>
-#pic-cview-x {
+#pic-cview-outer {
     display: block;
     position: fixed;
     z-index: 15;
@@ -88,13 +124,30 @@ function onImgLoad(e) {
 .pic-close-view {
     line-height: 1.5em;
     display: inline-block;
-    padding: 1.5em;
+    padding: 0.5em;
     padding-top: 0em;
-    padding-bottom: 1.2em;
+    padding-bottom: 0.3em;
     background: var(--r-col-bg-light-blue-50);
+    cursor: move;
 }
 .pic-cview-h {
     text-align: center;
     color: var(--r-col-blue);
+}
+.pic-cview-x {
+    border: none;
+    position: absolute;
+    right: 0;
+    top: 0;
+    line-height: 1.3;
+    color: var(--r-col-bg-dark);
+    background: #0000;
+    padding: 2px;
+    font-weight: bold;
+    cursor: pointer;
+    padding-right: 0.5em;
+}
+.pic-cview-x:hover {
+    color: var(--r-col-crab-light);
 }
 </style>
