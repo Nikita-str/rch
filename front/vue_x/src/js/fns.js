@@ -51,5 +51,9 @@ export function boardUrlCalc(obj) {
     return trim(path, "/").split('/')[0]
 }
 
+export function isWhitespace(c) {
+    return c === ' ' || c === '\r' || c === '\n' || c === '\t'
+}
+
 export const IS_SAFARI = navigator.userAgent.toLowerCase().indexOf("Safari") > -1
 export const IS_FIREFOX = navigator.userAgent.toLowerCase().indexOf("firefox") > -1

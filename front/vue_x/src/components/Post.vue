@@ -1,9 +1,13 @@
 <script setup>
-    import { pad, boardUrlCalc } from '../js/fns'
-    import PostPics from './files/pics/PostPics.vue'
+import { pad, boardUrlCalc } from '../js/fns'
+import PostPics from './files/pics/PostPics.vue'
+import { defineEmits } from 'vue'
+
+const emit = defineEmits(['post-n-click'])
 </script>
 
 <script> 
+
 export default {
   props: {
     msg: {
@@ -118,7 +122,10 @@ export default {
     //         return PREFIX + '00' + POSTFIX + s
     //     }
     // }
-  }
+  },
+  methods: {
+    onPostRefClick() { this.$emit('post-n-click', this.msgBoardN) }
+  },
 }
 </script> 
 
@@ -127,7 +134,7 @@ export default {
         <div class="post-header">
             <span class="post-who" v-html="msgWho"></span>
             <span class="post-date">{{ msgDateX }}</span>
-            <span class="post-board-n">#<router-link :to="nBoardLink">{{ msgBoardN }}</router-link></span>
+            <span class="post-board-n">#<router-link :to="nBoardLink" @click="onPostRefClick">{{ msgBoardN }}</router-link></span>
             <span class="post-thr-n">{{ msgThrN }}</span>
         </div>
         <div class="post-inner">

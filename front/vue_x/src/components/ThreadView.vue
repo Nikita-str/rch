@@ -1,9 +1,13 @@
 
 <script setup>
-    import Post from './Post.vue'
-    import HorizontalLine from './micro/HorizontalLine.vue'
-    import AwaitDots from './micro/awaiters/BigAwaitDots.vue'
-    import { vElementVisibility } from '@vueuse/components'
+import Post from './Post.vue'
+import HorizontalLine from './micro/HorizontalLine.vue'
+import AwaitDots from './micro/awaiters/BigAwaitDots.vue'
+import { vElementVisibility } from '@vueuse/components'
+import { defineEmits } from 'vue'
+
+const emit = defineEmits(['post-n-click'])
+function onPostRefClick(n) { emit('post-n-click', n) }
 </script> 
 
 <script>
@@ -57,6 +61,8 @@ export default {
                     :msgReplies="posts[0].replies"
                     :isOP="true"
                     :imgsInfo="posts[0].imgs"
+
+                    @post-n-click="onPostRefClick"
                 />
             </div>
             <div v-if="posts_qty > posts.length" class="thr-view-skip-info">пропущено постов: {{ posts_qty - posts.length }}</div>
@@ -70,6 +76,8 @@ export default {
                     :msgReplies="posts[post_index].replies"
                     :imgsInfo="posts[post_index].imgs"
                     :nBoardOP="posts[0].n"
+
+                    @post-n-click="onPostRefClick"
                 />
                 <Post v-else
                     :msg="posts[post_index].text" 
@@ -82,6 +90,7 @@ export default {
                     :nBoardOP="posts[0].n"
 
                     v-element-visibility="(visible) => onNextLoadVis(visible, posts[post_index].n)"
+                    @post-n-click="onPostRefClick"
                 />
                 <!-- or default value for `onNextLoadVis` set to `(_) => {},` ? -->
                 <!-- :msgThrN="999" for `msgThrN` padding test -->

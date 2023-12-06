@@ -5,37 +5,36 @@
     import AwaitDots from './micro/awaiters/BigAwaitDots.vue'
     import AwaitText from './micro/awaiters/BigAwaitText.vue'
 
-    import { trim } from '../js/fns'
+    import { trim, isWhitespace } from '../js/fns'
     import { mapActions } from 'vuex'
     import BoardHeader from './BoardHeader.vue'
     import ThreadView from './ThreadView.vue'
-    
-    import {ELEM_ID} from '../components/DraggablePostingForm.vue'
+
+    import { ID_POST_TEXT_FIELD } from '../components/PostingForm.vue'
     import DraggablePostingForm from '../components/DraggablePostingForm.vue'
 
     import BottomIndent from './micro/BottomIndent.vue'
 
     import ThreadBar from './ThreadBar.vue'
-
 </script>
 
 <script>
 
-    function dataRecalc() {
-        return {
-            boardExist: null,
-            allLoaded: false,
-            curLoad: false,
-            header: null,
-            posts: null,
-            err: null,
-            nextN: 0,
+function dataRecalc() {
+    return {
+        boardExist: null,
+        allLoaded: false,
+        curLoad: false,
+        header: null,
+        posts: null,
+        err: null,
+        nextN: 0,
 
-            draggableFormVisivle: false,
-        }
+        draggableFormVisivle: false,
     }
+}
 
-    export default {
+export default {
     data() { return dataRecalc() },
     computed: {
         boardUrl() { return trim(this.$route.path, "/").split('/')[0] },
@@ -113,8 +112,32 @@
         },
         onNewThrClick() {
             this.draggableFormVisivle = !this.draggableFormVisivle
-        }
+        },
+        onPostRefClickX(n) {
+            this.draggableFormVisivle = true
+            onPostRefClick(n)
+        },
     },
+}
+
+function onPostRefClick(n) {
+    let el = document.getElementById(ID_POST_TEXT_FIELD)
+    let selection_start = el.selectionStart
+    let selection_end = el.selectionEnd
+
+    let text_start = el.value.substring(0, selection_start)
+    let text_end = el.value.substring(selection_start)
+
+    let need_space = (text_start.length == 0) ? false : !isWhitespace(text_start[text_start.length - 1])
+    let prefix = (need_space ? ' ' : '') + ">>"
+    let reply_text = `${prefix}${n}\n`
+
+
+    el.value = text_start + reply_text + text_end
+    el.selectionStart = selection_start + reply_text.length
+    el.selectionEnd = selection_end + reply_text.length
+
+    el.focus()
 }
 </script>
 
@@ -146,6 +169,7 @@
             :header="header" 
             :allLoaded="allLoaded"
             :onNextLoadVis="onNextLoadVisX"
+            @post-n-click="onPostRefClickX"
         />
         
         <ThreadBar :upperBar="false" :onUpdate="thrLoad" :curLoad="curLoad" />
