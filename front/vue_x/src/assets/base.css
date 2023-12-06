@@ -8,6 +8,9 @@
   --r-col-crab-dark: #8F1F1D;
   --r-col-blue: #01346B;
   /* don't work: rgba(var(--r-col-blue), 0.7); */
+  --r-col-blue-10: #01346B18;
+  --r-col-blue-20: #01346B33;
+  --r-col-blue-50: #01346B80;
   --r-col-blue-60: #01346B99;
   --r-col-blue-70: #01346BB3;
   --r-col-blue-80: #01346BCC;
@@ -21,6 +24,12 @@
   --r-col-bg: #EEF;
   --r-col-bg-dark: #DADAF4; /*#D0D0E0*/
   --r-col-bg-light-blue: #9A7DC4;
+  --r-col-bg-light-blue-20: #9A7DC433;
+  --r-col-bg-light-blue-40: #9A7DC466;
+  --r-col-bg-light-blue-50: #9A7DC480;
+  --r-col-bg-light-blue-60: #9A7DC499;
+
+  --r-col-bg-img-view: #F888FF20;
 }
 
 

@@ -8,6 +8,7 @@ import Thread from '../components/Thread.vue'
 import Post from '../components/Post.vue'
 import PostingForm from '../components/PostingForm.vue'
 import DraggablePostingForm from '../components/DraggablePostingForm.vue'
+import PicCloseView from '../components/files/pics/PicCloseView.vue'
 
 const POST_LONG_MSG = 'The characters allowed in a URI are either reserved or unreserved'
 +' (or a percent character as part of a percent-encoding).'
@@ -160,6 +161,16 @@ const routes = [
       props: {
         boardUrl: 'b',
         opPostN: null,
+      },
+    },
+  
+
+
+    {
+      path: '/~~page~~/img-view/', 
+      component: PicCloseView,
+      props: {
+        img_path: '/imgs/pp/9.jpg',
       },
     },
 
