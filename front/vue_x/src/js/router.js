@@ -167,14 +167,46 @@ const routes = [
 
 
     {
-      path: '/~~page~~/img-view/', 
+      path: '/~~page~~/img-view/real/', 
       component: PicCloseView,
       props: {
-        img_path: '/imgs/pp/9.jpg',
+        img_path: '9.jpg',
+        expected_w: 1024,
+        expected_h: 1024,
       },
     },
-
-
+    {
+      path: '/~~page~~/img-view/unkn/', 
+      component: PicCloseView,
+      props: {
+        img_path: '9.jpg',
+      },
+    },
+    {
+      path: '/~~page~~/img-view/incorrect/',
+      component: PicCloseView,
+      props: {
+        img_path: '9.jpg',
+        expected_w: 512,
+        expected_h: 512,
+      },
+    },
+    {
+      path: '/~~page~~/img-view/big/',
+      component: PicCloseView,
+      props: {
+        img_path: 'test_01_big.png',
+        expected_w: 3000,
+        expected_h: 6000,
+      },
+    },
+    {
+      path: '/~~page~~/img-view/small/',
+      component: PicCloseView,
+      props: {
+        img_path: '9_c.webp',
+      },
+    },
     
     { 
       path: '/:pathMatch(.*)*', 
