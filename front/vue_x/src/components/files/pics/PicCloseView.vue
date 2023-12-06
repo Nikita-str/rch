@@ -34,6 +34,7 @@ const init_w = computed(() => {
 const init_w_px = computed(() => init_w.value ? `${init_w.value}px` : null)
 const inti_style = computed(() => init_w_px.value ? `width: ${init_w_px.value};` : null)
 
+let scaleCoef = ref(null)
 let imgRef = ref(null)
 let imgRealSz = ref(null)
 
@@ -62,7 +63,14 @@ function onImgLoad(e) {
     imgRealSz.value = {w: real_w, h: real_h }
     
     let w = calcWidth(real_w, real_h)
+    scaleCoef.value = w / real_w
     img.style.width = `${w}px`
+}
+
+function getImg() {
+    let el = document.getElementById(PIC_CVIEW_ID)
+    let img = el.getElementsByTagName('img')[0]
+    return img
 }
 
 function onMouseDown(e) {
@@ -85,8 +93,7 @@ function onMouseUp(e) {
     if((e.buttons & MOUSE_LB) == 0x0) {
         e.preventDefault();
         
-        let el = document.getElementById(PIC_CVIEW_ID)
-        let img = el.getElementsByTagName('img')[0]
+        let img = getImg()
         img.style.cursor = 'default'
 
         document.removeEventListener('mousemove', onMouseMove)
@@ -100,11 +107,52 @@ function onMouseMove(e) {
     el.style.left = el.offsetLeft + e.movementX + PX
     el.style.top = el.offsetTop+ e.movementY + PX
 }
+
+function onWheel(e) {
+    if (e.deltaY == 0) return
+    let scale_up = e.deltaY < 0
+
+    let cur_coef = scaleCoef.value
+    if (!cur_coef) return
+    
+    const EPS = 0.001
+    const VALID_COEFS = [0.1, 0.125, 0.15, 0.2, 0.25, 0.3, 0.4, 0.5, 0.6, 0.75, 0.8, 1.0, 1.25, 1.5, 2.0, 4.0, 8.0, 16.0]
+    let valid_coef_index = 0
+    for (const valid_c of VALID_COEFS) {
+        if (cur_coef <= valid_c + EPS) break
+        valid_coef_index += 1
+    }
+
+    if (scale_up && valid_coef_index == VALID_COEFS.length) return
+    if (!scale_up && valid_coef_index == 0) return
+
+    let coef_index_next = null;
+    if (scale_up) {
+        let need_to_cur_scale = (VALID_COEFS[valid_coef_index] - cur_coef) > EPS
+
+        coef_index_next = need_to_cur_scale ? valid_coef_index : valid_coef_index + 1
+        if (coef_index_next == VALID_COEFS.length) return
+    } else {
+        coef_index_next = valid_coef_index - 1
+    }
+
+    let new_coef = VALID_COEFS[coef_index_next]
+    var w = imgRealSz.value.w
+    var w = Math.max(1, Math.floor(w * new_coef))
+    scaleCoef.value = new_coef
+    let img = getImg()
+    if (new_coef >= 2.0 - EPS) {
+        img.style.imageRendering = 'pixelated';
+    } else {
+        img.style.imageRendering = 'auto';
+    }
+    img.style.width = `${w}px`
+}
 </script>
 
 <template>
     <div tabindex="0" id="pic-cview-outer" class="nonselectable" @keyup.esc="onClose" @click.left.self="onClose">
-        <div :id="PIC_CVIEW_ID" class="centered pic-close-view" @mousedown.left.prevent="onMouseDown">
+        <div :id="PIC_CVIEW_ID" class="centered pic-close-view" @mousedown.left.prevent="onMouseDown" @wheel.prevent="onWheel">
             <h4 class="pic-cview-h">{{img_path}}{{ imgRealSz ? ` | ${imgRealSz.w}x${imgRealSz.h}` : img_exp_sz ? ` | ${img_exp_sz.w}x${img_exp_sz.h}` : '' }}</h4>
             <h4 class="pic-cview-x" @click.left.self.prevent="onClose">X</h4>
             <img ref="imgRef" class="pic-cview-img" :src="img_full_path" @load="onImgLoad" :alt="img_path" :style="inti_style" />
@@ -122,6 +170,7 @@ function onMouseMove(e) {
     background-color: var(--r-col-bg-img-view);
 }
 .pic-close-view {
+    text-align: center;
     line-height: 1.5em;
     display: inline-block;
     padding: 0.5em;
@@ -131,8 +180,9 @@ function onMouseMove(e) {
     cursor: move;
 }
 .pic-cview-h {
-    text-align: center;
     color: var(--r-col-blue);
+    padding-left: 1.5em;
+    padding-right: 1.5em;
 }
 .pic-cview-x {
     border: none;
