@@ -176,6 +176,16 @@ const routes = [
       },
     },
     {
+      path: '/~~page~~/img-view/named/', 
+      component: PicCloseView,
+      props: {
+        name: 'jtheyrsdgxh65erdyhj654weesd5tyhtvweyjnvrsertvhg.jfif',
+        img_path: '9.jpg',
+        expected_w: 1024,
+        expected_h: 1024,
+      },
+    },
+    {
       path: '/~~page~~/img-view/unkn/', 
       component: PicCloseView,
       props: {
