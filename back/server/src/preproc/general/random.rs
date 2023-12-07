@@ -46,8 +46,8 @@ impl State {
             
             Self::Open if token == "-" => Self::FromMinus,
             Self::Open | Self::FromMinus if is_num => Self::FromNumber,
-
-            Self::FromNumber if token == "," || token == ":" => Self::Comma,
+            
+            Self::FromNumber if token == "," || token == ":" || token == ";" => Self::Comma,
             
             Self::Comma if token == "-" => Self::ToMinus,
             Self::Comma | Self::ToMinus if is_num => Self::ToNumber,
