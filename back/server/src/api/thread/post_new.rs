@@ -66,5 +66,10 @@ pub async fn handler(
 }
 
 pub fn router(state: &HandlerState) -> Router {
-    Router::new().route("/post_new", routing::post(handler).with_state(Arc::clone(state)))
+    const MAX_TOTAL_SZ: usize = super::super::board::thr_new::MAX_TOTAL_SZ;
+    Router::new()
+    .route("/post_new", routing::post(handler)
+    .with_state(Arc::clone(state)))
+    .layer(axum::extract::DefaultBodyLimit::disable())
+    .layer(tower_http::limit::RequestBodyLimitLayer::new(MAX_TOTAL_SZ))
 }

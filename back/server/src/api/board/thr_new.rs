@@ -94,13 +94,15 @@ pub async fn handler(
     Json(n)
 }
 
-pub fn router(state: &HandlerState) -> Router {
-    macro_rules! base64_coef { () => { 4 / 3 }; }
-    const MAX_ADDITIONAL_SZ: usize = 25 * KB;
-    const MAX_TOTAL_SZ: usize = (PostImg::MAX_PIC_SZ + PostImg::MAX_MINI_PIC_SZ) * MAX_PIC_AMOUNT * base64_coef!()  + MAX_ADDITIONAL_SZ; 
+macro_rules! base64_coef { () => { 4 / 3 }; }
+const MAX_ADDITIONAL_SZ: usize = 25 * KB;
+pub const MAX_TOTAL_SZ: usize = (PostImg::MAX_PIC_SZ + PostImg::MAX_MINI_PIC_SZ) * MAX_PIC_AMOUNT * base64_coef!()  + MAX_ADDITIONAL_SZ;
 
+pub fn router(state: &HandlerState) -> Router {
     Router::new().route(
         "/thr_new",
         routing::post(handler).with_state(Arc::clone(state)),
-    ).layer(tower_http::limit::RequestBodyLimitLayer::new(MAX_TOTAL_SZ))
+    )
+    .layer(axum::extract::DefaultBodyLimit::disable())
+    .layer(tower_http::limit::RequestBodyLimitLayer::new(MAX_TOTAL_SZ))
 }
