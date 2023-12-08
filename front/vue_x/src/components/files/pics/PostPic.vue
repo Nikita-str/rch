@@ -24,6 +24,10 @@ export default {
             type: Boolean,
             default: false,
         },
+        picDimSz: {
+            type: String,
+            default: null,
+        },
     },
     computed: {
         spoiler() {
@@ -79,6 +83,16 @@ export default {
             let h = this.imgInfo.h ? this.imgInfo.h : '???'
             return `${w}x${h}`
         },
+        picDimSzStyle() {
+            if (this.picDimSz) {
+                return {
+                    maxWidth: this.picDimSz,
+                    maxHeight: this.picDimSz,
+                }
+            } else {
+                return null
+            }
+        },
     },
     methods: {
         imgClick() {
@@ -96,7 +110,7 @@ export default {
 
 <template>
     <figure :style="{'margin-right': noMarginRight ? null : (single ? '2ch' : '6px')}">
-        <figcaption class="post-pic-max-sz" style="overflow: hidden;" >
+        <figcaption :class="{'post-pic-max-sz': picDimSz == null}" style="overflow: hidden;" >
             <div style="height: 2.4em; display: flex; float: left; margin-right: 5px;">
                 <div class="post-pic-info-strip" />
             </div>
@@ -106,8 +120,8 @@ export default {
             </div>
         </figcaption>
         <a class="post-pic-a" :href="imgPath" target="_blank" @click.left.prevent="imgClick">
-            <div class="post-pic-max-sz" style="text-align: center;">
-                <img class="post-pic-img" :src="spoiler ? spoilerPic : imgPathCompressed" :alt="dimSz">
+            <div :class="{'post-pic-max-sz': picDimSz == null}" style="text-align: center;">
+                <img class="post-pic-img" :style="picDimSzStyle" :src="spoiler ? spoilerPic : imgPathCompressed" :alt="dimSz">
                 <p v-if="spoiler" class="centered pic-spoiler-text" style="transform: translate(-50%,-50%) rotate(-20deg);">!SPOILER!</p>
             </div>
         </a>

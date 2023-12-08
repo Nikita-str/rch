@@ -48,10 +48,12 @@ export default {
 <template>
     <div class="ctlg-post">
         <div class="ctlg-post-img">
-            <PostPic v-if="imgInfo" :imgInfo="imgInfo" :noMarginRight="true" />
+            <PostPic v-if="imgInfo" :imgInfo="imgInfo" :noMarginRight="true" picDimSz="13em" />
         </div>
-        <div class="ctlg-post-h" v-html="header" />
-        <div class="ctlg-post-msg" v-html="msgUnpacked" />
+        <div class="ctlg-post-text">    
+            <div class="ctlg-post-h" v-html="header" />
+            <div class="ctlg-post-msg" v-html="msgUnpacked" />
+        </div>
         <!-- <div class="post-text" :style="{'padding-top': (imgInfo.length == 1) ? '2.4em' : '' }" v-html="msgUnpacked" /> -->
     </div>
 </template>
@@ -59,33 +61,36 @@ export default {
 <style>
 .ctlg-post {
     position: relative;
-    flex: 0 1 16em;
+    flex: 0 1 18em;
     cursor: pointer;
     background-color: var(--r-col-bg-dark);
     border: solid 1px var(--r-col-blue);
     margin: 0.3em;
     text-align: center;
-    width: 20em;
 }
 .ctlg-post-img {
     display: inline-block;
     padding: 0.6em;
+    height: 17em;
 }
 .ctlg-post-h {
     display: block;
-    padding-left: 1em;
-    padding-right: 1em;
+    padding-left: 0.6em;
+    padding-right: 0.6em;
     color: var(--r-col-blue);
     font-weight: 700;
 }
 .ctlg-post-msg {
     display: block;
-    padding-left: 1.5em;
-    padding-right: 1.5em;
+    padding-left: 1em;
+    padding-right: 1em;
     word-wrap: break-word;
-    /* display: inline-block; */
     overflow: hidden;
-    height: 8em;
+    line-height: 1.2em;
+    height: calc(7 * 1.2em);
+}
+.ctlg-post-text {
+    height: calc(7 * 1.2em + 1.6em);
 }
 @media screen and (max-width: 1200px) {  /* TODO */ }
 </style>

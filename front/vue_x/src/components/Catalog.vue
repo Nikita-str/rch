@@ -76,24 +76,34 @@ export default {
 </script> 
 
 <template>
+    <div style="height: 0.3em;" />
     <div class="ctlg-posts">
-        <template v-for="thr in open_posts">
-            <CtlgPost 
-                :header="thr.header" 
-                :msg="thr.msg" 
-                :nBoardOP="thr.nBoardOP" 
-                :imgInfo="thr.imgInfo" 
-            />
-        </template>
+        <div class="ctlg-posts-inner">
+            <template v-for="thr in open_posts">
+                <CtlgPost 
+                    :header="thr.header" 
+                    :msg="thr.msg" 
+                    :nBoardOP="thr.nBoardOP" 
+                    :imgInfo="thr.imgInfo" 
+                />
+            </template>
+        </div>
     </div>
 </template>
 
 
 <style>
 .ctlg-posts {
+    width: 100vw;
     display: inline-flex;
     flex-flow: wrap;
     padding-left: 5vw;
     padding-right: 5vw;
+    justify-content: center;
+}
+.ctlg-posts-inner {
+    display: inline-flex;
+    flex-flow: wrap;
+    justify-content: center;
 }
 </style>
