@@ -1,3 +1,4 @@
+export { boardUrlCalc } from './board_fns'
 
 /** 
  * return integer random from `from` to `to` value
@@ -38,17 +39,6 @@ export function trim(s, c) {
     while(end > start && s[end - 1] === c) end--;
 
     return s.substring(start, end);
-}
-
-
-
-/** 
- * @param obj object with $route
- * @return boardUrl
-*/
-export function boardUrlCalc(obj) {
-    var path = (typeof(obj) == 'string') ? obj : obj.$route.path;
-    return trim(path, "/").split('/')[0]
 }
 
 export function isWhitespace(c) {

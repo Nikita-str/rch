@@ -39,3 +39,4 @@ npm run build
 | qty          | `quantity`         |
 | sest         | `session storage`  |
 | dpf          | `draggable posting form`   |
+| ctlg         | `catalog`          |

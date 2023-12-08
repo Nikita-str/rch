@@ -1,4 +1,5 @@
 <script setup>
+import { msgUnpack } from '../js/board_fns'
 import { pad, boardUrlCalc } from '../js/fns'
 import PostPics from './files/pics/PostPics.vue'
 import { defineEmits } from 'vue'
@@ -82,34 +83,8 @@ export default {
       }
     },
     msgUnpacked() {
-        var ret = ""
-        var index = 0
-        while(true) {
-            const start = "<pkg "
-            const i_start = this.msg.indexOf(start, index)
-            if (i_start < 0) break
-
-            const end = "></pkg>"
-            const i_end = this.msg.indexOf(end, i_start + start.length)
-            if (i_end < 0) break
-
-            ret += this.msg.substring(index, i_start)
-            let info = this.msg.substring(i_start + start.length, i_end).split(' ')
-            let cmd = info[0]
-            if (cmd == "reply") {
-              let n = info[1]
-              let maybe_OP = (n == this.nBoardOP) ? '(OP)' : ''
-              
-              let bUrl = boardUrlCalc(this)
-              let href = '/' + bUrl + '/' + (this.isOP ? this.msgBoardN : this.nBoardOP)
-              
-              ret += `<a class="P-rep" href="${href}#${n}">&gt;&gt;${n}${maybe_OP}</a>`
-            }
-            
-            index = i_end + end.length
-        }
-        ret += this.msg.substring(index)
-        return ret
+      let nboardOP = this.isOP ? this.msgBoardN : this.nBoardOP
+        return msgUnpack(boardUrlCalc(this), this.msg, nboardOP)
     },
     // msgThrNumX() {
     //     const PREFIX = '<span style="opacity:0;">' 

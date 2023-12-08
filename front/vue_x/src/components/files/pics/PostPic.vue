@@ -20,6 +20,10 @@ export default {
             type: Boolean,
             required: true,
         },
+        noMarginRight: {
+            type: Boolean,
+            default: false,
+        },
     },
     computed: {
         spoiler() {
@@ -91,7 +95,7 @@ export default {
 </script>
 
 <template>
-    <figure :style="{'margin-right': single ? '2ch' : '6px'}">
+    <figure :style="{'margin-right': noMarginRight ? null : (single ? '2ch' : '6px')}">
         <figcaption class="post-pic-max-sz" style="overflow: hidden;" >
             <div style="height: 2.4em; display: flex; float: left; margin-right: 5px;">
                 <div class="post-pic-info-strip" />

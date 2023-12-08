@@ -2,7 +2,7 @@
 <script setup>
     import { mapActions } from 'vuex'
     import { toRaw } from 'vue'
-    import Post from './Post.vue'
+    import CtlgPost from './CtlgPost.vue'
 </script> 
 
 <script>
@@ -22,6 +22,11 @@ function dataRecalc(new_boardUrl) {
     let known_n = new Set(open_posts.map(item => item.open_post.n));
     console.log('[TODO:DEL]', known_n, open_posts)
     
+    // TODO: diff arrays of sort for open_posts!!
+    // bump_order: Array<Index to `open_posts`>
+    // time_order: Array<Index to `open_posts`>
+    // and so on !!
+
     return {
         known_n,
         open_posts,
@@ -46,7 +51,16 @@ export default {
             let known_n = Array.from(toRaw(this.known_n));
             
             this.postReq_Board_CtlgLoad({board_url, known_n}).then(res_x => {
-                console.log('[ctlg load\'ed]', res_x)
+                console.log('TODO:DEL:[ctlg load\'ed]', res_x)
+
+                for (const thr of res_x.new_thrs) {
+                    this.open_posts.push({
+                        header: thr.header,
+                        msg: thr.open_post.text,
+                        nBoardOP: thr.open_post.n,
+                        imgInfo: thr.open_post.imgs[0],
+                    })
+                }
             });
         },
     },
@@ -62,10 +76,24 @@ export default {
 </script> 
 
 <template>
-    <div class="board-sad-text">tmp `{{ boardUrl }}`</div>
+    <div class="ctlg-posts">
+        <template v-for="thr in open_posts">
+            <CtlgPost 
+                :header="thr.header" 
+                :msg="thr.msg" 
+                :nBoardOP="thr.nBoardOP" 
+                :imgInfo="thr.imgInfo" 
+            />
+        </template>
+    </div>
 </template>
 
 
-<style scoped>
-
+<style>
+.ctlg-posts {
+    display: inline-flex;
+    flex-flow: wrap;
+    padding-left: 5vw;
+    padding-right: 5vw;
+}
 </style>
