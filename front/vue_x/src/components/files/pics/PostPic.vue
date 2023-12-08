@@ -24,6 +24,10 @@ export default {
             type: Boolean,
             default: false,
         },
+        noHoverBorder: {
+            type: Boolean,
+            default: false,
+        },
         picDimSz: {
             type: String,
             default: null,
@@ -93,6 +97,9 @@ export default {
                 return null
             }
         },
+        hoverBorder() {
+            return this.noHoverBorder ? null : 'solid 1px var(--r-col-blue)';
+        },
     },
     methods: {
         imgClick() {
@@ -121,7 +128,7 @@ export default {
         </figcaption>
         <a class="post-pic-a" :href="imgPath" target="_blank" @click.left.prevent="imgClick">
             <div :class="{'post-pic-max-sz': picDimSz == null}" style="text-align: center;">
-                <img class="post-pic-img" :style="picDimSzStyle" :src="spoiler ? spoilerPic : imgPathCompressed" :alt="dimSz">
+                <img class="post-pic-img pic-border" :style="picDimSzStyle" :src="spoiler ? spoilerPic : imgPathCompressed" :alt="dimSz">
                 <p v-if="spoiler" class="centered pic-spoiler-text" style="transform: translate(-50%,-50%) rotate(-20deg);">!SPOILER!</p>
             </div>
         </a>
@@ -171,11 +178,8 @@ export default {
     background-color: #0000;
 }
 .post-pic-img {
-    border: #0000 2px solid;
+    /* border: #0000 2px solid; */
     max-width: calc(min(max(15.4vw, 150px), 250px));
 }
-.post-pic-img:hover {
-    /* border-color: var(--r-col-blue); */
-    outline: solid 1px var(--r-col-blue);
-}
+/* .post-pic-img:hover { outline: v-bind(hoverBorder); } */
 </style>

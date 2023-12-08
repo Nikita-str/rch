@@ -28,16 +28,6 @@ export default {
     },
   },
   computed: {
-    nBoardLink() {
-        let bUrl = boardUrlCalc(this)
-        if (this.isOP) {
-            return '/' + bUrl + '/' + this.msgBoardN
-        } else if (this.nBoardOP !== null) {
-            return '/' + bUrl + '/' + this.nBoardOP + '#' + this.msgBoardN
-        } else {
-            return ""
-        }
-    },
     msgUnpacked() { return msgUnpack(boardUrlCalc(this), this.msg, this.nBoardOP) },
     noOpPic() {
         const ZEROS = 2
@@ -46,16 +36,21 @@ export default {
         return `/imgs/p_no_op/${pad(pic_n, ZEROS)}.${IMGS[pic_n - 1]}`
     },
   },
-  // methods: { },
+  methods: {
+    imgClick() {
+        let bUrl = boardUrlCalc(this)
+        this.$router.push({ path: `/${bUrl}/${this.nBoardOP}/` })
+    },
+  },
 }
 </script> 
 
 <template>
     <div class="ctlg-post">
         <div class="ctlg-post-img">
-            <PostPic v-if="imgInfo" :imgInfo="imgInfo" :noMarginRight="true" picDimSz="13em" />
+            <PostPic v-if="imgInfo" :imgInfo="imgInfo" :noMarginRight="true" picDimSz="13em" @img-click="imgClick" />
             <div v-else>
-                <img class="ctlg-post-no-img" :src="noOpPic" alt="!no OP pic!">
+                <img class="ctlg-post-no-img pic-border" :src="noOpPic" alt="!no OP pic!" @click.left.prevent="imgClick">
                 <p class="centered pic-spoiler-text" style="transform: translate(-50%, 150%) rotate(20deg);">!NO OP PIC!</p>
             </div>
         </div>
@@ -100,6 +95,7 @@ export default {
 }
 .ctlg-post-text {
     height: calc(7 * 1.2em + 1.6em);
+    margin-bottom: 0.3em;
 }
 .ctlg-post-no-img {
     max-width: 15.6em;

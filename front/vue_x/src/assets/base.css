@@ -96,3 +96,6 @@ body {
   box-shadow: 0 0 3px 3px var(--r-col-bg-dark);
   /* font-size: 0.9em; */
 }
+
+.pic-border { border: #0000 2px solid; }
+.pic-border:hover { outline: solid 1px var(--r-col-blue); }
