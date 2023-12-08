@@ -1,7 +1,6 @@
 <script setup>
 import { msgUnpack, boardUrlCalc } from '../js/board_fns'
-import { pad } from '../js/fns'
-import PostPics from './files/pics/PostPics.vue'
+import { pad, rand_i } from '../js/fns'
 import PostPic from './files/pics/PostPic.vue'
 import { defineEmits } from 'vue'
 </script>
@@ -40,6 +39,12 @@ export default {
         }
     },
     msgUnpacked() { return msgUnpack(boardUrlCalc(this), this.msg, this.nBoardOP) },
+    noOpPic() {
+        const ZEROS = 2
+        const IMGS = ['jpg']
+        let pic_n = rand_i(1, IMGS.length)
+        return `/imgs/p_no_op/${pad(pic_n, ZEROS)}.${IMGS[pic_n - 1]}`
+    },
   },
   // methods: { },
 }
@@ -49,6 +54,10 @@ export default {
     <div class="ctlg-post">
         <div class="ctlg-post-img">
             <PostPic v-if="imgInfo" :imgInfo="imgInfo" :noMarginRight="true" picDimSz="13em" />
+            <div v-else>
+                <img class="ctlg-post-no-img" :src="noOpPic" alt="!no OP pic!">
+                <p class="centered pic-spoiler-text" style="transform: translate(-50%, 150%) rotate(20deg);">!NO OP PIC!</p>
+            </div>
         </div>
         <div class="ctlg-post-text">    
             <div class="ctlg-post-h" v-html="header" />
@@ -91,6 +100,10 @@ export default {
 }
 .ctlg-post-text {
     height: calc(7 * 1.2em + 1.6em);
+}
+.ctlg-post-no-img {
+    max-width: 15.6em;
+    max-height: 15.6em;
 }
 @media screen and (max-width: 1200px) {  /* TODO */ }
 </style>
