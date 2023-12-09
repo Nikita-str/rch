@@ -1,6 +1,6 @@
 <script setup>
 import { msgUnpack, boardUrlCalc } from '../js/board_fns'
-import { pad, rand_i } from '../js/fns'
+import { spoilerPicNum, noOpPicNum, noOpPicPath } from '@/js/board_fns'
 import PostPic from './files/pics/PostPic.vue'
 import { defineEmits, ref } from 'vue'
 
@@ -35,14 +35,12 @@ export default {
 
     isTop() { return this.topInfo != null },
     classPostfixX() { return this.isTop ? 'top' : 'std' },
+
+    spoilerPicN() { return this.topInfo ? this.topInfo.spoiler_n : spoilerPicNum() },
+    noOpPicN() { return this.topInfo ? this.topInfo.no_op_n : noOpPicNum() },
     
     msgUnpacked() { return msgUnpack(boardUrlCalc(this), this.msg, this.nBoardOP) },
-    noOpPic() {
-        const ZEROS = 2
-        const IMGS = ['jpg']
-        let pic_n = rand_i(1, IMGS.length)
-        return `/imgs/p_no_op/${pad(pic_n, ZEROS)}.${IMGS[pic_n - 1]}`
-    },
+    noOpPic() { return noOpPicPath(this.noOpPicN) },
 
     picDimSzX() { return this.isTop ? "17em" : "13em" },
     divImgHeightX() { return this.isTop ? "20em" : "17em" },
@@ -54,12 +52,7 @@ export default {
             left: `calc(${this.topInfo.left}px - 2em)`,
         }
     },
-    ctlgClassX() {
-        return {
-            'ctlg-post-top': this.isTop,
-            'ctlg-post-std': !this.isTop,
-        }
-    },
+    ctlgClassX() { return 'ctlg-post-' + this.classPostfixX },
     textClassX() { return 'ctlg-post-text-' + this.classPostfixX },
     msgClassX() { return 'ctlg-post-msg-' + this.classPostfixX },
   },
@@ -79,6 +72,8 @@ export default {
         let topInfo = {
             left,
             top,
+            spoiler_n: this.spoilerPicN,
+            no_op_n: this.noOpPicN,
         }
 
         let thrInfo = this.thrInfo
@@ -92,15 +87,15 @@ export default {
 <template>
     <div ref="thePost" class="ctlg-post" :class="ctlgClassX" :style="maybeTopStyle" @mouseenter="OnMouseEnter">
         <div class="ctlg-post-img">
-            <PostPic v-if="imgInfo" :imgInfo="imgInfo" :noMarginRight="true" :picDimSz="picDimSzX" @img-click="imgClick" />
+            <PostPic v-if="imgInfo" :imgInfo="imgInfo" :noMarginRight="true" :picDimSz="picDimSzX" @img-click="imgClick" :spoilerPicN="spoilerPicN" />
             <div v-else>
                 <img class="ctlg-post-no-img pic-border" :src="noOpPic" alt="!no OP pic!" @click.left.prevent="imgClick">
                 <p class="centered pic-spoiler-text" style="transform: translate(-50%, 150%) rotate(20deg);">!NO OP PIC!</p>
             </div>
         </div>
-        <div class="ctlg-post-text" :class="[textClassX]">    
+        <div class="ctlg-post-text" :class="textClassX">    
             <div class="ctlg-post-h" v-html="header" />
-            <div class="ctlg-post-msg" :class="[msgClassX]" v-html="msgUnpacked" />
+            <div class="ctlg-post-msg" :class="msgClassX" v-html="msgUnpacked" />
         </div>
         <!-- <div class="post-text" :style="{'padding-top': (imgInfo.length == 1) ? '2.4em' : '' }" v-html="msgUnpacked" /> -->
     </div>

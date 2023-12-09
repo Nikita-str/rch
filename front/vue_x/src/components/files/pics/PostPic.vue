@@ -1,6 +1,6 @@
 <script setup>
 import { img_ext_abbr } from '../../../js/pics/file_x'
-import { pad, rand_i } from '@/js/fns'
+import { spoilerPicPath } from '@/js/board_fns'
 import { defineEmits } from 'vue'
 
 defineEmits(['img-click'])
@@ -32,17 +32,13 @@ export default {
             type: String,
             default: null,
         },
+        spoilerPicN: Number,
     },
     computed: {
         spoiler() {
             return this.imgInfo.cf_ty == '#'
         },
-        spoilerPic() {
-            const ZEROS = 2
-            const IMGS = ['webp', 'jpg']
-            let pic_n = rand_i(1, IMGS.length)
-            return `/imgs/spoiler/${pad(pic_n, ZEROS)}.${IMGS[pic_n - 1]}`
-        },
+        spoilerPic() { return spoilerPicPath(this.spoilerPicN) },
         imgPathCompressed() {
             let ext = img_ext_abbr(this.imgInfo.cf_ty)
             return `${IMG_PATH_PREFIX}/${this.imgInfo.n}_c.${ext}`

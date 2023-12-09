@@ -1,4 +1,4 @@
-import { trim } from './fns'
+import { trim, pad, rand_i } from './fns'
 
 /** 
  * @param obj object with $route
@@ -43,4 +43,28 @@ export function msgUnpack(bUrl, msg, nBoardOP) {
         }
         ret += msg.substring(index)
         return ret
+}
+
+
+const SPOILER_ZEROS = 2
+const SPOILER_IMGS = ['webp', 'jpg']
+export function spoilerPicNum() {
+    let pic_n = rand_i(1, SPOILER_IMGS.length)
+    return pic_n
+}
+export function spoilerPicPath(pic_n = null) {
+    if (pic_n == null) pic_n = spoilerPicNum()
+    return `/imgs/spoiler/${pad(pic_n, SPOILER_ZEROS)}.${SPOILER_IMGS[pic_n - 1]}`
+}
+
+
+const NO_OP_ZEROS = 2
+const NO_OP_IMGS = ['jpg']
+export function noOpPicNum() {
+    let pic_n = rand_i(1, NO_OP_IMGS.length)
+    return pic_n
+}
+export function noOpPicPath(pic_n = null) {
+    if (pic_n == null) pic_n = spoilerPicNum()
+    return `/imgs/p_no_op/${pad(pic_n, NO_OP_ZEROS)}.${NO_OP_IMGS[pic_n - 1]}`
 }
