@@ -30,6 +30,7 @@ function dataRecalc(new_boardUrl) {
     return {
         known_n,
         open_posts,
+        topCtlgPost: null,
     }
 }
 
@@ -63,6 +64,14 @@ export default {
                 }
             });
         },
+
+        removeTopCtlgPost() { this.topCtlgPost = null },
+        addTopCtlgPost(thrInfo, topInfo) {
+            this.topCtlgPost = {
+                thrInfo,
+                topInfo,
+            }
+        },
     },
     data() { return dataRecalc(this.boardUrl) },
     mounted() { this.thrLoad() },
@@ -80,15 +89,11 @@ export default {
     <div class="ctlg-posts">
         <div class="ctlg-posts-inner">
             <template v-for="thr in open_posts">
-                <CtlgPost 
-                    :header="thr.header" 
-                    :msg="thr.msg" 
-                    :nBoardOP="thr.nBoardOP" 
-                    :imgInfo="thr.imgInfo" 
-                />
+                <CtlgPost :thrInfo="thr" @post-mouse-enter="addTopCtlgPost" />
             </template>
         </div>
     </div>
+    <CtlgPost v-if="topCtlgPost" :thrInfo="topCtlgPost.thrInfo" :topInfo="topCtlgPost.topInfo" @mouseleave="removeTopCtlgPost" />
 </template>
 
 
