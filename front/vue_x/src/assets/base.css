@@ -99,3 +99,5 @@ body {
 
 .pic-border { border: #0000 2px solid; }
 .pic-border:hover { outline: solid 1px var(--r-col-blue); }
+
+.post-pic-a:hover { background-color: #0000; }

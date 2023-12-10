@@ -33,6 +33,7 @@ export default {
             default: null,
         },
         spoilerPicN: Number,
+        imgPreviewRef: String,
     },
     computed: {
         spoiler() {
@@ -49,6 +50,10 @@ export default {
         },
         imgPath() {
             return `${IMG_PATH_PREFIX}/${this.imgPathWoPrefix}`
+        },
+        imgRef() {
+            if (this.imgPreviewRef) return this.imgPreviewRef
+            return this.imgPath
         },
         nameAbbr() {
             let ext = img_ext_abbr(this.imgInfo.f_ty)
@@ -122,7 +127,7 @@ export default {
                 <div class="post-pic-caption-info">{{ sz }} | {{ dimSz }}</div>
             </div>
         </figcaption>
-        <a class="post-pic-a" :href="imgPath" target="_blank" @click.left.prevent="imgClick">
+        <a class="post-pic-a" :href="imgRef" target="_blank" @click.left.prevent="imgClick">
             <div :class="{'post-pic-max-sz': picDimSz == null}" style="text-align: center;">
                 <img class="post-pic-img pic-border" :style="picDimSzStyle" :src="spoiler ? spoilerPic : imgPathCompressed" :alt="dimSz">
                 <p v-if="spoiler" class="centered pic-spoiler-text" style="transform: translate(-50%,-50%) rotate(-20deg);">!SPOILER!</p>
@@ -169,9 +174,6 @@ export default {
     
     margin-top: 6px;
     margin-bottom: 3px;
-}
-.post-pic-a:hover {
-    background-color: #0000;
 }
 .post-pic-img {
     /* border: #0000 2px solid; */

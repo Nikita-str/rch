@@ -38,6 +38,10 @@ export default {
 
     spoilerPicN() { return this.topInfo ? this.topInfo.spoiler_n : spoilerPicNum() },
     noOpPicN() { return this.topInfo ? this.topInfo.no_op_n : noOpPicNum() },
+    imgPreviewRef() {
+        let bUrl = boardUrlCalc(this)
+        return `/${bUrl}/${this.nBoardOP}/`
+    },
     
     msgUnpacked() { return msgUnpack(boardUrlCalc(this), this.msg, this.nBoardOP) },
     noOpPic() { return noOpPicPath(this.noOpPicN) },
@@ -57,10 +61,7 @@ export default {
     msgClassX() { return 'ctlg-post-msg-' + this.classPostfixX },
   },
   methods: {
-    imgClick() {
-        let bUrl = boardUrlCalc(this)
-        this.$router.push({ path: `/${bUrl}/${this.nBoardOP}/` })
-    },
+    imgClick() { this.$router.push({ path: this.imgPreviewRef }) },
 
     OnMouseEnter() {
         if (this.isTop) return
@@ -87,10 +88,12 @@ export default {
 <template>
     <div ref="thePost" class="ctlg-post" :class="ctlgClassX" :style="maybeTopStyle" @mouseenter="OnMouseEnter">
         <div class="ctlg-post-img">
-            <PostPic v-if="imgInfo" :imgInfo="imgInfo" :noMarginRight="true" :picDimSz="picDimSzX" @img-click="imgClick" :spoilerPicN="spoilerPicN" />
+            <PostPic v-if="imgInfo" :imgInfo="imgInfo" :noMarginRight="true" :picDimSz="picDimSzX" @img-click="imgClick" :spoilerPicN="spoilerPicN" :imgPreviewRef="imgPreviewRef" />
             <div v-else>
-                <img class="ctlg-post-no-img pic-border" :src="noOpPic" alt="!no OP pic!" @click.left.prevent="imgClick">
-                <p class="centered pic-spoiler-text" style="transform: translate(-50%, 150%) rotate(20deg);">!NO OP PIC!</p>
+                <a class="post-pic-a" :href="imgPreviewRef" target="_blank" @click.left.prevent="imgClick">
+                    <img class="ctlg-post-no-img pic-border" :src="noOpPic" alt="!no OP pic!">
+                    <p class="centered pic-spoiler-text" style="transform: translate(-50%, -175%) rotate(20deg);">!NO OP PIC!</p>
+                </a>
             </div>
         </div>
         <div class="ctlg-post-text" :class="textClassX">    
