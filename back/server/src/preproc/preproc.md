@@ -16,7 +16,7 @@ General form is `[X]some text[/X]` where instead of `some text` can stay any tex
 
 
 #### [Spoiler text](./general/mod.rs)  
-Make a text spoilered: it will be shown only when user hover over it. 
+Make a text spoilered: it will be shown only when user hover over it.  
 General form is `[spoiler]some text[/spoiler]` where instead of `some text` can stay any text and other commands.
 
 #### [Random](./general/random.rs)  
@@ -46,7 +46,7 @@ text[sup]upper[/sup]
 > can you show me how quote looks like?!
 like this one
 ```
-Will be show as next
+Will be show as next  
 ![dices example](/docs/pics/std_example.png)
 
 ## Board related preprocessing
@@ -56,19 +56,19 @@ Will be show as next
 Make a dice roll and retrun a random value that corresponding the dice (and shows to board users quite clearly that the this value was a roll of certain dice).  
 General form is `[d0]`* where instead of `0` can stay one of standard DnD dice values (`{4, 6, 8, 10, 12, 20, 100}`).  
 
-For **example** this post text 
+For **example** this post text (work only in `/rp/`)  
 ```
 Let's just some dice rolls:
 [d4][D6][dice:8][D10][D12][D20][D100]
 [dice:4][D6][d8][d10][D12][D20][D100]
 ```
-Will be show as next
+Will be show as next  
 ![dices example](/docs/pics/dices_example.png)
 
 
 ### `/a/` (anime)
 #### [UwU rule](./board_specific/a/kawaii.rs)
-~~While you are on `/a/` make an UwU sound at least once a minute >~< pleawse~~
+~~While you are on `/a/` make an UwU sound at least once a minute >~< pleawse~~  
 Make some \~\~words\~\~ cute-kawaii by changing\~ it's color!! :3  
 ~~It's unallowed to post in `/a/` at least without 20 absurdly cute and UwU words, kitty. Violation of this cute-kawaii rule will result to permanent ban >\~<~~
 
@@ -76,11 +76,11 @@ Make some \~\~words\~\~ cute-kawaii by changing\~ it's color!! :3
 Make some cat-related words (like `kitty`) looks like... kitty :3 
 
 #### [Nya\~\~n](./board_specific/a/nyan.rs)
-Make text between two `~~` more purple and cute and kawaii.  
+Make text between two `~~` more purple and cute and kawaii and cute-kawaii.  
 Its not work if there is some other preproccess command inside it :\(
 
 #### Example
-This post(with great philosophical meaning) text 
+This post(with great philosophical meaning) text (work only in `/a/`)   
 ```
 /a/nime board is like many
 > UwU  ~~nyan / myau~~ and kawaii
@@ -89,7 +89,7 @@ This post(with great philosophical meaning) text
 and no any sense except clear kawaii
 >~<
 ```
-Will look like
+Will look like  
 ![dices example](/docs/pics/a_board_example.png)
 
 ---
