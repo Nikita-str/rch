@@ -1,6 +1,5 @@
 import { createRouter, createWebHistory, createWebHashHistory } from 'vue-router'
 import App from '../App.vue'
-import Tmp from '../Tmp.vue'
 import PageNotFound from '../components/PageNotFound.vue'
 import PageAwait from '../components/PageAwait.vue'
 import Board from '../components/Board.vue'
@@ -38,14 +37,6 @@ const routes = [
           title: "Rch",
         },
         component: App 
-    },
-    { 
-        path: '/tmp/', 
-        name: 'TMPch',
-        meta: {
-          title: "TMPch",
-        },
-        component: Tmp 
     },
 
     {
