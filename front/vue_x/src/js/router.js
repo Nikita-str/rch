@@ -1,6 +1,7 @@
 import { createRouter, createWebHistory, createWebHashHistory } from 'vue-router'
+import { nextTick } from 'vue'
+import { boardUrlCalc } from './board_fns'
 import App from '../App.vue'
-import Tmp from '../Tmp.vue'
 import PageNotFound from '../components/PageNotFound.vue'
 import PageAwait from '../components/PageAwait.vue'
 import Board from '../components/Board.vue'
@@ -36,34 +37,43 @@ const routes = [
         name: 'Rch',
         meta: {
           title: "Rch",
+          titleType: "main",
         },
         component: App 
-    },
-    { 
-        path: '/tmp/', 
-        name: 'TMPch',
-        meta: {
-          title: "TMPch",
-        },
-        component: Tmp 
     },
 
     {
       path: '/:pathMatch([a-z]{1,' + maxBoardNameLen + '})/',
       component: Board,
+      meta: {
+        title: "доска",
+        titleType: "board:prefix",
+      },
     },
     {
       path: '/:pathMatch([a-z]{1,' + maxBoardNameLen + '})/catalog/',
       component: Board,
+      meta: {
+        title: "каталог", 
+        titleType: "board:prefix",
+      },
     },
     {
       path: '/:pathMatch([a-z]{1,' + maxBoardNameLen + '})/:pathMatch([0-9]{1,' + maxThrNLen + '})',
       component: Thread,
+      meta: {
+        title: "тредик", 
+        titleType: "board:prefix",
+      },
     },
 
     { 
       path: '/~~page~~/await/', 
       component: PageAwait,
+      meta: {
+        title: "аа??", 
+        titleType: "?",
+      },
     },
 
 
@@ -224,10 +234,29 @@ const routes = [
     },
 ]
 
-export default createRouter({
-    // history: createWebHashHistory(),
+const router = createRouter({
     history: createWebHistory(),
     routes,
     sensitive: true,
 })
 
+router.afterEach((to) => {
+  const BOARD_NAME = 'R:ch'
+  const POSTFIX = ` (${BOARD_NAME})`
+  nextTick(() => {
+      let bUrl = boardUrlCalc(to.path)
+
+      if (to.meta.titleType == "main") {
+          document.title = to.meta.title
+        } else if (to.meta.titleType == "board:prefix") {
+          document.title = `/${bUrl}/ - ` + to.meta.title + POSTFIX
+      } else if (to.meta.titleType == "?") {
+          document.title = to.meta.title + POSTFIX
+      } else {
+          const UNKN_TITLE = 'Нечто метахтоничное но на UwU борде';
+          document.title = UNKN_TITLE + POSTFIX;
+      }
+  });
+});
+
+export default router

@@ -37,7 +37,7 @@ export default {
 </script>
 
 <script setup>
-import HelloWorld from './components/HelloWorld.vue'
+import MainPageHeader from './components/MainPageHeader.vue'
 import About from './components/About.vue'
 import PopBoards from './components/PopBoards.vue'
 </script>
@@ -45,11 +45,11 @@ import PopBoards from './components/PopBoards.vue'
 <template>
   <div style="height: 100%;">
     <div id="center">
-      <HelloWorld msg="Незабывайте спать" />
+      <MainPageHeader miniMsg="Незабывайте спать" />
       <About msg="Ура-ура общение!" :open_boards="openBoard" :posting_speed="speedPost" :total_post="totalPost" />
       <br/>
       <PopBoards />
-      <router-link to="/tmp/">X</router-link>
+      <router-link to="/tmp/">Invalid page :3</router-link>
     </div>
   </div>
 </template>
