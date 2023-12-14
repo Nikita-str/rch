@@ -1,4 +1,5 @@
 <script setup>
+import X from '../../micro/X.vue';
 import { defineEmits } from 'vue'
 const emit = defineEmits(['pic-cancel'])
 
@@ -43,7 +44,7 @@ export default {
     <div class="pic-sinlge-view pic-sinlge-view-max-sz">
         <img class="pic-sinlge-view-max-sz" :src="file.url" :alt="file.name" :title="file.name" />
         <div class="pic-sinlge-view-bottom">{{sizeText}}</div>
-        <button class="pic-sinlge-view-bottom-x" @click.left.stop.prevent="onCancel">X</button>
+        <X :zIndex="2" :bottom="true" :paddingRight="'4px'" :lineHeight="bottomH" @x="onCancel" />
         <div class="pic-sinlge-view-spoiler">
             <input
             type="checkbox"
@@ -84,24 +85,6 @@ export default {
     line-height: v-bind(bottomH);
     text-align: start;
     font-weight: bold;
-}
-.pic-sinlge-view-bottom-x {
-    border: none;
-    position: absolute;
-    bottom: 0;
-    right: 0;
-    z-index: 2;
-    color: var(--r-col-bg-dark);
-    background: #0000;
-    padding: 2px;
-    line-height: v-bind(bottomH);
-    width: calc(v-bind(bottomH) * 2);
-    text-align: center;
-    font-weight: bold;
-    cursor: pointer;
-}
-.pic-sinlge-view-bottom-x:hover {
-    color: var(--r-col-crab-light);
 }
 .pic-sinlge-view-spoiler {
     display: flex;

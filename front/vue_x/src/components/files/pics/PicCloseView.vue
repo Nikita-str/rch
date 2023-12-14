@@ -1,4 +1,6 @@
 <script setup>
+import X from '../../micro/X.vue';
+import { X_CLASS_NAME } from '../../micro/X.vue';
 import { ref, defineEmits, defineProps, computed } from 'vue'
 
 const emit = defineEmits(['close'])
@@ -86,7 +88,7 @@ function getElImg() {
 function onMouseDown(e) {
     e.preventDefault();
 
-    if (e.target.classList.contains("pic-cview-x")) return
+    if (e.target.classList.contains(X_CLASS_NAME)) return
 
     let {el, img} = getElImg()
     img.style.cursor = 'move'
@@ -182,7 +184,7 @@ function onWheel(e) {
     <div tabindex="0" id="pic-cview-outer" class="nonselectable" @keyup.esc="onClose" @click.left.self="onClose">
         <div :id="PIC_CVIEW_ID" class="centered pic-close-view" @mousedown.left.prevent="onMouseDown" @wheel.prevent="onWheel">
             <h4 class="pic-cview-h" :title="img_name_full">{{img_name}}{{ imgRealSz ? ` | ${imgRealSz.w}x${imgRealSz.h}` : img_exp_sz ? ` | ${img_exp_sz.w}x${img_exp_sz.h}` : '' }}</h4>
-            <h4 class="pic-cview-x" @click.left.self.prevent="onClose">X</h4>
+            <X :lineHeight="'1.3'" @x="onClose" />
             <img ref="imgRef" class="pic-cview-img" :src="img_full_path" @load="onImgLoad" :alt="img_path" :style="inti_style" />
         </div>
     </div>
@@ -214,22 +216,6 @@ function onWheel(e) {
     color: var(--r-col-blue);
     padding-left: 1.5em;
     padding-right: 1.5em;
-}
-.pic-cview-x {
-    border: none;
-    position: absolute;
-    right: 0;
-    top: 0;
-    line-height: 1.3;
-    color: var(--r-col-bg);
-    background: #0000;
-    padding: 2px;
-    font-weight: bold;
-    cursor: pointer;
-    padding-right: 0.5em;
-}
-.pic-cview-x:hover {
-    color: var(--r-col-crab-light);
 }
 .pic-cview-img {
     cursor: default;

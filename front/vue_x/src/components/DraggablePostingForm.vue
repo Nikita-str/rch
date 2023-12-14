@@ -1,6 +1,7 @@
 <script setup>
-    import PostingForm from './PostingForm.vue'
-    import { ref, defineEmits } from "vue"
+import X from './micro/X.vue'
+import PostingForm from './PostingForm.vue'
+import { defineEmits } from "vue"
     
 const emit = defineEmits(['close', 'drag-start', 'drag-end'])
 function onClose() { emit('close') }
@@ -172,7 +173,7 @@ function RectToScreen(rect_w, rect_h, top, left) {
 <template>
     <div :id="ELEM_ID">
         <div  id="dpf-dragger" @mousedown="onMouseDown" />
-        <div class="nonselectable dpf-dragger-x" @click.left.self.prevent="onClose">X</div>
+        <X :lineHeight="'1.2'" @x="onClose" />
         <div style="position: relative;">
             <PostingForm :boardUrl="boardUrl" :opPostN="opPostN" :afterPostInThr="afterPostInThr" />
         </div>
@@ -198,22 +199,5 @@ function RectToScreen(rect_w, rect_h, top, left) {
         margin-left: 3px;
         margin-right: 3px;
         background-color: var(--r-col-bg-light-blue);
-    }
-    
-    .dpf-dragger-x {
-        border: none;
-        position: absolute;
-        right: 0;
-        top: 0;
-        line-height: 1.2;
-        color: var(--r-col-bg);
-        background: #0000;
-        padding: 2px;
-        font-weight: bold;
-        cursor: pointer;
-        padding-right: 0.5em;
-    }
-    .dpf-dragger-x:hover {
-        color: var(--r-col-crab-light);
     }
 </style>
