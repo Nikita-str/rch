@@ -1,5 +1,6 @@
 <script setup>
-    import HorizontalLine from './micro/HorizontalLine.vue'
+import HorizontalLine from './micro/HorizontalLine.vue'
+import Logo from './Logo.vue'
 </script>
 
 <script>
@@ -31,19 +32,13 @@ export default {
         },
 
     },
-    computed: {
-        catalogRouteTo() {
-            if (this.isCatalog) { return '' }
-            else { return 'catalog/' }
-        },
-    }
+    // computed: { }
 }
 </script> 
 
 <template>
     <div class="b-head">
         <div class="b-head-name" v-html="'/'+boardUrl+'/ : '+boardName" />
-        <!-- <router-link class="b-head-catalog" :to="catalogRouteTo" append>→→→ каталог ←←←</router-link> -->
         <router-link v-if="isCatalog" class="b-head-catalog" :to="'/'+boardUrl+'/'">←←← на доску</router-link>
         <router-link v-else           class="b-head-catalog"   to="catalog/" append>→→→ каталог ←←←</router-link>
         
@@ -53,6 +48,10 @@ export default {
             <span v-else style="font-weight: bold;">{{offNewMsg}}</span>
             <span>]</span>
         </div>
+
+        <router-link to="/" class="b-head-logo">
+            <Logo msg="возвращайся" :sz="0.42" />
+        </router-link>
         <HorizontalLine />
     </div>
 </template>
@@ -68,7 +67,25 @@ export default {
     color: var(--r-col-blue);
 }
 
+.b-head-logo {
+    position: absolute;
+    left: 5vw;
+    top: 0.3em;
+}
+.b-head-logo:hover { background-color: #0000; }
+
+
+@media screen and (max-width: 600px) {
+    .b-head-name, .b-head-catalog, .b-head-new-thr {
+        padding-left: 30vw;
+    }
+    .b-head-logo {
+        left: 1vw;
+    }
+}
+
 .b-head-name {
     font-weight: 900;
 }
+
 </style>

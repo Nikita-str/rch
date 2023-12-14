@@ -19,19 +19,20 @@ const scaleStyle = computed(() => { return { 'font-size': `${props.sz}em` } })
 <template>
     <div id="logo" :style="scaleStyle">
         <div class="logo-board-fullname"><span class="logo-board-name">{{ BOARD_NAME }}</span>{{ BOARD_POSTFIX }}</div>
-        <div v-if="msg" style="font-size: 1.3em;">{{ msg }}</div>
+        <div v-if="msg" class="logo-text">{{ msg }}</div>
     </div>
 </template>
 
 <style scoped>
 #logo {
     text-align: center;
+    line-height: 1.6;
 }
 
 .logo-board-fullname, .logo-board-name {
     font-weight: 900;
     top: -0.15em;
-    margin-bottom: -0.56em;
+    margin-bottom: -0.5em;
 }
 
 .logo-board-fullname {
@@ -41,5 +42,12 @@ const scaleStyle = computed(() => { return { 'font-size': `${props.sz}em` } })
 .logo-board-name {
     color: #000;
     font-size: 1em;
+}
+
+.logo-text {
+    font-size: 1.3em;
+    line-height: 0.8;
+    white-space: pre;
+    color: #000;
 }
 </style>
