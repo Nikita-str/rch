@@ -18,6 +18,7 @@
             boardExist: null,
             boardUrl: trim(this.$route.path, "/").split('/')[0],
             draggableFormVisivle: false,
+            topCtlgBlock: false,
         };
     },
     computed: {
@@ -48,7 +49,9 @@
         },
         onNewThrClick() {
             this.draggableFormVisivle = !this.draggableFormVisivle
-        }
+        },
+        onDpfClose() { this.draggableFormVisivle = false },
+        setTopCtlgBlock(block) { this.topCtlgBlock = block },
     },
     watch: {
         '$route' (to, _) {
@@ -64,7 +67,7 @@
         <BoardHeader :boardName="boardExist.name" :boardUrl="boardUrl" :isCatalog="isCatalog" :onNewThrClick="onNewThrClick" />
 
         <BoardLoaded      v-if="boardType == 'BoardLoaded'" :boardUrl="boardUrl"/>
-        <Catalog     v-else-if="boardType == 'Catalog'"     :boardUrl="boardUrl"/>
+        <Catalog     v-else-if="boardType == 'Catalog'"     :boardUrl="boardUrl" :topBlocked="topCtlgBlock" />
         <div v-else class="board-sad-text">
             Inner error :3<br/>
             unknown board load type<br/>
@@ -75,6 +78,9 @@
     </div>
     <PageNotFound v-else />
 
-    <DraggablePostingForm :boardUrl="boardUrl" :opPostN="null" :visible="draggableFormVisivle" />
+    <DraggablePostingForm 
+        :boardUrl="boardUrl" :opPostN="null" :visible="draggableFormVisivle" 
+        @close="onDpfClose" @drag-start="setTopCtlgBlock(true)" @drag-end="setTopCtlgBlock(false)"
+    />
 </template>
 

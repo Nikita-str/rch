@@ -104,6 +104,8 @@ span.P-d4, span.P-d6, span.P-d8, span.P-d10, span.P-d12, span.P-d20, span.P-d100
     padding-left: 0.4em;
     padding-right: 0.4em;
 
+    text-align: center;
+    
     font-weight: bold;
   
     -webkit-clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
@@ -119,6 +121,15 @@ span.P-d4, span.P-d6, span.P-d8, span.P-d10, span.P-d12 {
 }
 span.P-d20, span.P-d100 {
     color: var(--rp--dx-txt);
+}
+span.P-d4, span.P-d6, span.P-d8 { /* 1 dig */
+    min-width: calc(1ch + 0.4em * 2);
+}
+span.P-d10, span.P-d12, span.P-d20 { /* 2 dig */
+    min-width: calc(2ch + 0.4em * 2);
+}
+span.P-d100 { /* 3 dig */
+    min-width: calc(3ch + 0.4em * 2);
 }
 span.P-d4 { background-color: var(--rp--d4-bg); }
 span.P-d6 { background-color: var(--rp--d6-bg); }

@@ -118,6 +118,7 @@ export default {
         onNewThrClick() {
             this.draggableFormVisivle = !this.draggableFormVisivle
         },
+        onDpfClose() { this.draggableFormVisivle = false },
         onPostRefClickX(n) {
             this.draggableFormVisivle = true
             onPostRefClick(n)
@@ -190,7 +191,7 @@ function onPostRefClick(n) {
     </div>
     <PageNotFound v-else />
 
-    <DraggablePostingForm :boardUrl="boardUrl" :opPostN="parseInt(thrN)" :visible="draggableFormVisivle" :afterPostInThr="thrLoad" />
+    <DraggablePostingForm :boardUrl="boardUrl" :opPostN="parseInt(thrN)" :visible="draggableFormVisivle" :afterPostInThr="thrLoad" @close="onDpfClose" />
     <PicCloseView v-if="picCloseViewVisible" @close="onPicCloseViewClose" 
         :name="picCloseViewInfo.name"
         :img_path="picCloseViewInfo.img_path"

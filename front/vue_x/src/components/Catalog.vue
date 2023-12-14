@@ -40,6 +40,10 @@ export default {
             type: String,
             required: true,
         },
+        topBlocked: {
+            type: Boolean,
+            default: false,
+        } 
     },
     methods: {
         dataRecalc(new_boardUrl) {
@@ -67,6 +71,7 @@ export default {
 
         removeTopCtlgPost() { this.topCtlgPost = null },
         addTopCtlgPost(thrInfo, topInfo) {
+            if (this.topBlocked) return
             this.topCtlgPost = {
                 thrInfo,
                 topInfo,
@@ -93,7 +98,7 @@ export default {
             </template>
         </div>
     </div>
-    <CtlgPost v-if="topCtlgPost" :thrInfo="topCtlgPost.thrInfo" :topInfo="topCtlgPost.topInfo" @mouseleave="removeTopCtlgPost" />
+    <CtlgPost v-if="!topBlocked && topCtlgPost" :thrInfo="topCtlgPost.thrInfo" :topInfo="topCtlgPost.topInfo" @mouseleave="removeTopCtlgPost" />
 </template>
 
 
