@@ -59,7 +59,7 @@
 </script>
 
 <template>
-    <PageAwait v-if="boardExist === null" :msg="'когда поймем что с /' + boardUrl + '/'" />
+    <PageAwait v-if="boardExist === null" :msg="'Ждеееммм... когда поймем что с /' + boardUrl + '/'" />
     <div class="board-inner" v-else-if="boardExist.name">
         <BoardHeader :boardName="boardExist.name" :boardUrl="boardUrl" :isCatalog="isCatalog" :onNewThrClick="onNewThrClick" />
 

@@ -1,5 +1,6 @@
 use serde::Serialize;
 use crate::utility::img::ImgLoadInfo;
+use crate::utility::general as general;
 
 pub type PostN = u64;
 
@@ -12,7 +13,7 @@ pub enum Poster {
 pub struct Post {
     text: String,
     imgs: Vec<ImgLoadInfo>,
-    time: i64,
+    time: general::Timestamp,
     n: PostN,
     poster: Poster,
     replies: Vec<PostN>,
@@ -26,7 +27,7 @@ impl Post {
         Self {
             text,
             imgs,
-            time: chrono::offset::Utc::now().timestamp(),
+            time: general::timestamp(),
             n: 0,
             poster: Poster::Anon,
             replies: Vec::new(),
@@ -45,6 +46,10 @@ impl Post {
 
     pub fn n(&self) -> PostN {
         self.n
+    }
+
+    pub fn time(&self) -> general::Timestamp {
+        self.time
     }
 
     pub fn dt(&self, prev: &Self) -> f32 {

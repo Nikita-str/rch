@@ -51,8 +51,8 @@ mod fns {
         let dt_sec = 60;
         #[allow(unused_must_use)]
         let open_boards = {
-            let std_thr_qty = 100;
-            let small_thr_qty = 20;
+            let std_thr_qty = 10; // 100;
+            let small_thr_qty = 5; // 20;
 
             let mut open_boards = crate::app_state::OpenBoards::new(VUE_DIST_PATH);
             let tag = crate::app_state::open_boards::BoardTag { tag: "Разное".into() };

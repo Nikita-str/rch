@@ -1,6 +1,7 @@
 use std::collections::{VecDeque, HashSet};
 use crate::post::{Post, PostN};
 use super::thread_usage_rate::ThreadUsageRate as ThrRate;
+use crate::utility::general as general;
 
 crate::define_id!(ThreadOpN: u64 [NO IMPL]);
 
@@ -70,6 +71,7 @@ pub struct Thread {
     header: String,
     /// * `VecDeque` for inf threads
     posts: ThreadPosts,
+    bump_time: general::Timestamp,
     infinity: bool,
 }
 
@@ -116,10 +118,13 @@ impl Thread {
         let op_n = op_post.n();
         assert!(op_n != 0);
 
+        let bump_time = op_post.time();
+
         Self {
             op_n: ThreadOpN::from(op_n),
             posts: ThreadPosts::new(op_post),
             header,
+            bump_time,
             infinity,
         }
     }
@@ -133,6 +138,10 @@ impl Thread {
             }
         }
         
+        if !self.is_bump_limit_reached() {
+            self.bump_time = post.time();
+        }
+
         self.posts.push_back(post)
     }
 
@@ -169,6 +178,10 @@ impl Thread {
     pub fn is_bump_limit_reached(&self) -> bool {
         if self.infinity { false } 
         else { self.posts.len() >= BUMP_LIMIT }
+    }
+
+    pub fn bump_time(&self) -> general::Timestamp {
+        self.bump_time
     }
 
     pub fn last_post_rate(&self) -> f32 {

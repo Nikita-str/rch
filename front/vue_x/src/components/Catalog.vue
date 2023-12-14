@@ -101,7 +101,8 @@ export default {
 .ctlg-posts {
     width: 100vw;
     display: inline-flex;
-    flex-flow: wrap;
+    /* flex-flow: wrap; */
+    flex-flow: column;
     padding-left: 5vw;
     padding-right: 5vw;
     justify-content: center;

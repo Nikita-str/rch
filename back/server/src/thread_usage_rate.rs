@@ -36,13 +36,11 @@ impl<T> Rate<T> {
 #[derive(Debug)]
 pub struct ThreadUsageRate {
     rates: VecDeque<Rate<ThreadOpN>>,
-    max_thr_qty: usize,
 }
 impl ThreadUsageRate {
-    pub fn new(max_thr_qty: usize) -> Self {
+    pub fn new() -> Self {
         Self {
             rates: VecDeque::new(),
-            max_thr_qty,
         }
     }
 
@@ -57,16 +55,18 @@ impl ThreadUsageRate {
     pub(in crate) fn post_rate(post_n: usize, dt_sec: f32) -> f32 { post_rate(post_n, dt_sec) }
     
     pub(in crate) fn add_new(&mut self, thr_op_n: ThreadOpN) {
-        if self.rates.len() == self.max_thr_qty {
-            self.rates.pop_front();
-        }
-
         let post_rate = Self::post_rate(0, 0.);
         self.rates.iter_mut().for_each(|x|x.dec_rate(post_rate));
         
         let rate = Rate::new(thr_op_n);
         let index = self.rates.partition_point(|x|x.rate <= rate.rate);
         self.rates.insert(index, rate);
+    }
+
+    pub(in crate) fn remove_by_thr_n(&mut self, thr_op_n: ThreadOpN) {
+        if let Some(index) = self.rates.iter().position(|rate|rate.value == thr_op_n) {
+            self.rates.remove(index);
+        }
     }
 
     /// # panic

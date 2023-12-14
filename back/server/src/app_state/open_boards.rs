@@ -26,6 +26,7 @@ pub struct Board {
     pub name: String,
     pub descr: String,
     pub post_qty: PostN,
+    pub thr_limit: usize,
 
     // TODO:MAYBE: SpeedPost
     thrs: HashMap<ThreadOpN, Thread>,
@@ -38,15 +39,27 @@ impl Board {
         self.post_qty
     }
 
+    /// * change max thread qty and if need delete mostly unbumped of threads
+    pub fn set_thr_limit(&mut self, new_thr_limit: usize) {
+        if new_thr_limit < self.thrs_qty() {
+            //TODO:SPEED UP: fn `remove_min_n_bump_thr` that remove n thrs at once
+            let need_n_remove = self.thrs_qty() - new_thr_limit;
+            self.remove_min_n_bump_thr(need_n_remove);
+        }
+        self.thr_limit = new_thr_limit;
+    }
+
     pub fn new(url: String, name: String, descr: String, post_qty: PostN, max_thr_qty: usize) -> Self {
+        // const STD_THR_LIMIT: usize = 50;
         Self {
             url,
             name,
             descr,
             post_qty,
+            thr_limit: max_thr_qty, // STD_THR_LIMIT,
 
             thrs: HashMap::new(),
-            thrs_usage: ThreadUsageRate::new(max_thr_qty),
+            thrs_usage: ThreadUsageRate::new(),
         }
     }
 
@@ -74,9 +87,14 @@ impl Board {
     pub fn new_thr_preproced(&mut self, header: String, mut op_post: Post, infinity: bool) -> u64 {
         op_post.upd_n(self.next_post_n());
         let thr_op_n = ThreadOpN::from(op_post.n());
+        
+        // delete least unbumped if need
+        if self.thr_limit <= self.thrs.len() {
+            self.remove_min_bump_thr()
+        }
+        
         assert!(self.thrs.insert(thr_op_n, Thread::new_preproced(header, op_post, infinity)).is_none());
         self.thrs_usage.add_new(thr_op_n);
-        // TODO: delete least unrated if need
         thr_op_n.into()
     }
 
@@ -84,6 +102,35 @@ impl Board {
     pub fn new_thr(&mut self, header: Option<String>, op_post: Post, infinity: bool) -> u64 {
         let header = Thread::preproc_header(header, &op_post);
         self.new_thr_preproced(header, op_post, infinity)
+    }
+
+    fn remove_thr(&mut self, op_n: ThreadOpN) {
+        self.thrs.remove(&op_n);
+        self.thrs_usage.remove_by_thr_n(op_n);
+        // TODO:remove pic folder
+    }
+
+    fn remove_min_bump_thr(&mut self) {
+        let mut iter = self.thr_iter();
+        if let Some(thr) = iter.next() {
+            let mut candidate_t = thr.bump_time();
+            let mut candidate_n = thr.op_n();
+            for thr in iter {
+                let t = thr.bump_time();
+                if t < candidate_t {
+                    candidate_t = t;
+                    candidate_n = thr.op_n();
+                }
+            }
+            self.remove_thr(candidate_n)
+        }
+    }
+
+    fn remove_min_n_bump_thr(&mut self, n_remove: usize) {
+        //TODO:SPEED UP: we can do it for 1 iteration (use vec of candidate)
+        for _ in 0..n_remove {
+            self.remove_min_bump_thr();
+        }
     }
     
     pub fn thr(&self, op_post_n: u64) -> Option<&Thread> {
