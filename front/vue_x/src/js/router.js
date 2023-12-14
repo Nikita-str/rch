@@ -11,6 +11,8 @@ import PostingForm from '../components/PostingForm.vue'
 import DraggablePostingForm from '../components/DraggablePostingForm.vue'
 import PicCloseView from '../components/files/pics/PicCloseView.vue'
 
+import { BOARD_NAME as SETT_BOARD_NAME, BOARD_POSTFIX as SETT_BOARD_POSTFIX, BOARD_FULLNAME as SETT_BOARD_FULLNAME } from './settings'
+
 const POST_LONG_MSG = 'The characters allowed in a URI are either reserved or unreserved'
 +' (or a percent character as part of a percent-encoding).'
 +' Reserved characters are those characters that sometimes have special meaning.'
@@ -34,9 +36,9 @@ const maxThrNLen = 16;
 const routes = [
     { 
         path: '/',
-        name: 'Rch',
+        name: SETT_BOARD_FULLNAME,
         meta: {
-          title: "Rch",
+          title: SETT_BOARD_FULLNAME,
           titleType: "main",
         },
         component: App 
@@ -241,7 +243,7 @@ const router = createRouter({
 })
 
 router.afterEach((to) => {
-  const BOARD_NAME = 'R:ch'
+  const BOARD_NAME = `${SETT_BOARD_NAME}:${SETT_BOARD_POSTFIX}`
   const POSTFIX = ` (${BOARD_NAME})`
   nextTick(() => {
       let bUrl = boardUrlCalc(to.path)
