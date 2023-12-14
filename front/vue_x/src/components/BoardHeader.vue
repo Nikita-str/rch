@@ -50,7 +50,7 @@ export default {
         </div>
 
         <router-link to="/" class="b-head-logo">
-            <Logo msg="возвращайся" :sz="0.42" />
+            <Logo msg="а чо там еще есть?" :sz="0.42" />
         </router-link>
         <HorizontalLine />
     </div>
@@ -69,7 +69,7 @@ export default {
 
 .b-head-logo {
     position: absolute;
-    left: 5vw;
+    right: 5vw;
     top: 0.3em;
 }
 .b-head-logo:hover { background-color: #0000; }
@@ -77,10 +77,10 @@ export default {
 
 @media screen and (max-width: 600px) {
     .b-head-name, .b-head-catalog, .b-head-new-thr {
-        padding-left: 30vw;
+        padding-right: 30vw;
     }
     .b-head-logo {
-        left: 1vw;
+        right: 1vw;
     }
 }
 
