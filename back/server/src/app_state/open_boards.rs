@@ -105,7 +105,9 @@ impl Board {
     }
 
     fn remove_thr(&mut self, op_n: ThreadOpN) {
-        self.thrs.remove(&op_n);
+        if let Some(thr) = self.thrs.remove(&op_n) {
+            thr.delete(&self.url);
+        }
         self.thrs_usage.remove_by_thr_n(op_n);
         // TODO:remove pic folder
     }

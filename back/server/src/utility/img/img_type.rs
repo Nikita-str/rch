@@ -63,12 +63,20 @@ impl ImgType {
         }
     }
 
-    #[allow(unused)]
     pub const fn to_char(self) -> char {
         match self {
             ImgType::Webp => 'w',
             ImgType::Png => 'p',
             ImgType::Jpg => 'j',
+        }
+    }
+
+    pub const fn from_char(c: char) -> Option<Self> {
+        match c {
+            'w' => Some(ImgType::Webp),
+            'p' => Some(ImgType::Png),
+            'j' => Some(ImgType::Jpg),
+            _ => None,
         }
     }
 }

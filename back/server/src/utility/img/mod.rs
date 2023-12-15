@@ -6,6 +6,7 @@ mod img_preparer;
 pub use img_type::ImgType;
 pub use post_img::PostImg;
 pub use img_load_info::ImgLoadInfo;
+pub use img_load_info::ImgDelInfo;
 pub use img_preparer::ImgsPreparerSealed;
 
 type Base64 = String;

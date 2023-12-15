@@ -209,4 +209,12 @@ impl Thread {
             self.add_reply(reply_from_post_n, reply_to_post_n.into())    
         }
     }
+
+    pub fn delete<S: Into<String>>(self, board_url: S) {
+        let mut pics_info = Vec::new();
+        self.posts.posts.iter().map(|x|x.add_del_info(&mut pics_info));
+        if let Err(_) = crate::utility::global_file_deleter::add_del_pics_act(board_url.into(), pics_info) {
+            println!("[WARN] cant add del pic act")
+        }
+    }
 }

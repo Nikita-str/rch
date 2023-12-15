@@ -1,24 +1,76 @@
-use std::sync::{Arc, Mutex};
+use std::sync::{Arc, Mutex, MutexGuard};
 use std::time::Duration;
 use tokio::sync::mpsc::UnboundedReceiver as Receiver;
 use tokio::sync::mpsc::UnboundedSender as Sender;
 use std::thread::JoinHandle;
 
+use crate::utility::img::ImgDelInfo;
 
-const DELETE_LOOP_SEC: u64 = 30;
-const DELETE_LOOP_DUR: Duration = Duration::from_secs(DELETE_LOOP_SEC);
+const DELETE_LOOP_SECS: u64 = 30; // 300;
+const DELETE_LOOP_DUR: Duration = Duration::from_secs(DELETE_LOOP_SECS);
 
+//TODO: wrap `State` into struct 
 pub type State = Arc<Mutex<FileDelState>>;
-type Acts = Vec<SingleDelAction>;
+type Act = SingleDelAction;
+type Acts = Vec<Act>;
+
+fn state_lock_mut(state: &State) -> MutexGuard<'_, FileDelState> {
+    let state = state.lock();
+    let mut state = match state {
+        Ok(state) => { state },
+        Err(state) => {
+            println!("[WARN] file state poisoned. it's ok?");
+            state.into_inner()
+        }
+    };
+    state
+}
+
+pub mod global {
+    use std::sync::OnceLock;
+    use super::{State, Act};
+    use super::ImgDelInfo;
+
+    static GLOBAL_STATE: OnceLock<State> = OnceLock::new();
+
+    pub fn is_global_inited() -> bool {
+        GLOBAL_STATE.get().is_some()
+    }
+    
+    /// # Err
+    /// * if `is_global_inited()`: global state already was inited
+    pub fn init_global(state: State) -> Result<(), ()> {
+        GLOBAL_STATE.set(state).map_err(|_|())
+    }
+    
+    /// # Err
+    /// * if `!is_global_inited()`: global state wasn't inited
+    pub fn add_del_pics_act(
+        board_url: String, 
+        pics_info: Vec<ImgDelInfo>,
+    ) -> Result<(), ()> {
+        match GLOBAL_STATE.get() {
+            Some(state) => {
+                let mut state = super::state_lock_mut(state);
+                state.add_act(Act::DelPics { board_url, pics_info });
+                Ok(())
+            }
+            _ => Err(())
+        }
+    }
+}
 
 enum SingleDelAction {
-    DelPics(Vec<()>),
+    DelPics {
+        board_url: String, 
+        pics_info: Vec<ImgDelInfo>,
+    },
 }
 
 impl SingleDelAction {
     fn del(self) {
         match self {
-            Self::DelPics(pics_info) => {
+            Self::DelPics{board_url, pics_info} => {
                 for pic_info in pics_info {
                     //TODO: DEL PIC 
                 }
@@ -28,14 +80,20 @@ impl SingleDelAction {
 }
 
 pub struct FileDelState {
+    pic_path: String,
     acts: Acts,
 }
 
 impl FileDelState {
-    fn new() -> Self { 
+    fn new<S: Into<String>>(pic_path: S) -> Self { 
         Self {
+            pic_path: pic_path.into(),
             acts: Vec::with_capacity(1 << 6),
         }
+    }
+
+    fn add_act(&mut self, act: Act) {
+        self.acts.push(act)
     }
 
     fn take_cur_acts(take_to: &mut Acts, take_from: &mut Self) {
@@ -52,11 +110,11 @@ pub struct FileDeleter {
 }
 
 impl FileDeleter {
-    pub fn new() -> FileDeleterCtrl {
+    pub fn new<S: Into<String>>(pic_path: S) -> FileDeleterCtrl {
         let (cmd_end_sx, cmd_end_rx) = tokio::sync::mpsc::unbounded_channel::<()>();
         let (cmd_done_sx, cmd_done_rx) = tokio::sync::mpsc::unbounded_channel::<()>();
         
-        let state = Arc::new(Mutex::new(FileDelState::new()));
+        let state = Arc::new(Mutex::new(FileDelState::new(pic_path)));
 
         let x = Self {
             state: state.clone(),
@@ -92,14 +150,7 @@ impl FileDeleter {
 
     fn del_step(&mut self) {
         '_block_state: {
-            let state = self.state.lock();
-            let mut state = match state {
-                Ok(state) => { state },
-                Err(state) => {
-                    println!("[WARN] file state poisoned. it's ok?");
-                    state.into_inner()
-                }
-            };
+            let mut state = state_lock_mut(&self.state);
             FileDelState::take_cur_acts(&mut self.acts_buf, &mut state);
         }
 
@@ -131,6 +182,12 @@ impl FileDeleterCtrl {
             cmd_done_rx,
             thr_loop_handler,
         }
+    }
+
+    /// # panic
+    /// * if `global::is_global_inited()` global state already was inited
+    pub fn init_global_state(&self) {
+        global::init_global(self.state()).unwrap()
     }
 
     pub fn state(&self) -> State {
