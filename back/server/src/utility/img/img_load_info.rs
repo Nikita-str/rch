@@ -21,14 +21,28 @@ impl ImgLoadInfo {
     pub fn to_del_info(&self) -> ImgDelInfo {
         ImgDelInfo {
             n: self.n,
-            f_ty: ImgType::from_char(self.f_ty).unwrap(),
-            cf_ty: ImgType::from_char(self.cf_ty).unwrap(),
+            f_ty: ImgType::from_char(self.f_ty),
+            cf_ty: ImgType::from_char(self.cf_ty),
         }
     }
 }
 
 pub struct ImgDelInfo {
     pub n: u64,
-    pub f_ty: ImgType,
-    pub cf_ty: ImgType,
+    pub f_ty: Option<ImgType>, // here must be always valid... but.. k
+    pub cf_ty: Option<ImgType>,
+}
+
+impl ImgDelInfo {
+    pub fn del(self, path: &str) {
+        let n = self.n;
+        if let Some(f_ty) = self.f_ty {
+            let f_path = format!("{path}/{}.{}", n, f_ty.to_format());
+            let _ = std::fs::remove_file(f_path);
+        }
+        if let Some(cf_ty) = self.cf_ty {
+            let cf_path = format!("{path}/{}_c.{}", n, cf_ty.to_format());
+            let _ = std::fs::remove_file(cf_path);
+        }
+    }
 }

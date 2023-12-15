@@ -14,9 +14,9 @@ pub type State = Arc<Mutex<FileDelState>>;
 type Act = SingleDelAction;
 type Acts = Vec<Act>;
 
-fn state_lock_mut(state: &State) -> MutexGuard<'_, FileDelState> {
+fn state_lock(state: &State) -> MutexGuard<'_, FileDelState> {
     let state = state.lock();
-    let mut state = match state {
+    let state = match state {
         Ok(state) => { state },
         Err(state) => {
             println!("[WARN] file state poisoned. it's ok?");
@@ -33,6 +33,7 @@ pub mod global {
 
     static GLOBAL_STATE: OnceLock<State> = OnceLock::new();
 
+    #[allow(unused)]
     pub fn is_global_inited() -> bool {
         GLOBAL_STATE.get().is_some()
     }
@@ -51,7 +52,7 @@ pub mod global {
     ) -> Result<(), ()> {
         match GLOBAL_STATE.get() {
             Some(state) => {
-                let mut state = super::state_lock_mut(state);
+                let mut state = super::state_lock(state);
                 state.add_act(Act::DelPics { board_url, pics_info });
                 Ok(())
             }
@@ -68,26 +69,23 @@ enum SingleDelAction {
 }
 
 impl SingleDelAction {
-    fn del(self) {
+    fn del(self, pic_path_parent: &str) {
         match self {
             Self::DelPics{board_url, pics_info} => {
-                for pic_info in pics_info {
-                    //TODO: DEL PIC 
-                }
+                let path = format!("{pic_path_parent}/{board_url}");
+                pics_info.into_iter().for_each(|x|x.del(&path));
             }
         }
     }
 }
 
 pub struct FileDelState {
-    pic_path: String,
     acts: Acts,
 }
 
 impl FileDelState {
-    fn new<S: Into<String>>(pic_path: S) -> Self { 
+    fn new() -> Self { 
         Self {
-            pic_path: pic_path.into(),
             acts: Vec::with_capacity(1 << 6),
         }
     }
@@ -102,6 +100,7 @@ impl FileDelState {
 }
 
 pub struct FileDeleter {
+    pic_path_parent: String,
     state: State,
     acts_buf: Acts,
 
@@ -110,13 +109,14 @@ pub struct FileDeleter {
 }
 
 impl FileDeleter {
-    pub fn new<S: Into<String>>(pic_path: S) -> FileDeleterCtrl {
+    pub fn new<S: Into<String>>(pic_path_parent: S) -> FileDeleterCtrl {
         let (cmd_end_sx, cmd_end_rx) = tokio::sync::mpsc::unbounded_channel::<()>();
         let (cmd_done_sx, cmd_done_rx) = tokio::sync::mpsc::unbounded_channel::<()>();
         
-        let state = Arc::new(Mutex::new(FileDelState::new(pic_path)));
+        let state = Arc::new(Mutex::new(FileDelState::new()));
 
         let x = Self {
+            pic_path_parent: pic_path_parent.into(),
             state: state.clone(),
             acts_buf: Acts::with_capacity(1 << 6),
             cmd_end_rx,
@@ -146,16 +146,19 @@ impl FileDeleter {
                 }
             }
         }
+        let _ = self.cmd_done_sx.send(());
     }
 
     fn del_step(&mut self) {
+        // println!("[INFO] del_step");
+
         '_block_state: {
-            let mut state = state_lock_mut(&self.state);
+            let mut state = state_lock(&self.state);
             FileDelState::take_cur_acts(&mut self.acts_buf, &mut state);
         }
 
         for act in self.acts_buf.drain(..) {
-            act.del();
+            act.del(&self.pic_path_parent);
         }
     }
 }

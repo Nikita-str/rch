@@ -39,6 +39,7 @@ impl Board {
         self.post_qty
     }
 
+    #[allow(unused)]
     /// * change max thread qty and if need delete mostly unbumped of threads
     pub fn set_thr_limit(&mut self, new_thr_limit: usize) {
         if new_thr_limit < self.thrs_qty() {
@@ -106,7 +107,7 @@ impl Board {
 
     fn remove_thr(&mut self, op_n: ThreadOpN) {
         if let Some(thr) = self.thrs.remove(&op_n) {
-            thr.delete(&self.url);
+            thr.del(&self.url);
         }
         self.thrs_usage.remove_by_thr_n(op_n);
         // TODO:remove pic folder
@@ -209,6 +210,9 @@ impl OpenBoards {
         }
     }
 
+    pub fn pic_path_parent(&self) -> &str {
+        &self.pic_path
+    }
     pub fn pic_path_unchecked(&self, board_url: &str) -> String {
         format!("{}/{}", self.pic_path.clone(), board_url)
     }

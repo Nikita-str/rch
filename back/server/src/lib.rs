@@ -185,6 +185,9 @@ mod fns {
         let speed_post = crate::app_state::SpeedPost::new(dt_sec, 0);
         let state_all = app_state::CommonInfoState::new(deleted_board_post, open_boards, speed_post);
 
+        let cmd_loop_ctrl = crate::utility::FileDeleter::new(state_all.pic_path_parent());
+        cmd_loop_ctrl.init_global_state();
+
         let state_all = Arc::new(RwLock::new(state_all));
 
         // std::fs::create_dir(PIC_PATH).unwrap();
@@ -200,6 +203,7 @@ mod fns {
         let router = router.nest("/api", api::router(&state_all));
         let router = router.layer(cors).into_make_service();
 
+
         let config = crate::config::Config::open().unwrap();
         config.gen_rest_test_py().unwrap();
         let addr = config.socket_addr().unwrap();
@@ -208,12 +212,15 @@ mod fns {
 
         let upd_speed_post_loop = upd_speed_post_loop(&state_all, dt_sec / 2);
 
+
         tokio::select!{
-            _ = server => { return }
+            _ = server => { }
             _ = upd_speed_post_loop => {
                 println!("smth weird is occurs: turned out that inf loop isn't inf :|");
             }
         };
+
+        let _ = cmd_loop_ctrl.close();
     }
 }
 

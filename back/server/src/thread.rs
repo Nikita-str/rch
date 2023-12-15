@@ -210,9 +210,10 @@ impl Thread {
         }
     }
 
-    pub fn delete<S: Into<String>>(self, board_url: S) {
+    pub fn del<S: Into<String>>(self, board_url: S) {
         let mut pics_info = Vec::new();
-        self.posts.posts.iter().map(|x|x.add_del_info(&mut pics_info));
+        self.posts.posts.iter()
+            .for_each(|post|post.add_del_info(&mut pics_info));
         if let Err(_) = crate::utility::global_file_deleter::add_del_pics_act(board_url.into(), pics_info) {
             println!("[WARN] cant add del pic act")
         }

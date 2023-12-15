@@ -48,4 +48,8 @@ impl CommonInfoState {
     pub fn use_n_pic(&mut self, n: u64, board_url: &str) -> (String, std::ops::Range<u64>) {
         (self.open_boards.pic_path_unchecked(board_url), self.open_boards.use_n_pic(n))
     }
+
+    pub fn pic_path_parent(&self) -> &str {
+        self.open_boards.pic_path_parent()
+    }
 }
