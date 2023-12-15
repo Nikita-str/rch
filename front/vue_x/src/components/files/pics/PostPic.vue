@@ -1,4 +1,5 @@
 <script setup>
+import { boardUrlCalc } from '@/js/board_fns'
 import { img_ext_abbr } from '../../../js/pics/file_x'
 import { spoilerPicPath } from '@/js/board_fns'
 import { defineEmits } from 'vue'
@@ -40,16 +41,17 @@ export default {
             return this.imgInfo.cf_ty == '#'
         },
         spoilerPic() { return spoilerPicPath(this.spoilerPicN) },
+        bUrl() { return boardUrlCalc(this) },
         imgPathCompressed() {
             let ext = img_ext_abbr(this.imgInfo.cf_ty)
-            return `${IMG_PATH_PREFIX}/${this.imgInfo.n}_c.${ext}`
+            return `${IMG_PATH_PREFIX}/${this.bUrl}/${this.imgInfo.n}_c.${ext}`
         },
         imgPathWoPrefix() {
             let ext = img_ext_abbr(this.imgInfo.f_ty)
             return `${this.imgInfo.n}.${ext}`
         },
         imgPath() {
-            return `${IMG_PATH_PREFIX}/${this.imgPathWoPrefix}`
+            return `${IMG_PATH_PREFIX}/${this.bUrl}/${this.imgPathWoPrefix}`
         },
         imgRef() {
             if (this.imgPreviewRef) return this.imgPreviewRef

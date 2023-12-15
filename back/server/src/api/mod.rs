@@ -25,6 +25,7 @@ mod fns {
 
     pub fn create_img_load_info(
         state: &super::header_use::HandlerStateCommon, 
+        board_url: &str,
         imgs: &Vec<crate::utility::img::PostImg>, 
         max_imgs_n: usize
     ) -> Vec<crate::utility::img::ImgLoadInfo> {
@@ -32,7 +33,7 @@ mod fns {
 
         let (pic_dir, pic_n) = {
             let mut w_state = state.write().unwrap();
-            w_state.use_n_pic(img_preparer.n_pics())
+            w_state.use_n_pic(img_preparer.n_pics(), board_url)
         };
     
         let imgs = img_preparer.to_img_load_info(&pic_dir, pic_n);

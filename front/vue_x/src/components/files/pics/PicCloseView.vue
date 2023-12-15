@@ -1,7 +1,11 @@
 <script setup>
+import { boardUrlCalc } from '@/js/board_fns'
 import X from '../../micro/X.vue';
 import { X_CLASS_NAME } from '../../micro/X.vue';
 import { ref, defineEmits, defineProps, computed } from 'vue'
+import { useRouter } from 'vue-router';
+
+const router = useRouter();
 
 const emit = defineEmits(['close'])
 function onClose() { emit('close') }
@@ -34,7 +38,10 @@ const img_exp_sz = computed(() => {
     if (props.expected_h == 0) return null
     return {w: props.expected_w, h: props.expected_h} 
 })
-const img_full_path = computed(() => `/imgs/pp/${props.img_path}`)
+const img_full_path = computed(() => {
+    let bUrl = boardUrlCalc(router.currentRoute.value.path)
+    return `/imgs/pp/${bUrl}/${props.img_path}`
+})
 const init_w = computed(() => {
     let expected_w = props.expected_w
     let expected_h = props.expected_h

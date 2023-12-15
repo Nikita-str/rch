@@ -27,7 +27,7 @@ pub async fn handler(
 
     {
         let r_state = state.read().unwrap();
-        let Some(board) = r_state.open_boards().board(board_url) else { 
+        let Some((_, board)) = r_state.open_boards().board_and_id(board_url) else { 
             return Json(()) // ERROR // no board
         };
         if board.thr(params.op_post_n).is_none() {
@@ -44,7 +44,7 @@ pub async fn handler(
 
     // [+] IMGS
     params.post_imgs.truncate(MAX_PIC_AMOUNT);
-    let imgs = create_img_load_info(&state, &params.post_imgs, MAX_PIC_AMOUNT);
+    let imgs = create_img_load_info(&state, board_url, &params.post_imgs, MAX_PIC_AMOUNT);
     // [-] IMGS
     
     let post = Post::new_anon(post_text, imgs);

@@ -207,9 +207,16 @@ impl OpenBoards {
         }
     }
 
-    pub fn pic_path(&self) -> String {
-        self.pic_path.clone()
+    pub fn pic_path_unchecked(&self, board_url: &str) -> String {
+        format!("{}/{}", self.pic_path.clone(), board_url)
     }
+    #[allow(unused)]
+    pub(in crate)
+    fn pic_path(&self, board_id: BoardId) -> Option<String> {
+        self.boards.get(&board_id)
+            .map(|board|self.pic_path_unchecked(&board.url))
+    }
+
     pub fn use_n_pic(&mut self, n: u64) -> std::ops::Range<u64> {
         let from = self.pic_n;
         let to = self.pic_n + n;
@@ -273,6 +280,10 @@ impl OpenBoards {
             self.board_tags.insert(tag, vec![id]);
         }
 
+        if !crate::utility::general::create_dir(format!("{}/{}", self.pic_path, board.url)) {
+            return false
+        }
+
         self.boards.insert(id, board);
         return true
     }
@@ -281,12 +292,22 @@ impl OpenBoards {
         self.board_urls.contains_key(board_url)
     }
 
+    #[allow(unused)]
+    pub(in crate)
+    fn board_id(&self, board_url: &str) -> Option<BoardId> {
+        self.board_urls.get(board_url).cloned()
+    }
+
     pub fn board_name(&self, board_url: &str) -> Option<&str> {
         self.board(board_url).map(|b|b.name.as_str())
     }
 
     pub fn board(&self, board_url: &str) -> Option<&Board> {
         self.board_urls.get(board_url).map(|id|self.boards.get(id).unwrap())
+    }
+    pub(in crate)
+    fn board_and_id(&self, board_url: &str) -> Option<(BoardId, &Board)> {
+        self.board_id(board_url).map(|id|(id, self.boards.get(&id).unwrap()))
     }
     
     pub fn board_mut(&mut self, board_url: &str) -> Option<&mut Board> {

@@ -35,14 +35,14 @@ pub async fn handler(
 
     {
         let r_state = state.read().unwrap();
-        if !r_state.open_boards().is_board_exist(board_url) {
+        let Some(_) = r_state.open_boards().board_id(board_url) else {
             return Json(None) // ERROR
-        }
+        };
     }
 
     // [+] IMGS
     params.post_imgs.truncate(MAX_PIC_AMOUNT);
-    let imgs = create_img_load_info(&state, &params.post_imgs, MAX_PIC_AMOUNT);
+    let imgs = create_img_load_info(&state, board_url, &params.post_imgs, MAX_PIC_AMOUNT);
     // [-] IMGS
 
     // [+] HEADER
