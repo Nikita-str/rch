@@ -4,7 +4,7 @@ mod api;
 mod thread;
 mod thread_usage_rate;
 mod preproc;
-mod utility;
+pub mod utility;
 mod config;
 
 const VUE_DIST_PATH: &str = "../../front/vue_x/dist";
