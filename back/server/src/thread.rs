@@ -12,6 +12,8 @@ const BUMP_LIMIT: usize = 300;
 
 pub const MAX_HEADER_LEN: usize = 42;
 
+#[derive(serde::Serialize, serde::Deserialize)]
+#[derive(Debug)]
 struct ThreadPosts {
     posts: VecDeque<Post>,
     posts_n: HashSet<PostN>,
@@ -66,6 +68,9 @@ impl ThreadPosts {
     }
 }
 
+
+#[derive(serde::Serialize, serde::Deserialize)]
+#[derive(Debug)]
 pub struct Thread {
     op_n: ThreadOpN,
     header: String,

@@ -1,15 +1,15 @@
-use serde::Serialize;
+use serde::{Serialize, Deserialize};
 use crate::utility::img::{ImgLoadInfo, ImgDelInfo};
 use crate::utility::general as general;
 
 pub type PostN = u64;
 
-#[derive(Serialize, Debug, Clone)]
+#[derive(Serialize, Deserialize, Debug, Clone)]
 pub enum Poster {
     Anon,
 }
 
-#[derive(Serialize, Debug, Clone)]
+#[derive(Serialize, Deserialize, Debug, Clone)]
 pub struct Post {
     text: String,
     imgs: Vec<ImgLoadInfo>,

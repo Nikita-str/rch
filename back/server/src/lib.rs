@@ -237,7 +237,7 @@ macro_rules! define_id {
         }
     };
     ([INNER] $name:ident: $ty:ty) => {
-        #[derive(serde::Serialize)]
+        #[derive(serde::Serialize, serde::Deserialize)]
         #[derive(Clone, Copy, Hash, PartialEq, Eq)]
         pub(in crate) struct $name($ty);
 

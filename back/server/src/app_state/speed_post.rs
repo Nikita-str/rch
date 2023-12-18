@@ -102,50 +102,18 @@ mod save {
 
     impl Save for SpeedPost {
         fn save(&self, save_args: &mut FileBufArgs) -> anyhow::Result<()> {
-            let mut serializer = rmp_serde::Serializer::new(&mut save_args.buf);
-            self.serialize(&mut serializer)?;
-            save_args.write_len_and_buf()
+            save_args.serialize_and_write(self)
         }
     }
 
     impl Load for SpeedPost {
         fn load(load_args: &mut FileBufArgs) -> anyhow::Result<Self> {
             load_args.read_len_and_buf()?;
-
-            let mut deserializer = rmp_serde::Deserializer::new(load_args.buf.as_slice());
-            let value = serde::Deserialize::deserialize(&mut deserializer)?;
-
-            load_args.buf.clear();
-            Ok(value)
+            let mut speed_post: Self = load_args.deserialize()?;
+            
+            speed_post.upd_speed_post();
+            Ok(speed_post)
         }
     }
 
-
-    #[cfg(test)]
-    #[test]
-    fn cringe_test_01() {
-        let path = "!  SET TEST PATH  !";
-
-        let mut x = SpeedPost::new(5, 32);
-        x.inc_post();
-        x.inc_post();
-        x.inc_post();
-        x.upd_speed_post();
-        x.inc_post();
-        x.inc_post();
-        let x = x;
-
-        let fmt_expect = format!("{x:?}");
-
-        let mut args = FileBufArgs::new_save(path).unwrap();
-        x.save(&mut args).unwrap();
-        
-        drop(x);
-        drop(args);
-
-        let mut args = FileBufArgs::new_load(path).unwrap();
-        let x = SpeedPost::load(&mut args).unwrap();
-
-        assert_eq!(fmt_expect, format!("{x:?}"));
-    }
 }

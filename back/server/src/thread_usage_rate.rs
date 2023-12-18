@@ -8,6 +8,7 @@ const STD_RATE_COEF: f32 = 5.;
 const SEC_IN_MIN: usize = 60;
 const SEC_IN_H: usize = 60 * 60;
 
+#[derive(serde::Serialize, serde::Deserialize)]
 #[derive(Debug)]
 struct Rate<T> {
     rate: f32,
@@ -33,6 +34,7 @@ impl<T> Rate<T> {
     }
 }
 
+#[derive(serde::Serialize, serde::Deserialize)]
 #[derive(Debug)]
 pub struct ThreadUsageRate {
     rates: VecDeque<Rate<ThreadOpN>>,

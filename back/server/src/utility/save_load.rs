@@ -16,6 +16,27 @@ pub struct FileBufArgs {
     pub buf: Vec<u8>,
 }
 impl FileBufArgs {
+    pub fn serializer(&mut self) -> rmp_serde::Serializer<&mut Vec<u8>> {
+        rmp_serde::Serializer::new(&mut self.buf)
+    }
+    pub fn serialize<S: serde::Serialize>(&mut self, obj: S) -> anyhow::Result<()> {
+        let mut serializer = self.serializer();
+        obj.serialize(&mut serializer)?;
+        Ok(())
+    }
+    pub fn serialize_and_write<S: serde::Serialize>(&mut self, obj: S) -> anyhow::Result<()> {
+        let mut serializer = self.serializer();
+        obj.serialize(&mut serializer)?;
+        self.write_len_and_buf()
+    }
+
+    pub fn deserialize<'x, D: serde::Deserialize<'x>>(&mut self) -> anyhow::Result<D> {
+        let mut deserializer = rmp_serde::Deserializer::new(self.buf.as_slice());
+        let obj = serde::Deserialize::deserialize(&mut deserializer)?;
+        self.clear();
+        Ok(obj)
+    }
+
     pub fn new_save(path: &str) -> anyhow::Result<Self> {
         Ok(Self {
             file: std::fs::File::create(path)?,
@@ -36,7 +57,7 @@ impl FileBufArgs {
         self.file.write_all(&len_bytes)?;
         self.file.write_all(self.buf.as_slice())?;
         
-        self.buf.clear();
+        self.clear();
         Ok(())
     }
 
@@ -50,6 +71,10 @@ impl FileBufArgs {
         self.file.read_exact(&mut self.buf[0..len])?;
 
         Ok(())
+    }
+
+    pub fn clear(&mut self) {
+        self.buf.clear();
     }
 }
 

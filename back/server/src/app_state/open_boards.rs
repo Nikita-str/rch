@@ -21,6 +21,9 @@ pub struct PopBoardsTagInfo {
     pub boards: Vec<PopBoardInfo>,
 }
 
+
+#[derive(serde::Serialize, serde::Deserialize)]
+#[derive(Debug)]
 pub struct Board {
     pub url: String,
     pub name: String,
@@ -177,11 +180,19 @@ impl Board {
     }
 }
 
+#[derive(serde::Serialize, serde::Deserialize)]
 #[derive(Hash, PartialEq, Eq, Clone)]
 pub struct BoardTag {
     pub tag: String,
 }
 
+#[ref_struct::ref_struct(
+    ignore(boards),
+    clone(next_board_id, board_qty, pop_board_qty, pic_n),
+    derive(serde::Serialize, serde::Deserialize),
+    ignore_struct()
+)]
+#[derive(serde::Serialize, serde::Deserialize)]
 pub struct OpenBoards {
     boards: HashMap<BoardId, Board>,
     board_tags: HashMap<Option<BoardTag>, Vec<BoardId>>,
@@ -318,5 +329,87 @@ impl OpenBoards {
     
     pub fn board_mut(&mut self, board_url: &str) -> Option<&mut Board> {
         self.board_urls.get(board_url).map(|id|self.boards.get_mut(id).unwrap())
+    }
+}
+
+
+pub mod save_load {
+    use crate::utility::save_load::*;
+    use super::*;
+
+    use std::io::{Read, Write};
+
+    type Args = OpenBoardsArgs;
+
+    #[allow(unused)]
+    pub enum OpenBoardsArgs {
+        SingleFile(FileBufArgs),
+        BoardSplited{
+            general_args: FileBufArgs,
+            save_path: String,
+        },
+    }
+    impl OpenBoardsArgs {
+        fn board_path(save_path: &str, id: BoardId) -> String {
+            format!("{save_path}/b{}.save", id.0)
+        }
+    }
+
+    impl Save<Args> for OpenBoards {
+        fn save(&self, save_args: &mut Args) -> anyhow::Result<()> {
+            match save_args {
+                Args::SingleFile(save_args) => {
+                    save_args.serialize_and_write(self)?;
+                }
+                Args::BoardSplited { general_args, save_path } => {
+                    let all_except_boards = super::RefOpenBoards::new(self);
+                    general_args.serialize_and_write(all_except_boards)?;
+
+                    for (id, board) in &self.boards {
+                        let path = OpenBoardsArgs::board_path(save_path, *id);
+                        let mut board_file = std::fs::File::create(path)?;
+
+                        general_args.serialize(board)?;
+                        board_file.write_all(general_args.buf.as_slice())?;
+                        general_args.clear();
+                    }
+                }
+            }
+            Ok(())
+        }
+    }
+
+    impl Load<Args> for OpenBoards {
+        fn load(load_args: &mut Args) -> anyhow::Result<Self> {
+            match load_args {
+                Args::SingleFile(load_args) => {
+                    load_args.read_len_and_buf()?;
+                    return Ok(load_args.deserialize()?)
+                }
+                Args::BoardSplited { general_args, save_path } => {
+                    general_args.read_len_and_buf()?;
+                    let all_except_boards: RefOpenBoards = general_args.deserialize()?;
+
+                    let mut boards = HashMap::new();
+                    for (url, id) in all_except_boards.board_urls.as_ref() {
+                        let path = OpenBoardsArgs::board_path(save_path, *id);
+
+                        let mut board_file = match std::fs::File::open(path) {
+                            Ok(f) => f,
+                            Err(_) => todo!("just remove board_id and add warn to log"),
+                        };
+
+                        board_file.read_to_end(&mut general_args.buf)?;
+                        let board: Board = general_args.deserialize()?;
+                        if &board.url != url { todo!("dyn id ? or hard err") }
+
+                        boards.insert(*id, board);
+                    }
+                    let ignored = IgnoreOpenBoards { boards };
+
+                    return Ok(all_except_boards.merge(ignored))
+                }
+            }
+        }
     }
 }
