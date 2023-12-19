@@ -113,7 +113,7 @@ pub mod save_load {
         fn load(load_args: &mut StateArgs) -> anyhow::Result<Self> {
             let (load_args, splited_board) = load_args.split();
 
-            let total_post = load_args.deserialize()?;
+            let total_post = load_args.read_and_deserialize()?;
             let speed_post = SpeedPost::load(load_args)?;
 
             let mut open_boards_load_args = 

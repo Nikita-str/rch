@@ -388,12 +388,10 @@ pub mod save_load {
         fn load(load_args: &mut Args) -> anyhow::Result<Self> {
             match load_args {
                 Args::SingleFile(load_args) => {
-                    load_args.read_len_and_buf()?;
-                    return Ok(load_args.deserialize()?)
+                    return Ok(load_args.read_and_deserialize()?)
                 }
                 Args::BoardSplited { general_args, save_path } => {
-                    general_args.read_len_and_buf()?;
-                    let all_except_boards: RefOpenBoards = general_args.deserialize()?;
+                    let all_except_boards: RefOpenBoards = general_args.read_and_deserialize()?;
 
                     let mut boards = HashMap::new();
                     for (url, id) in all_except_boards.board_urls.as_ref() {

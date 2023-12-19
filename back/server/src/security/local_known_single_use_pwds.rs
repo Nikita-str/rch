@@ -42,7 +42,8 @@ impl SingleUsePwds {
             .map(|act|(act, Self::nonce_pwd_pair()))
             .collect();
         
-        for (act, (nonce, pwd)) in &act_to_pwd {
+        for act in Action::iter() {
+            let (nonce, pwd) = act_to_pwd.get(&act).unwrap();
             output.write_all(&act.prefix())?;
             output.write_all(b" ")?;
             output.write_all(nonce.as_bytes())?;

@@ -108,8 +108,7 @@ mod save {
 
     impl Load for SpeedPost {
         fn load(load_args: &mut FileBufArgs) -> anyhow::Result<Self> {
-            load_args.read_len_and_buf()?;
-            let mut speed_post: Self = load_args.deserialize()?;
+            let mut speed_post: Self = load_args.read_and_deserialize()?;
             
             speed_post.upd_speed_post();
             Ok(speed_post)

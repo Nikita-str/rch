@@ -29,12 +29,15 @@ impl FileBufArgs {
         obj.serialize(&mut serializer)?;
         self.write_len_and_buf()
     }
-
     pub fn deserialize<'x, D: serde::Deserialize<'x>>(&mut self) -> anyhow::Result<D> {
         let mut deserializer = rmp_serde::Deserializer::new(self.buf.as_slice());
         let obj = serde::Deserialize::deserialize(&mut deserializer)?;
         self.clear();
         Ok(obj)
+    }
+    pub fn read_and_deserialize<'x, D: serde::Deserialize<'x>>(&mut self) -> anyhow::Result<D> {
+        self.read_len_and_buf()?;
+        self.deserialize()
     }
 
     pub fn new(path: &str, is_save: bool) -> anyhow::Result<Self> {
@@ -67,14 +70,19 @@ impl FileBufArgs {
         Ok(())
     }
 
+    pub fn read_exact_n_bytes(&mut self, n: usize) -> anyhow::Result<()> {
+        self.buf.reserve(n);
+        unsafe { self.buf.set_len(n); }
+        self.file.read_exact(&mut self.buf[0..n])?;
+        Ok(())
+    }
+
     pub fn read_len_and_buf(&mut self) -> anyhow::Result<()> {
         let mut len = usize::to_le_bytes(0);
         self.file.read_exact(&mut len)?;
         let len = usize::from_le_bytes(len);
 
-        self.buf.reserve(len);
-        unsafe { self.buf.set_len(len); }
-        self.file.read_exact(&mut self.buf[0..len])?;
+        self.read_exact_n_bytes(len)?;
 
         Ok(())
     }

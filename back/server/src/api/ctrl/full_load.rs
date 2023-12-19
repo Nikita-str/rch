@@ -22,10 +22,8 @@ pub async fn handler(
 
     {
         let mut x = state.write().map_err(|_|())?;
-        if false {
-            let ok = x.secure.use_pwd(Action::FullSave, &save_name, &pwd_hash).map_err(|_|())?;
-            if !ok { return Err(()) }
-        }
+        let ok = x.secure.use_pwd(Action::FullLoad, &save_name, &pwd_hash).map_err(|_|())?;
+        if !ok { return Err(()) }
 
         let mut state = x.state.write().map_err(|_|())?;
         let mut args = super::init_args(save_name, single_file);
