@@ -334,28 +334,33 @@ impl OpenBoards {
 
 
 pub mod save_load {
-    use crate::utility::save_load::*;
-    use super::*;
-
     use std::io::{Read, Write};
 
-    type Args = OpenBoardsArgs;
+    use crate::utility::save_load::*;
+    use crate::utility::MutCell;
+    use super::*;
 
-    #[allow(unused)]
-    pub enum OpenBoardsArgs {
-        SingleFile(FileBufArgs),
+    // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+    // TODO: if `OpenBoards` will be splited into diff RefTypes(`Arc`/`Mutex`/etc)
+    //     | then we must block it all before save action (data consistency)
+    // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+    type Args<'x> = OpenBoardsArgs<'x>;
+
+    pub enum OpenBoardsArgs<'x> {
+        SingleFile(MutCell<'x, FileBufArgs>),
         BoardSplited{
-            general_args: FileBufArgs,
-            save_path: String,
+            general_args: MutCell<'x, FileBufArgs>,
+            save_path: MutCell<'x, String>,
         },
     }
-    impl OpenBoardsArgs {
+    impl<'x> OpenBoardsArgs<'x> {
         fn board_path(save_path: &str, id: BoardId) -> String {
             format!("{save_path}/b{}.save", id.0)
         }
-    }
+    } 
 
-    impl Save<Args> for OpenBoards {
+    impl<'x> Save<Args<'x>> for OpenBoards {
         fn save(&self, save_args: &mut Args) -> anyhow::Result<()> {
             match save_args {
                 Args::SingleFile(save_args) => {
@@ -379,7 +384,7 @@ pub mod save_load {
         }
     }
 
-    impl Load<Args> for OpenBoards {
+    impl<'x> Load<Args<'x>> for OpenBoards {
         fn load(load_args: &mut Args) -> anyhow::Result<Self> {
             match load_args {
                 Args::SingleFile(load_args) => {

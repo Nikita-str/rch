@@ -37,6 +37,12 @@ impl FileBufArgs {
         Ok(obj)
     }
 
+    pub fn new(path: &str, is_save: bool) -> anyhow::Result<Self> {
+        match is_save {
+            true => Self::new_save(path),
+            false => Self::new_load(path),
+        }
+    }
     pub fn new_save(path: &str) -> anyhow::Result<Self> {
         Ok(Self {
             file: std::fs::File::create(path)?,
