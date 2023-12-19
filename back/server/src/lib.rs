@@ -6,6 +6,7 @@ mod thread_usage_rate;
 mod preproc;
 pub mod utility;
 mod config;
+mod security;
 
 const VUE_DIST_PATH: &str = "../../front/vue_x/dist";
 // const PIC_PATH: &str = "../../front/vue_x/dist/imgs/pp"; // pp stands for post pics 

@@ -18,3 +18,5 @@ toml = "0.8.8"
 anyhow = "1.0.75"
 rmp-serde = "1.1.2"
 ref_struct = { git = "https://github.com/Nikita-str/ref_struct.git" }
+strum = "0.25.0"
+strum_macros = "0.25.3"

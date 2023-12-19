@@ -1,3 +1,4 @@
+use rand::Rng;
 
 pub type Timestamp = i64;
 
@@ -11,4 +12,13 @@ pub fn create_dir<P: AsRef<std::path::Path>>(path: P) -> bool {
         Err(e) if e.kind() == std::io::ErrorKind::AlreadyExists => { return true }
         _ => { return false }
     }
+}
+
+pub fn rand_string(len: usize) -> String {
+    const CHARSET: &[u8] = b"AaBbCcDdEeFfGgHhIiJjKkLlMmNnOoPpQqRrSsTtUuVvWwXxYyZz0123456789";
+    const RANGE: std::ops::Range<usize> = 0..CHARSET.len();
+
+    let mut rng = rand::thread_rng();
+    let rand_char = |_|CHARSET[rng.gen_range(RANGE)] as char;
+    (0..len).into_iter().map(rand_char).collect()
 }

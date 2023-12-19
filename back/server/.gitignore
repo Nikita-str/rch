@@ -2,6 +2,7 @@
 Cargo.lock
 
 test/base64
+test/tmp
 test/REST/*
 !test/REST/create_a.py
 !test/REST/create_b.py
