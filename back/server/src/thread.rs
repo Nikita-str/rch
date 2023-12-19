@@ -112,6 +112,7 @@ impl Thread {
         header
     }
 
+    #[allow(unused)]
     // TODO: auth (before call this fn) when `infinity := true` 
     pub fn new(header: Option<String>, op_post: Post, infinity: bool) -> Self {
         let header = Self::preproc_header(header, &op_post);

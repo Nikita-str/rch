@@ -1,10 +1,11 @@
 pub mod common;
 pub mod board;
 pub mod thread;
+pub mod ctrl;
 
 pub use fns::{router, upd_allow_methods};
 mod fns {
-    use super::{common, board, thread};
+    use super::{common, board, thread, ctrl};
     use axum::Router;
     use axum::http::Method;
     use std::collections::HashSet;
@@ -14,6 +15,7 @@ mod fns {
         let router = router.merge(common::router(common_info_state));
         let router = router.merge(board::router(common_info_state));
         let router = router.merge(thread::router(common_info_state));
+        let router = router.merge(ctrl::router(common_info_state));
         router
     }
     
@@ -21,6 +23,7 @@ mod fns {
         common::upd_allow_methods(methods);
         board::upd_allow_methods(methods);
         thread::upd_allow_methods(methods);
+        ctrl::upd_allow_methods(methods);
     }
 
     pub fn create_img_load_info(

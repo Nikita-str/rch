@@ -4,8 +4,9 @@ use std::fs::{File, OpenOptions};
 use strum::IntoEnumIterator;
 use crate::utility::general::rand_string;
 
+const NONCE_LEN: usize = 8;
 const PWD_LEN: usize = 12;
-type Map = HashMap<Action, String>;
+type Map = HashMap<Action, (String, String)>;
 
 #[derive(strum_macros::EnumIter, Debug, Hash, PartialEq, Eq, Clone, Copy)]
 #[repr(u8)]
@@ -24,6 +25,10 @@ pub struct SingleUsePwds {
     output: File,
 }
 impl SingleUsePwds {
+    fn nonce_pwd_pair() -> (String, String) {
+        (rand_string(NONCE_LEN), rand_string(PWD_LEN))
+    }
+
     pub fn new<P>(output_path: &P) -> anyhow::Result<Self>
     where P: AsRef<std::path::Path>
     {
@@ -34,11 +39,14 @@ impl SingleUsePwds {
             .open(output_path)?;
 
         let act_to_pwd: Map = Action::iter()
-            .map(|act|(act, rand_string(PWD_LEN)))
+            .map(|act|(act, Self::nonce_pwd_pair()))
             .collect();
         
-        for (act, pwd) in &act_to_pwd {
+        for (act, (nonce, pwd)) in &act_to_pwd {
             output.write_all(&act.prefix())?;
+            output.write_all(b" ")?;
+            output.write_all(nonce.as_bytes())?;
+            output.write_all(b" ")?;
             output.write_all(pwd.as_bytes())?;
             output.write_all(b"\n")?;
             output.flush()?;
@@ -49,27 +57,51 @@ impl SingleUsePwds {
             output,
         })
     }
-    pub fn use_pwd_unchecked(&mut self, act: Action) -> anyhow::Result<()> {
-            let new_pwd = rand_string(PWD_LEN);
+    pub unsafe fn use_pwd_unchecked(&mut self, act: Action) -> anyhow::Result<()> {
+            let (new_nonce, new_pwd) = Self::nonce_pwd_pair();
 
             let index = act as usize - 1;
-            let index = 1 /* Action byte */ + index * (1 /* Action byte */ + PWD_LEN + 1 /* `\n` */); 
+            let index = 1 /* Action byte */ + 1 /* space */ +  index * (
+                1 /* Action byte */ + 
+                1 /* space */ + 
+                NONCE_LEN + 
+                1 /* space */ + 
+                PWD_LEN + 
+                1 /* `\n` */
+            ); 
             self.output.seek(SeekFrom::Start(index as u64))?;
+            self.output.write_all(new_nonce.as_bytes())?;
+            self.output.write_all(b" ")?;
             self.output.write_all(new_pwd.as_bytes())?;
+            self.output.flush()?;
 
-            self.act_to_pwd.insert(act, new_pwd);
+            self.act_to_pwd.insert(act, (new_nonce, new_pwd));
             Ok(())
     }
-    pub fn use_pwd(&mut self, act: Action, pwd_query: &str) -> anyhow::Result<bool> {
-        let correct = self.act_to_pwd.get(&act).map(|real_pwd|real_pwd == pwd_query);
+    pub fn use_pwd(
+        &mut self, 
+        act: Action, 
+        act_nonce: &str,
+        hash_expected: &str,
+    )-> anyhow::Result<bool> {
+        use sha3::Digest;
+        let mut hasher = sha3::Sha3_256::new();
+        let hash_expected = hex::decode(hash_expected)?;
+        let correct = self.act_to_pwd.get(&act).map(|(nonce, pwd)|{
+            hasher.update(nonce);
+            hasher.update(act_nonce);
+            hasher.update(pwd);
+            let real_hash = &hasher.finalize()[..];
+            real_hash == hash_expected.as_slice()
+        });
         if correct == Some(true) {
-            self.use_pwd_unchecked(act)?;
+            unsafe { self.use_pwd_unchecked(act)?; }
             return Ok(true)
         } else {
             return Ok(false)
         }
     }
-    pub unsafe fn get_pwd(&self, act: Action) -> &str {
-        self.act_to_pwd.get(&act).unwrap()
-    }
+    // pub unsafe fn get_nonce_pwd(&self, act: Action) -> (&str, &str) {
+    //     self.act_to_pwd.get(&act).map(|(a, b)|(a.as_str(), b.as_str())).unwrap()
+    // }
 }

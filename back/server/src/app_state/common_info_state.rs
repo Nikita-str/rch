@@ -130,9 +130,9 @@ pub mod save_load {
 
 
     pub struct StateInitArgs<'dir> {
-        save_dir: &'dir str,
-        save_name: String,
-        single_file: bool,
+        pub save_dir: &'dir str,
+        pub save_name: String,
+        pub single_file: bool,
     }
     impl<'dir> StateInitArgs<'dir> {
         pub fn make_state_args(&self, is_save: bool) -> anyhow::Result<StateArgs> {
