@@ -72,10 +72,11 @@ function onSubmit() {
         url: store.getters.getPort + url,
         method: 'post',
         data,
-    }).then(res => {
+    }).then(_ => {
         notific_ctor_ok_local()
-    }).catch(err => { 
-        notific_ctor_err_local(err.response) 
+    }).catch(err => {
+        var err = err.response.data
+        notific_ctor_err_local(`[${err.code}]: ${err.msg}`) 
     });
 }
 
