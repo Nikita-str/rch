@@ -101,3 +101,12 @@ body {
 .pic-border:hover { outline: solid 1px var(--r-col-blue); }
 
 .post-pic-a:hover { background-color: #0000; }
+
+span.tab {
+    display: inline-block;
+    min-width: 4ch;
+}
+span.semitab {
+    display: inline-block;
+    min-width: 2ch;
+}

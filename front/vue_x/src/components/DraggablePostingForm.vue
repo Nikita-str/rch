@@ -185,8 +185,6 @@ function RectToScreen(rect_w, rect_h, top, left) {
     #draggable-posting-form {
         z-index: 3;
         position: fixed;
-        /* top: v-bind(); */
-        /* left: v-bind(); ... need to be mounted*/
         top: 20vh;
         border: 1px solid var(--r-col-blue); /* var(--r-col-bg-light-blue); */
         background-color: var(--r-col-bg-dark);

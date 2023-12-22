@@ -159,7 +159,6 @@ span.P-d100 { background-color: var(--rp--d100-bg); }
     max-width: 80vw;
     position: fixed;
     padding: 2px;
-    right: 0.6em;
     /* font-weight: bold; */
     color: var(--r-col-bg-light-blue);
     border: solid 2px;
