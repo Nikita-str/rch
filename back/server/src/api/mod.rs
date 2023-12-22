@@ -3,6 +3,8 @@ pub mod board;
 pub mod thread;
 pub mod ctrl;
 
+mod error;
+
 pub use fns::{router, upd_allow_methods};
 mod fns {
     use super::{common, board, thread, ctrl};
@@ -56,6 +58,8 @@ mod header_use {
     pub use std::sync::{Arc, RwLock, Mutex};
 
     pub type HandlerStateCommon = Arc<RwLock<crate::app_state::CommonInfoState>>;
+
+    pub use crate::api::error::*;
 }
 
 const MAX_PIC_AMOUNT: usize = 4;

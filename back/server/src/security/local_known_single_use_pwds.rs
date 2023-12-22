@@ -83,17 +83,16 @@ impl SingleUsePwds {
         &mut self, 
         act: Action, 
         act_nonce: &str,
-        hash_expected: &str,
+        hash_expected: &[u8],
     )-> anyhow::Result<bool> {
         use sha3::Digest;
         let mut hasher = sha3::Sha3_256::new();
-        let hash_expected = hex::decode(hash_expected)?;
         let correct = self.act_to_pwd.get(&act).map(|(nonce, pwd)|{
             hasher.update(nonce);
             hasher.update(act_nonce);
             hasher.update(pwd);
             let real_hash = &hasher.finalize()[..];
-            real_hash == hash_expected.as_slice()
+            real_hash == hash_expected
         });
         if correct == Some(true) {
             unsafe { self.use_pwd_unchecked(act)?; }

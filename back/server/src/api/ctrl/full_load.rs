@@ -3,6 +3,9 @@ use crate::api::header_use::*;
 use crate::utility::save_load::Load;
 use super::State as StateX;
 
+use super::error_type::E;
+type Error = ApiError<E>;
+
 pub const REQ_METHOD: Method = Method::POST;
 
 #[derive(Deserialize, Debug)]
@@ -15,23 +18,30 @@ pub struct Params {
 pub async fn handler(
     State(state): State<StateX>,
     Json(params): Json<Params>,
-) -> anyhow::Result<Json<bool>, ()> {
+) -> anyhow::Result<(), Error> {
     let save_name = params.save_name;
     let single_file = params.single_file;
     let pwd_hash = params.pwd_hash;
 
-    {
-        let mut x = state.write().map_err(|_|())?;
-        let ok = x.secure.use_pwd(Action::FullLoad, &save_name, &pwd_hash).map_err(|_|())?;
-        if !ok { return Err(()) }
+    let hash_expected = hex::decode(&pwd_hash)
+        .map_err(|_|Error::new_detailed_x(E::BadHash, pwd_hash))?;
 
-        let mut state = x.state.write().map_err(|_|())?;
+    {
+        let mut x = state.write().map_err(|_|E::StateAccess(1))?;
+        
+        let ok = x.secure.use_pwd(Action::FullLoad, &save_name, &hash_expected)
+            .map_err(|e|E::SecureInner.detailed(e))?;
+        if !ok { return Err(E::SecureInvalid.into()) }
+
+        let mut state = x.state.write().map_err(|_|E::StateAccess(2))?;
         let mut args = super::init_args(save_name, single_file);
-        let loaded_state = crate::app_state::CommonInfoState::load(&mut args).map_err(|_|())?;
+        let loaded_state = crate::app_state::CommonInfoState::load(&mut args)
+            .map_err(|e|E::Internal.detailed(e))?;
+
         *state = loaded_state;
     }
 
-    Ok(Json(true))
+    Ok(())
 }
 pub fn router(state: &StateX) -> Router {
     Router::new().route(

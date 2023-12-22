@@ -1,6 +1,8 @@
 pub mod full_save;
 pub mod full_load;
 
+mod error_type;
+
 use fns::{State, init_args};
 pub use fns::{router, upd_allow_methods};
 mod fns {
