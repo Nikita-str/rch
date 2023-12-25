@@ -23,17 +23,10 @@ pub async fn handler(
     let single_file = params.single_file;
     let pwd_hash = params.pwd_hash;
 
-    let hash_expected = hex::decode(&pwd_hash)
-        .map_err(|_|Error::new_detailed_x(E::BadHash, pwd_hash))?;
-
     {
-        let mut x = state.write().map_err(|_|E::StateAccess(1))?;
-
-        let ok = x.secure.use_pwd(Action::FullSave, &save_name, &hash_expected)
-            .map_err(|e|E::SecureInner.detailed(e))?;
-        if !ok { return Err(E::SecureInvalid.into()) }
-
-        let x = x.state.read().map_err(|_|E::StateAccess(2))?;
+        let x = state.secure_verify(pwd_hash, &save_name, Action::FullSave)?;
+        let x = x.state.write().map_err(|_|E::StateAccess(2))?;
+        
         let mut args = super::init_args(save_name, single_file);
         x.save(&mut args).map_err(|e|E::Internal.detailed(e))?;
     }
@@ -44,6 +37,6 @@ pub async fn handler(
 pub fn router(state: &StateX) -> Router {
     Router::new().route(
         "/full_save", 
-        routing::post(handler).with_state(Arc::clone(state))
+        routing::post(handler).with_state(state.clone())
     )
 }

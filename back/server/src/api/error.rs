@@ -32,12 +32,27 @@ impl<E: ErrType> ApiError<E> {
     pub fn new_detailed<D: ToString>(ty: E, detailed: D) -> Self {
         Self::new_detailed_x(ty, detailed.to_string())
     }
+    pub fn map<E1:ErrType + From<E>>(self) -> ApiError<E1> {
+        ApiError {
+            ty: self.ty.into(), 
+            detailed: self.detailed,
+        }
+    }
 }
 impl<E: ErrType> From<E> for ApiError<E> {
     fn from(value: E) -> Self {
         Self::new(value)
     }
 }
+// impl<E1: ErrType, E2: ErrType> From<ApiError<E1>> for ApiError<E2>
+// where E1: Into<E2> {
+//     fn from(value: ApiError<E1>) -> Self {
+//         Self {
+//             ty: value.ty.into(),
+//             detailed: value.detailed,
+//         }
+//     }
+// }
 impl<E: ErrType + Copy> IntoResponse for ApiError<E> {
     fn into_response(self) -> Response {
         let status = self.ty.err_status();

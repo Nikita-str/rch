@@ -13,6 +13,7 @@ type Map = HashMap<Action, (String, String)>;
 pub enum Action {
     FullSave = 1,
     FullLoad = 2,
+    AddBoard = 3,
 }
 impl Action {
     const fn prefix(self) -> [u8; 1] {
