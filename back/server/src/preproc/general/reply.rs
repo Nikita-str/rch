@@ -13,7 +13,7 @@ impl Preproc for ReplyPreproc {
 
     fn action_full(&mut self, act_info: FullActInfo, _: &str, _: ()) {
         let n = self.n;
-        let _ = write!(act_info.output, "<pkg reply {n}></pkg>");
+        let _ = write!(act_info.output, "<pkg reply {n} />");
         act_info.reply_to.insert(n);
     }
     fn action(&mut self, _: &mut String, _: &str, _: ()) {

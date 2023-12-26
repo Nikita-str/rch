@@ -47,3 +47,8 @@ export function isWhitespace(c) {
 
 export const IS_SAFARI = navigator.userAgent.toLowerCase().indexOf("Safari") > -1
 export const IS_FIREFOX = navigator.userAgent.toLowerCase().indexOf("firefox") > -1
+
+export function min_valid_index(arr_of_index) {
+    let valid = arr_of_index.filter((index) => index >= 0)
+    return (valid.length == 0) ? -1 : Math.min(... valid)
+}

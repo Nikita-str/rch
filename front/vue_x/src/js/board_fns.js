@@ -1,4 +1,4 @@
-import { trim, pad, rand_i } from './fns'
+import { trim, pad, rand_i, min_valid_index } from './fns'
 
 /** 
  * @param obj object with $route
@@ -23,8 +23,12 @@ export function msgUnpack(bUrl, msg, nBoardOP) {
             const i_start = msg.indexOf(start, index)
             if (i_start < 0) break
 
-            const end = "></pkg>"
-            const i_end = msg.indexOf(end, i_start + start.length)
+            const end_a = "></pkg>"
+            const end_b = "/>"
+            const find_end_from = i_start + start.length
+            const i_end_a = msg.indexOf(end_a, find_end_from)
+            const i_end_b = msg.indexOf(end_b, find_end_from)
+            const i_end = min_valid_index([i_end_a, i_end_b])
             if (i_end < 0) break
 
             ret += msg.substring(index, i_start)
