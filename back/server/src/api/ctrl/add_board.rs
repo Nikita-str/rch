@@ -7,24 +7,28 @@ use super::error_type::E;
 #[derive(Clone, Copy)]
 pub enum AddBoardE {
     E(E),
+    AddBoardErr,
 }
 impl ErrType for AddBoardE {
-    const MAX_ERR_CODE: usize = E::MAX_ERR_CODE;
+    const MAX_ERR_CODE: usize = E::MAX_ERR_CODE + 1;
     fn err_code(&self) -> usize {
         match self {
-            AddBoardE::E(x) => x.err_code(),
+            Self::E(x) => x.err_code(),
+            Self::AddBoardErr => E::MAX_ERR_CODE + 1,
         }
     }
 
     fn err_status(&self) -> StatusCode {
         match self {
-            AddBoardE::E(x) => x.err_status(),
+            Self::E(x) => x.err_status(),
+            Self::AddBoardErr => StatusCode::BAD_REQUEST,
         }
     }
 
     fn err_msg(self) -> std::borrow::Cow<'static, str> {
         match self {
-            AddBoardE::E(x) => x.err_msg(),
+            Self::E(x) => x.err_msg(),
+            Self::AddBoardErr => "error during board adding".into(),
         }
     }
 }
@@ -62,7 +66,7 @@ pub async fn handler(
 
         let board = Board::new(url, name, params.descr, 0, params.max_thr_qty);
         let tag = tag.map(|tag|BoardTag{ tag });
-        x.mut_open_boards().add_board(board, tag);
+        x.mut_open_boards().add_board(board, tag).map_err(|e|AddBoardE::AddBoardErr.detailed(e))?;
     }
 
     Ok(())

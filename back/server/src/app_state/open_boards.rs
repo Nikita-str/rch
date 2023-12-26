@@ -1,4 +1,5 @@
 use std::collections::{HashMap, HashSet};
+use anyhow::bail;
 pub use serde::Serialize;
 use crate::post::{Post, PostN};
 use crate::thread::{Thread, ThreadOpN};
@@ -279,11 +280,11 @@ impl OpenBoards {
     /// # Return value
     /// * `true` => sucessfully added
     /// * `false` => url already used for other board 
-    pub fn add_board(&mut self, board: Board, tag: Option<BoardTag>) -> bool
+    pub fn add_board(&mut self, board: Board, tag: Option<BoardTag>) -> anyhow::Result<()>
     {
         const MAX_URL_LEN: usize = 16;
-        if self.board_urls.contains_key(&board.url) { return false }
-        if board.url.len() > MAX_URL_LEN { return false }
+        if self.board_urls.contains_key(&board.url) { bail!("board url already used!") }
+        if board.url.len() > MAX_URL_LEN { bail!("too long board url :|") }
 
         self.board_qty += 1;
         if tag.is_some() { self.pop_board_qty += 1; }
@@ -291,18 +292,17 @@ impl OpenBoards {
         let id = self.next_board_id.inc();
         self.board_urls.insert(board.url.clone(), id);
 
-        if let Some(boards) = self.board_tags.get_mut(&tag) {
-            boards.push(id);
-        } else {
-            self.board_tags.insert(tag, vec![id]);
+        match self.board_tags.get_mut(&tag) {
+            Some(boards) => { boards.push(id); }
+            None => { self.board_tags.insert(tag, vec![id]); }
         }
 
         if !crate::utility::general::create_dir(format!("{}/{}", self.pic_path, board.url)) {
-            return false
+            bail!("OS error: cannot create dir for board")
         }
 
         self.boards.insert(id, board);
-        return true
+        Ok(())
     }
 
     pub fn is_board_exist(&self, board_url: &str) -> bool {
