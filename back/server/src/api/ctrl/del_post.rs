@@ -2,14 +2,7 @@ use crate::security::Action;
 use crate::api::header_use::*;
 use super::State as StateX;
 
-macro_rules! some_or_ret {
-    ($test:expr => $err:expr) => {
-        match $test {
-            Some(x) => x,
-            None => return Err($err.into()),
-        }
-    };
-}
+use crate::some_or_ret;
 
 use super::error_type::E;
 pub enum DelPostE {
@@ -54,7 +47,7 @@ impl From<E> for DelPostE {
 }
 type Error = ApiError<DelPostE>;
 
-pub const REQ_METHOD: Method = Method::POST;
+pub const REQ_METHOD: Method = Method::DELETE;
 
 #[derive(Deserialize, Debug)]
 pub struct Params {
@@ -87,6 +80,6 @@ pub async fn handler(
 pub fn router(state: &StateX) -> Router {
     Router::new().route(
         "/del_post", 
-        routing::post(handler).with_state(state.clone())
+        routing::delete(handler).with_state(state.clone())
     )
 }

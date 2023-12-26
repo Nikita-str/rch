@@ -268,3 +268,13 @@ macro_rules! define_id {
     ($name:ident) => { crate::define_id!($name: usize); };
 }
 pub(crate) use define_id;
+
+macro_rules! some_or_ret {
+    ($test:expr => $err:expr) => {
+        match $test {
+            Some(x) => x,
+            None => return Err($err.into()),
+        }
+    };
+}
+use some_or_ret;

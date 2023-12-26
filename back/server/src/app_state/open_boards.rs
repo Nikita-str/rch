@@ -109,7 +109,7 @@ impl Board {
         self.new_thr_preproced(header, op_post, infinity)
     }
 
-    fn remove_thr(&mut self, op_n: ThreadOpN) {
+    pub fn remove_thr(&mut self, op_n: ThreadOpN) {
         if let Some(thr) = self.thrs.remove(&op_n) {
             thr.del(&self.url);
         }
