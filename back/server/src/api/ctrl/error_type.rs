@@ -10,7 +10,8 @@ pub enum E {
     Internal,
 }
 impl ErrType for E {
-    fn err_code(self) -> usize {
+    const MAX_ERR_CODE: usize = 5;
+    fn err_code(&self) -> usize {
         match self {
             E::StateAccess(_) => 1,
             E::BadHash => 2,
@@ -19,7 +20,7 @@ impl ErrType for E {
             E::Internal => 5,
         }
     }
-    fn err_status(self) -> StatusCode {
+    fn err_status(&self) -> StatusCode {
         match self {
             E::StateAccess(_) => StatusCode::INTERNAL_SERVER_ERROR,
             E::BadHash => StatusCode::BAD_REQUEST,

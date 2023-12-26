@@ -1,8 +1,9 @@
 use std::borrow::Cow;
 use crate::api::header_use::*;
 pub trait ErrType {
-    fn err_code(self) -> usize;
-    fn err_status(self) -> StatusCode;
+    const MAX_ERR_CODE: usize;
+    fn err_code(&self) -> usize;
+    fn err_status(&self) -> StatusCode;
     fn err_msg(self) -> Cow<'static, str>;
 
     fn detailed(self, e: impl ToString) -> ApiError<Self>
@@ -53,7 +54,7 @@ impl<E: ErrType> From<E> for ApiError<E> {
 //         }
 //     }
 // }
-impl<E: ErrType + Copy> IntoResponse for ApiError<E> {
+impl<E: ErrType> IntoResponse for ApiError<E> {
     fn into_response(self) -> Response {
         let status = self.ty.err_status();
         let code = self.ty.err_code();

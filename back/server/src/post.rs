@@ -65,4 +65,15 @@ impl Post {
             add_to.push(img_info.to_del_info())
         }
     }
+
+    pub fn del_content<S: Into<String>>(&mut self, board_url: S) {
+        let pics_info = std::mem::take(&mut self.imgs)
+            .into_iter()
+            .map(|x|x.to_del_info())
+            .collect();
+        if let Err(_) = crate::utility::global_file_deleter::add_del_pics_act(board_url.into(), pics_info) {
+            println!("[WARN] cant add del pic act")
+        }
+        self.text = "<pkg del />".into();
+    }
 }

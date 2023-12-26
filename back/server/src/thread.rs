@@ -224,4 +224,15 @@ impl Thread {
             println!("[WARN] cant add del pic act")
         }
     }
+
+    pub fn del_post_content<S: Into<String>>(&mut self, board_url: S, post_n: PostN) -> anyhow::Result<()> {
+        if self.op_n().0 == post_n {
+            self.header = "<pkg del />".into();
+        }
+        match self.posts.get_mut_by_n(post_n) {
+            Some(post) => post.del_content(board_url),
+            _ => anyhow::bail!("unknown post number {post_n}"),
+        }
+        Ok(())
+    }
 }

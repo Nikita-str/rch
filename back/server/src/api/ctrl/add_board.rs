@@ -6,16 +6,17 @@ use super::State as StateX;
 use super::error_type::E;
 #[derive(Clone, Copy)]
 pub enum AddBoardE {
-    E(super::error_type::E),
+    E(E),
 }
 impl ErrType for AddBoardE {
-    fn err_code(self) -> usize {
+    const MAX_ERR_CODE: usize = E::MAX_ERR_CODE;
+    fn err_code(&self) -> usize {
         match self {
             AddBoardE::E(x) => x.err_code(),
         }
     }
 
-    fn err_status(self) -> StatusCode {
+    fn err_status(&self) -> StatusCode {
         match self {
             AddBoardE::E(x) => x.err_status(),
         }

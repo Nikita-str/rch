@@ -1,6 +1,7 @@
 pub mod full_save;
 pub mod full_load;
 pub mod add_board;
+pub mod del_post;
 
 mod error_type;
 
@@ -78,6 +79,7 @@ mod fns {
         let router = router.merge(full_save::router(&state));
         let router = router.merge(full_load::router(&state));
         let router = router.merge(add_board::router(&state));
+        let router = router.merge(del_post::router(&state));
         let router = Router::new().nest("/~~ctrl~~", router);
         router
     }
@@ -86,6 +88,7 @@ mod fns {
         methods.insert(full_save::REQ_METHOD);
         methods.insert(full_load::REQ_METHOD);
         methods.insert(add_board::REQ_METHOD);
+        methods.insert(del_post::REQ_METHOD);
     }
 
 
