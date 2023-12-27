@@ -1,4 +1,8 @@
 <script setup>
+import CtrlFormText from './CtrlFormText.vue'
+import CtrlFormCheckbox from './CtrlFormCheckbox.vue'
+import CtrlFormDone from './CtrlFormDone.vue'
+import CtrlOthersList from './CtrlOthersList.vue'
 import { ref, computed, defineProps } from 'vue'
 import { useStore } from 'vuex'
 import axios from 'axios'
@@ -83,78 +87,42 @@ function onSubmit() {
 </script>
 
 <template>
-    <form v-on:submit.prevent="onSubmit">
-        <h4 v-html="header" />
-        <div>
-            <label>nonce&amp;pwd:</label>
-            <span class="semitab"/>
-            <input
-                type="text"
-                class="inp-x"
-                v-model="form.pwd"
-                placeholder="<nonce><space><pwd>"
-                tabindex="1"
-                :maxlength="8 + 1 + 12"
-                autocomplete = "off"
-            />
-        </div>
-        <div>
-            <label>save name:</label>
-            <span class="semitab"/>
-            <input
-                type="text"
-                class="inp-x"
-                v-model="form.save_name"
-                placeholder="?"
-                tabindex="2"
-                :maxlength="80"
-                autocomplete = "off"
-            />
-        </div>
-        <div>
-            <label>single_file:</label>
-            <span class="semitab"/>
-            <input
-                type="checkbox"
-                class="x-checker nonselectable"
-                v-model="form.single_file"
-                tabindex="3"
-            />
-        </div>
+    <form class="ctrl-form" v-on:submit.prevent="onSubmit">
+        <h4 class="ctrl-header" v-html="header" />
+        <CtrlFormText v-model="form.pwd" :tab="1" :maxLen="8 + 1 + 12" placeholder="<nonce><space><pwd>">
+            nonce&amp;pwd<span class="ctrl-line-N" title="pwd file: line 10">L10</span>:
+        </CtrlFormText>
 
-        <div>
-            
-            <input type="submit" id="pf-submit" value="Сделано!" class="inp-x" />
-            <div style="height: 1.8em; width: 1px;" />
-        </div>
+        <CtrlFormText v-model="form.save_name" :tab="2">save name:</CtrlFormText>
+        <CtrlFormCheckbox v-model="form.single_file" :tab="3">single_file:</CtrlFormCheckbox>
+
+        <CtrlFormDone />
     </form>
 
     <br/>
-    <div style="margin-left: 0.6em;">
-        <h4 style="text-decoration: none;">вот ещё ctrl странички есть:</h4>
-        <ul>
-            <li v-if="isSave" ><router-link to="../full-load/" append>full load</router-link></li>
-            <li v-if="!isSave"><router-link to="../full-save/" append>full save</router-link></li>
-        </ul>
-    </div>
+    <CtrlOthersList />
 </template>
 
-<style scoped>
-form {
+<style>
+.ctrl-line-N {
+    font-size: 0.6em;
+    color: var(--a--nyan-color);
+}
+.ctrl-form {
     width: fit-content;
     padding: 3px 1.5ch;
     margin-left: 0.6em;
     margin-top: calc(2ch + 4em);
     background-color: var(--r-col-bg-dark);
 }
-h4 {
+.ctrl-header {
     text-decoration: underline;
     color: var(--r-col-blue);
     /* border-bottom: 1px solid var(--r-col-blue); */
 }
-label {
+.ctrl-label {
     display: inline-block;
-    min-width: 12ch;
+    min-width: 13ch;
     color: var(--r-col-blue);
 }
 </style>

@@ -1,7 +1,7 @@
 use crate::utility::img::ImgDelInfo;
 use super::help::*;
 
-const DELETE_LOOP_SECS: u64 = 30; // 300;
+const DELETE_LOOP_SECS: u64 = 300;
 pub const DELETE_LOOP_DUR: Duration = Duration::from_secs(DELETE_LOOP_SECS);
 
 //TODO:MAYBE: wrap `State` into struct 

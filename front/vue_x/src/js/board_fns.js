@@ -8,6 +8,16 @@ export function boardUrlCalc(obj) {
     var path = (typeof(obj) == 'string') ? obj : obj.$route.path;
     return trim(path, "/").split('/')[0]
 }
+/** 
+ * @param obj object with $route
+ * @return last sub path
+*/
+export function lastUrlSubPath(obj) {
+    var path = (typeof(obj) == 'string') ? obj : obj.$route.path;
+    let sub_paths = trim(path, "/").split('/')
+    if (sub_paths.length == 0) { return "" }
+    return sub_paths.pop()
+}
 
 /** 
  * @param {String} bUrl url of board (just call `boardUrlCalc` for it)
