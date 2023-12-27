@@ -7,8 +7,8 @@ import LineN from './CtrlFormLine.vue'
 import { ref, computed, defineProps } from 'vue'
 import { useStore } from 'vuex'
 import axios from 'axios'
-import { sha3_256 } from 'js-sha3';
-import { notific_ctor, NOTIFIC_TY_ERR, NOTIFIC_TY_INFO } from "@/js/elems/notific";
+import { notific_ctor_err_ctrl, cmp_pwd_hash } from '@/js/elems/ctrl.js'
+import { notific_ctor, NOTIFIC_TY_INFO } from "@/js/elems/notific";
 
 const store = useStore()
 
@@ -33,11 +33,6 @@ function newFormContent(single_file = true) {
 }
 const form = ref(newFormContent())
 
-
-function notific_ctor_err_local(msg) {
-    // return notific_ctor(NOTIFIC_TY_ERR, msg, top = true, left = true)
-    return notific_ctor(NOTIFIC_TY_ERR, msg, 2_000, true, true)
-}
 function notific_ctor_ok_local() {
     let msg = (props.isSave ? 'сохранено' : 'загружено')
     msg = `успешно ${msg}!`
@@ -47,23 +42,12 @@ function notific_ctor_ok_local() {
 function onSubmit() {
     let save_name = form.value.save_name
     if (!save_name || save_name.length == 0) {
-        notific_ctor_err_local("empty save name`")
+        notific_ctor_err_ctrl("empty save name`")
         return
     }
 
-    let pwd_hash = form.value.pwd
-    if (pwd_hash) {
-        pwd_hash = pwd_hash.split(' ')
-        if (pwd_hash.length != 2) {
-            notific_ctor_err_local("`nonce&pwd` must contain only `nonce` and `pwd` and be splited with space")
-            return
-        }
-        pwd_hash = pwd_hash[0] + save_name + pwd_hash[1]
-        pwd_hash = sha3_256(pwd_hash)
-    } else {
-        notific_ctor_err_local("empty `nonce&pwd`")
-        return
-    }
+    let pwd_hash = cmp_pwd_hash(form.value.pwd, save_name)
+    if (!pwd_hash) { return }
 
     let single_file = form.value.single_file;
 
@@ -84,7 +68,7 @@ function onSubmit() {
         notific_ctor_ok_local()
     }).catch(err => {
         var err = err.response.data
-        notific_ctor_err_local(`[${err.code}]: ${err.msg}`) 
+        notific_ctor_err_ctrl(`[${err.code}]: ${err.msg}`) 
     });
 }
 
