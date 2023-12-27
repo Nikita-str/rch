@@ -3,6 +3,7 @@ import CtrlFormText from './CtrlFormText.vue'
 import CtrlFormCheckbox from './CtrlFormCheckbox.vue'
 import CtrlFormDone from './CtrlFormDone.vue'
 import CtrlOthersList from './CtrlOthersList.vue'
+import LineN from './CtrlFormLine.vue'
 import { ref, computed, defineProps } from 'vue'
 import { useStore } from 'vuex'
 import axios from 'axios'
@@ -17,6 +18,9 @@ const props = defineProps({
 
 const header = computed(() => {
     return (props.isSave) ? "FULL SAVE" : "FULL LOAD"
+})
+const lineN = computed(() => {
+    return (props.isSave) ? 1 : 2
 })
 
 
@@ -90,7 +94,7 @@ function onSubmit() {
     <form class="ctrl-form" v-on:submit.prevent="onSubmit">
         <h4 class="ctrl-header" v-html="header" />
         <CtrlFormText v-model="form.pwd" :tab="1" :maxLen="8 + 1 + 12" placeholder="<nonce><space><pwd>">
-            nonce&amp;pwd<span class="ctrl-line-N" title="pwd file: line 10">L10</span>:
+            nonce&amp;pwd<LineN :n="lineN" />:
         </CtrlFormText>
 
         <CtrlFormText v-model="form.save_name" :tab="2">save name:</CtrlFormText>
@@ -104,10 +108,6 @@ function onSubmit() {
 </template>
 
 <style>
-.ctrl-line-N {
-    font-size: 0.6em;
-    color: var(--a--nyan-color);
-}
 .ctrl-form {
     width: fit-content;
     padding: 3px 1.5ch;
