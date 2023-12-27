@@ -1,6 +1,7 @@
 mod loop_acts;
 mod action_loop;
 pub mod file_deleter;
+pub mod auto_saver;
 
 pub use loop_acts::LoopActs;
 pub use action_loop::ActionLooper;

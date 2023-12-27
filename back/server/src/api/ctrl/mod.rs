@@ -6,8 +6,8 @@ pub mod del_thr;
 
 mod error_type;
 
-use fns::{State, init_args};
-pub use fns::{router, upd_allow_methods};
+use fns::State;
+pub use fns::{router, upd_allow_methods, init_args};
 mod fns {
     use super::*;
     use axum::Router;
