@@ -3,6 +3,7 @@ pub mod full_load;
 pub mod add_board;
 pub mod del_post;
 pub mod del_thr;
+pub mod shutdown;
 
 mod error_type;
 
@@ -82,6 +83,7 @@ mod fns {
         let router = router.merge(add_board::router(&state));
         let router = router.merge(del_post::router(&state));
         let router = router.merge(del_thr::router(&state));
+        let router = router.merge(shutdown::router(&state));
         let router = Router::new().nest("/~~ctrl~~", router);
         router
     }
@@ -92,7 +94,6 @@ mod fns {
         methods.insert(add_board::REQ_METHOD);
         methods.insert(del_post::REQ_METHOD);
         methods.insert(del_thr::REQ_METHOD);
+        methods.insert(shutdown::REQ_METHOD);
     }
-
-
 }

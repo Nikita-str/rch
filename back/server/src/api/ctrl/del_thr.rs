@@ -26,7 +26,7 @@ pub async fn handler(
 
     let act_nonce = format!("{url}#{op_post_n}");
     {
-        let x = state.secure_verify(params.pwd_hash, &act_nonce, Action::AddBoard).map_err(|x|x.map())?;
+        let x = state.secure_verify(params.pwd_hash, &act_nonce, Action::DelThr).map_err(|x|x.map())?;
         let mut x = x.state.write().map_err(|_|DelPostE::E(E::StateAccess(2)))?;
 
         let board = some_or_ret!(x.mut_open_boards().board_mut(&url) => DelPostE::UnknownBoardUrl(url));

@@ -32,7 +32,7 @@ impl ActionLooper {
     async fn acts_loop(mut self) {
         let mut index_awaiter = self.loop_acts.make_loop_acts_index();
         
-        'del_loop: loop {
+        'act_loop: loop {
             tokio::select! {
                 index = index_awaiter.await_next() => {    
                     match index {
@@ -42,7 +42,7 @@ impl ActionLooper {
                 }
                 Some(_) = self.cmd_end_rx.recv() => {
                     self.loop_acts.close_step();
-                    break 'del_loop
+                    break 'act_loop
                 }
             }
         }
@@ -54,7 +54,7 @@ pub struct ActionLooperCtrl {
     cmd_end_sx: Sender<()>,
     cmd_done_rx: Receiver<()>,
 
-    thr_loop_handler: JoinHandle<()>, 
+    thr_loop_handler: JoinHandle<()>,
 }
 
 impl ActionLooperCtrl {
@@ -72,11 +72,11 @@ impl ActionLooperCtrl {
 
     pub fn close(self) -> anyhow::Result<()> {
         let rt = tokio::runtime::Runtime::new()?;
-        rt.block_on(async move { self.close_inner().await })?;
+        rt.block_on(async move { self.close_async().await })?;
 
         Ok(())
     }
-    async fn close_inner(mut self) -> anyhow::Result<()> {
+    pub async fn close_async(mut self) -> anyhow::Result<()> {
         self.cmd_end_sx.send(())?;
         self.cmd_done_rx.recv().await;
         

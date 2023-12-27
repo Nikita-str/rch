@@ -1,7 +1,8 @@
 use super::help::*;
 use crate::utility::save_load::Save;
 
-const SAVE_LOOP_SECS: u64 = 40; // 300;
+const H_TO_SEC: u64 = 60 * 60;
+const SAVE_LOOP_SECS: u64 = 4 * H_TO_SEC; // 30;
 pub const SAVE_LOOP_DUR: Duration = Duration::from_secs(SAVE_LOOP_SECS);
 pub const STD_SAVE_NAMES: &[&str] = &["auto_save_A", "auto_save_B", "auto_save_C"];
 pub const STD_CLOSE_SAVE_NAME: Option<&str> = Some("auto_save_X");
@@ -48,6 +49,8 @@ impl AutoSaver {
         save_name
     }
     fn save(&mut self, save_name: String, single_file: bool) {
+        println!("[INFO] [SAVE] save_name={save_name:?}; single_file={single_file:?};");
+        
         let save_obj = match self.save_obj.write() {
             Ok(x) => x,
             Err(err) => {

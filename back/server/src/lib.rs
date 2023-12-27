@@ -14,6 +14,8 @@ const VUE_DIST_PATH: &str = "../../front/vue_x/dist";
 const KB: usize = 1024;
 const MB: usize = 1024 * KB;
 
+static SHUTDOWN: std::sync::OnceLock<tokio::sync::mpsc::UnboundedSender<()>> = std::sync::OnceLock::new();
+
 #[allow(unused)] use fns::{delay, delay_ms};
 pub use fns::server;
 mod fns {
@@ -198,6 +200,9 @@ mod fns {
         loop_acts.init();
         let cmd_loop_ctrl = crate::utility::ActionLooper::new(loop_acts);
 
+        let (shoutdown_sx, mut shoutdown_rx) = tokio::sync::mpsc::unbounded_channel();
+        crate::SHUTDOWN.set(shoutdown_sx).unwrap();
+
         // std::fs::create_dir(PIC_PATH).unwrap();
         let index_file = ServeFile::new(format!("{}/index.html", VUE_DIST_PATH));
         let serve_dir = ServeDir::new(VUE_DIST_PATH).fallback(index_file);
@@ -220,15 +225,17 @@ mod fns {
 
         let upd_speed_post_loop = upd_speed_post_loop(&state_all, dt_sec / 2);
 
-
+        let graceful = server.with_graceful_shutdown(async { shoutdown_rx.recv().await; });
         tokio::select!{
-            _ = server => { }
+            // _ = shoutdown_rx.recv() => { println!("[SHOUTDOWN]"); }
+            // _ = server => { }
+            _ = graceful => { println!("[SHOUTDOWN]"); }
             _ = upd_speed_post_loop => {
                 println!("smth weird is occurs: turned out that inf loop isn't inf :|");
             }
         };
-
-        let _ = cmd_loop_ctrl.close();
+        let _ = cmd_loop_ctrl.close_async().await;
+        println!("[CLOSED]");
     }
 }
 
@@ -247,7 +254,7 @@ macro_rules! define_id {
     ([INNER] $name:ident: $ty:ty) => {
         #[derive(serde::Serialize, serde::Deserialize)]
         #[derive(Clone, Copy, Hash, PartialEq, Eq)]
-        pub(in crate) struct $name($ty);
+        pub struct $name($ty);
 
         impl std::fmt::Debug for $name {
             fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {

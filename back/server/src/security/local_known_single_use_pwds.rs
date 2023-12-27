@@ -14,6 +14,9 @@ pub enum Action {
     FullSave = 1,
     FullLoad = 2,
     AddBoard = 3,
+    DelPost = 4,
+    DelThr = 5,
+    Shutdown = 6,
 }
 impl Action {
     const fn prefix(self) -> [u8; 1] {
