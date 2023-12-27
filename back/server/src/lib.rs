@@ -186,8 +186,12 @@ mod fns {
         let speed_post = crate::app_state::SpeedPost::new(dt_sec, 0);
         let state_all = app_state::CommonInfoState::new(deleted_board_post, open_boards, speed_post);
 
-        let cmd_loop_ctrl = crate::utility::FileDeleter::new(state_all.pic_path_parent());
-        cmd_loop_ctrl.init_global_state();
+        let mut loop_acts = crate::utility::action_loop::LoopActs::new();
+        let act = crate::utility::action_loop::file_deleter::FileDelState::new(state_all.pic_path_parent());
+        let dur = crate::utility::action_loop::file_deleter::DELETE_LOOP_DUR;
+        loop_acts.add(act, dur);
+        loop_acts.init();
+        let cmd_loop_ctrl = crate::utility::ActionLooper::new(loop_acts);
 
         let state_all = Arc::new(RwLock::new(state_all));
 
