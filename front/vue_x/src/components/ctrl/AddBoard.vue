@@ -7,8 +7,7 @@ import CtrlPwd from './CtrlPwd.vue'
 import { ref } from 'vue'
 import { useStore } from 'vuex'
 import axios from 'axios'
-import { notific_ctor_err_ctrl, notific_ctor_ok_ctrl, cmp_pwd_hash } from '@/js/elems/ctrl.js'
-import { trim } from '@/js/fns.js'
+import { notific_ctor_err_ctrl, notific_ctor_ok_ctrl, cmp_pwd_hash, url_prepare, positive_num_prepare } from '@/js/elems/ctrl.js'
 
 const store = useStore()
 
@@ -28,16 +27,8 @@ function onSubmit() {
     let tag = form.value.tag
     if (tag && tag.length == 0) { tag = null }
 
-    let url = form.value.url
-    if (!url) { 
-        notific_ctor_err_ctrl("emtpty url")
-        return
-    }
-    url = trim(url, '/')
-    if (url.length == 0) { 
-        notific_ctor_err_ctrl("emtpty url")
-        return
-    }
+    let url = url_prepare(form.value.url)
+    if (!url) { return }
 
     let name = form.value.name
     if (!name || (name.length == 0)) { 
@@ -45,9 +36,8 @@ function onSubmit() {
         return
     }
 
-    let max_thr_qty = parseInt(form.value.max_thr_qty)
-    if (!max_thr_qty) { notific_ctor_err_ctrl("emtpty max thr count"); return }
-    if (max_thr_qty < 1) { notific_ctor_err_ctrl("max thr count must be more than 0"); return }
+    let max_thr_qty = positive_num_prepare(form.value.max_thr_qty, "max thr count")
+    if (!max_thr_qty) { return }
 
     let descr = form.value.descr
 
@@ -62,7 +52,6 @@ function onSubmit() {
         descr,
         max_thr_qty,
     }
-    console.log(data)
     form.value = newFormContent();
     
     axios({

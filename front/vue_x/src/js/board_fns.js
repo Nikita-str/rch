@@ -27,43 +27,55 @@ export function lastUrlSubPath(obj) {
 */
 export function msgUnpack(bUrl, msg, nBoardOP) {
     var ret = ""
-        var index = 0
-        while(true) {
-            const start = "<pkg "
-            const i_start = msg.indexOf(start, index)
-            if (i_start < 0) break
+    var index = 0
+    while(true) {
+        const start = "<pkg "
+        const i_start = msg.indexOf(start, index)
+        if (i_start < 0) break
 
-            const end_a = "></pkg>"
-            const end_b = "/>"
-            const ends = [end_a, end_b]
+        const end_a = "></pkg>"
+        const end_b = "/>"
+        const ends = [end_a, end_b]
 
-            const find_end_from = i_start + start.length
-            const i_end_a = msg.indexOf(end_a, find_end_from)
-            const i_end_b = msg.indexOf(end_b, find_end_from)
-            const ends_indexes = [i_end_a, i_end_b]
-            
-            const i_end = min_valid_index(ends_indexes)
-            if (i_end < 0) break
-            
-            let index_of_i_end = ends_indexes.findIndex((x) => x === i_end)
-            let end = ends[index_of_i_end]
+        const find_end_from = i_start + start.length
+        const i_end_a = msg.indexOf(end_a, find_end_from)
+        const i_end_b = msg.indexOf(end_b, find_end_from)
+        const ends_indexes = [i_end_a, i_end_b]
+        
+        const i_end = min_valid_index(ends_indexes)
+        if (i_end < 0) break
+        
+        let index_of_i_end = ends_indexes.findIndex((x) => x === i_end)
+        let end = ends[index_of_i_end]
 
-            ret += msg.substring(index, i_start)
-            let info = msg.substring(i_start + start.length, i_end).split(' ')
-            let cmd = info[0]
-            if (cmd == "reply") {
-              let n = info[1]
-              let maybe_OP = (n == nBoardOP) ? '(OP)' : ''
-              
-              let href = '/' + bUrl + '/' + nBoardOP
-              
-              ret += `<a class="P-rep" href="${href}#${n}">&gt;&gt;${n}${maybe_OP}</a>`
-            }
+        ret += msg.substring(index, i_start)
+        let info = msg.substring(i_start + start.length, i_end).split(' ')
+        
+        let cmd = info[0]
+        if (cmd == "reply") {
+            let n = info[1]
+            let maybe_OP = (n == nBoardOP) ? '(OP)' : ''
             
-            index = i_end + end.length
+            let href = '/' + bUrl + '/' + nBoardOP
+            
+            ret += `<a class="P-rep" href="${href}#${n}">&gt;&gt;${n}${maybe_OP}</a>`
+        } else if (cmd == "del") {
+            let n = parseInt(info[1])
+
+            const DEFAULT_DEL_TEXT = "не было и нету"
+            let del_text = DEFAULT_DEL_TEXT
+            
+            if (!n /* null || 0 */) { del_text = "ничего + мяу" } 
+            else if (n == 1) { del_text = "не было больней" } 
+            else { del_text = DEFAULT_DEL_TEXT }
+
+            ret += `<span class="P-del-text">${del_text}</span><span class="P-del-postfix">(съедено)</span>`
         }
-        ret += msg.substring(index)
-        return ret
+        
+        index = i_end + end.length
+    }
+    ret += msg.substring(index)
+    return ret
 }
 
 

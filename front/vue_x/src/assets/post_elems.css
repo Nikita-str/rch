@@ -179,3 +179,31 @@ span.P-d100 { background-color: var(--rp--d100-bg); }
 }
 
 /* .P-rep {} */
+
+
+:root {
+    --E---del: #6C74A4; /* #0a164787 */
+    --E---del-postfix: #E01480; /* #5b0c4e;  var(--E--notific-err-border); */
+}
+.P-del-text {
+    display: inline-block;
+    color: var(--E---del);
+    font-weight: 600;
+}
+/*   
+.P-del-text::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 0.8em;
+    height: 1px;
+    background-color: var(--E---del-postfix);
+}
+*/
+.P-del-postfix {
+    font-size: 0.8em;
+    font-weight: 400;
+    padding-left: 0.8ch;
+    color: var(--E---del-postfix);
+}

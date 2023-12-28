@@ -38,12 +38,14 @@ export default {
 
     spoilerPicN() { return this.topInfo ? this.topInfo.spoiler_n : spoilerPicNum() },
     noOpPicN() { return this.topInfo ? this.topInfo.no_op_n : noOpPicNum() },
+    bUrl() { return boardUrlCalc(this) },
     imgPreviewRef() {
-        let bUrl = boardUrlCalc(this)
+        let bUrl = this.bUrl
         return `/${bUrl}/${this.nBoardOP}/`
     },
     
-    msgUnpacked() { return msgUnpack(boardUrlCalc(this), this.msg, this.nBoardOP) },
+    headerUnpacked() { return msgUnpack(this.bUrl, this.header, this.nBoardOP) },
+    msgUnpacked() { return msgUnpack(this.bUrl, this.msg, this.nBoardOP) },
     noOpPic() { return noOpPicPath(this.noOpPicN) },
 
     picDimSzX() { return this.isTop ? "17em" : "13em" },
@@ -97,7 +99,7 @@ export default {
             </div>
         </div>
         <div class="ctlg-post-text" :class="textClassX">    
-            <div class="ctlg-post-h" v-html="header" />
+            <div class="ctlg-post-h" v-html="headerUnpacked" />
             <div class="ctlg-post-msg" :class="msgClassX" v-html="msgUnpacked" />
         </div>
         <!-- <div class="post-text" :style="{'padding-top': (imgInfo.length == 1) ? '2.4em' : '' }" v-html="msgUnpacked" /> -->

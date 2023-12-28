@@ -1,5 +1,6 @@
 
 <script setup>
+import { msgUnpack, boardUrlCalc } from '@/js/board_fns'
 import Post from './Post.vue'
 import HorizontalLine from './micro/HorizontalLine.vue'
 import AwaitDots from './micro/awaiters/BigAwaitDots.vue'
@@ -44,6 +45,7 @@ export default {
         msgThrNumHelper() {
             return this.posts_qty - (this.posts.length - 1)
         },
+        bUrl() { return boardUrlCalc(this) },
     },
 }
 </script> 
@@ -51,7 +53,7 @@ export default {
 <template><div>
     <div class="thr-view">
         <div>
-            <div v-if="header" style="padding-left: 1.2em; color: var(--r-col-blue); font-weight: 700;" v-html="header" />
+            <div v-if="header" style="padding-left: 1.2em; color: var(--r-col-blue); font-weight: 700;" v-html="msgUnpack(bUrl, header, posts[0].n)" />
             <div style="display: flex; padding-left: 1.2em;">
                 <Post 
                     :msg="posts[0].text"
