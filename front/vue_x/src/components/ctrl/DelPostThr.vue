@@ -4,12 +4,25 @@ import CtrlFormText from './CtrlFormText.vue'
 import CtrlFormDone from './CtrlFormDone.vue'
 import CtrlOthersList from './CtrlOthersList.vue'
 import CtrlPwd from './CtrlPwd.vue'
-import { ref } from 'vue'
+import { ref, defineProps, computed } from 'vue'
 import { useStore } from 'vuex'
 import axios from 'axios'
 import { notific_ctor_err_ctrl, notific_ctor_ok_ctrl, cmp_pwd_hash, url_prepare, positive_num_prepare } from '@/js/elems/ctrl.js'
 
 const store = useStore()
+const props = defineProps({
+    isPost: {type: Boolean, required: true},
+})
+
+const header = computed(() => {
+    return (props.isPost) ? "DEL POST" : "DEL THR"
+})
+const lineN = computed(() => {
+    return (props.isPost) ? 4 : 5
+})
+const reqUrl = computed(() => {
+    return store.getters.getPort + '/~~ctrl~~/' + ((props.isPost) ? 'del_post' : 'del_thr')
+})
 
 function newFormContent() {
     return {
@@ -31,10 +44,14 @@ function onSubmit() {
     let op_post_n = positive_num_prepare(form.value.op_post_n, "OP post N")
     if (!op_post_n) { return }
 
-    let post_n = positive_num_prepare(form.value.post_n, "post N")
-    if (!post_n) { return }
+    let post_n = null
+    if (props.isPost) {
+        post_n = positive_num_prepare(form.value.post_n, "post N")
+        if (!post_n) { return }
+    }
 
-    let pwd_hash = cmp_pwd_hash(form.value.pwd, `${url}#${post_n}`)
+    let hash_inner_part = (props.isPost) ? `${url}#${post_n}` : `${url}#${op_post_n}`
+    let pwd_hash = cmp_pwd_hash(form.value.pwd, hash_inner_part)
     if (!pwd_hash) { return }
 
     let data = {
@@ -46,12 +63,13 @@ function onSubmit() {
     form.value = newFormContent();
     
     axios({
-        url: store.getters.getPort + '/~~ctrl~~/del_post',
+        url: reqUrl.value,
         method: 'delete',
         data,
     }).then(_ => {
-        //TODO:MAYBE: 'долгожданное завершение какого-либо длительного, затруднительного или неприятного процесса, а в данном случае -- конец существования указанного поста'
-        notific_ctor_ok_ctrl('пиздец посту')
+        //TODO:MAYBE: 'долгожданное завершение какого-либо длительного, затруднительного или неприятного процесса, а в данном случае -- конец существования указанного [поста/треда]'
+        let msg = 'пиздец ' + ((props.isPost) ? 'посту' : 'треду')
+        notific_ctor_ok_ctrl(msg)
     }).catch(err => {
         var err = err.response.data
         notific_ctor_err_ctrl(`[${err.code}]: ${err.msg}`) 
@@ -63,11 +81,11 @@ function onSubmit() {
 <template>
     <CtrlLogo />
     <form class="ctrl-form" v-on:submit.prevent="onSubmit">
-        <h4 class="ctrl-header">DEL POST</h4>
-        <CtrlPwd :form="form" :line="4" />
+        <h4 class="ctrl-header" v-html="header" />
+        <CtrlPwd :form="form" :line="lineN" />
         <CtrlFormText v-model="form.url" :tab="2" :maxLen="16" placeholder="/url/">/url/</CtrlFormText>
         <CtrlFormText v-model="form.op_post_n" :tab="3" :maxLen="20" :isNumber="true">OP пост N:</CtrlFormText>
-        <CtrlFormText v-model="form.post_n" :tab="4" :maxLen="20" :isNumber="true">пост N:</CtrlFormText>
+        <CtrlFormText v-if="isPost" v-model="form.post_n" :tab="4" :maxLen="20" :isNumber="true">пост N:</CtrlFormText>
         <CtrlFormDone />
     </form>
     <br/>
