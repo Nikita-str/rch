@@ -6,11 +6,10 @@ import { useRouter } from 'vue-router';
 const router = useRouter();
 
 const last_url = computed(() => {
-    console.log(router.currentRoute.value.path, lastUrlSubPath(router.currentRoute.value.path))
     return lastUrlSubPath(router.currentRoute.value.path)
 })
 
-const PATHS = ["full-load", "full-save", "shutdown"]
+const PATHS = ["full-load", "full-save", "shutdown", "add-board"]
 </script>
 
 

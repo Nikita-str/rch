@@ -10,8 +10,10 @@ import Post from '../components/Post.vue'
 import PostingForm from '../components/PostingForm.vue'
 import DraggablePostingForm from '../components/DraggablePostingForm.vue'
 import PicCloseView from '../components/files/pics/PicCloseView.vue'
+
 import SaveLoad from '../components/ctrl/SaveLoad.vue'
 import Shutdown from '../components/ctrl/Shutdown.vue'
+import AddBoard from '../components/ctrl/AddBoard.vue'
 
 import { BOARD_NAME as SETT_BOARD_NAME, BOARD_POSTFIX as SETT_BOARD_POSTFIX, BOARD_FULLNAME as SETT_BOARD_FULLNAME } from './settings'
 
@@ -246,6 +248,10 @@ const routes = [
       props: {
         isSave: false,
       },
+    },
+    {
+      path: '/~~page~~/~~ctrl~~/add-board/', 
+      component: AddBoard,
     },
     {
       path: '/~~page~~/~~ctrl~~/shutdown/', 

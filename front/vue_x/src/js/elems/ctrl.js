@@ -1,5 +1,5 @@
 import { sha3_256 } from 'js-sha3';
-import { notific_ctor, NOTIFIC_TY_ERR } from "@/js/elems/notific";
+import { notific_ctor, NOTIFIC_TY_ERR, NOTIFIC_TY_INFO } from "@/js/elems/notific";
 
 export function cmp_pwd_hash(pwd, inner_part) {
     let pwd_hash = pwd
@@ -20,4 +20,7 @@ export function cmp_pwd_hash(pwd, inner_part) {
 export function notific_ctor_err_ctrl(msg) {
     // return notific_ctor(NOTIFIC_TY_ERR, msg, top = true, left = true)
     return notific_ctor(NOTIFIC_TY_ERR, msg, 2_000, true, true)
+}
+export function notific_ctor_ok_ctrl(msg) {
+    return notific_ctor(NOTIFIC_TY_INFO, msg, 2_000, true, true)
 }

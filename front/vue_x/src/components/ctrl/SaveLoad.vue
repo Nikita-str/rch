@@ -7,8 +7,7 @@ import CtrlPwd from './CtrlPwd.vue'
 import { ref, computed, defineProps } from 'vue'
 import { useStore } from 'vuex'
 import axios from 'axios'
-import { notific_ctor_err_ctrl, cmp_pwd_hash } from '@/js/elems/ctrl.js'
-import { notific_ctor, NOTIFIC_TY_INFO } from "@/js/elems/notific";
+import { notific_ctor_err_ctrl, notific_ctor_ok_ctrl, cmp_pwd_hash } from '@/js/elems/ctrl.js'
 
 const store = useStore()
 
@@ -32,12 +31,6 @@ function newFormContent(single_file = true) {
     }
 }
 const form = ref(newFormContent())
-
-function notific_ctor_ok_local() {
-    let msg = (props.isSave ? 'сохранено' : 'загружено')
-    msg = `успешно ${msg}!`
-    return notific_ctor(NOTIFIC_TY_INFO, msg, 2_000, true, true)
-}
 
 function onSubmit() {
     let save_name = form.value.save_name
@@ -65,7 +58,9 @@ function onSubmit() {
         method: 'post',
         data,
     }).then(_ => {
-        notific_ctor_ok_local()
+        let msg = (props.isSave ? 'сохранено' : 'загружено')
+        msg = `успешно ${msg}!`
+        notific_ctor_ok_ctrl(msg)
     }).catch(err => {
         var err = err.response.data
         notific_ctor_err_ctrl(`[${err.code}]: ${err.msg}`) 
