@@ -152,3 +152,12 @@ mod inner {
     // }
     // ``` 
 }
+
+pub fn pkg_del(board_url: &str) -> String {
+    if board_url == "a" {
+        format!("<pkg del a />")
+    } else {
+        let n = crate::utility::general::rand(0, 2);
+        format!("<pkg del {n} />")
+    }
+}

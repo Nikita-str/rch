@@ -66,7 +66,11 @@ impl Post {
         }
     }
 
-    pub fn del_content<S: Into<String>>(&mut self, board_url: S) {
+    pub fn del_content<S>(&mut self, board_url: S, new_content: Option<String>)
+    where S: Into<String> + AsRef<str>
+    {
+        self.text = new_content.unwrap_or_else(||crate::preproc::pkg_del(board_url.as_ref()));
+
         let pics_info = std::mem::take(&mut self.imgs)
             .into_iter()
             .map(|x|x.to_del_info())
@@ -74,6 +78,5 @@ impl Post {
         if let Err(_) = crate::utility::global_file_deleter::add_del_pics_act(board_url.into(), pics_info) {
             println!("[WARN] cant add del pic act")
         }
-        self.text = "<pkg del />".into();
     }
 }

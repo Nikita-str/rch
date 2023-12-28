@@ -225,12 +225,15 @@ impl Thread {
         }
     }
 
-    pub fn del_post_content<S: Into<String>>(&mut self, board_url: S, post_n: PostN) -> anyhow::Result<()> {
+    pub fn del_post_content<S>(&mut self, board_url: S, post_n: PostN) -> anyhow::Result<()>
+    where S: Into<String> + AsRef<str>
+    {
+        let content = crate::preproc::pkg_del(board_url.as_ref());
         if self.op_n().0 == post_n {
-            self.header = "<pkg del />".into();
+            self.header = content.clone();
         }
         match self.posts.get_mut_by_n(post_n) {
-            Some(post) => post.del_content(board_url),
+            Some(post) => post.del_content(board_url, Some(content)),
             _ => anyhow::bail!("unknown post number {post_n}"),
         }
         Ok(())

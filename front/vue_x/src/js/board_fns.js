@@ -65,10 +65,10 @@ export function msgUnpack(bUrl, msg, nBoardOP) {
             const DEFAULT_DEL_TEXT = "не было и нету"
             let del_text = DEFAULT_DEL_TEXT
             
-            if (!n /* null || 0 */) { del_text = "ничего + мяу" } 
-            else if (n == 1) { del_text = "не было больней" } 
-            else { del_text = DEFAULT_DEL_TEXT }
-
+            if (info[1] == 'a') { del_text = "ничего + мяу" } 
+            else if (n == 1) { del_text = "не было больней" }
+            else if (n == 2) { del_text = "бессловесный в мире брани" }
+            
             ret += `<span class="P-del-text">${del_text}</span><span class="P-del-postfix">(съедено)</span>`
         }
         

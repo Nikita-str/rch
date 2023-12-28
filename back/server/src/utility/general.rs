@@ -22,3 +22,9 @@ pub fn rand_string(len: usize) -> String {
     let rand_char = |_|CHARSET[rng.gen_range(RANGE)] as char;
     (0..len).into_iter().map(rand_char).collect()
 }
+
+pub fn rand<T: rand::distributions::uniform::SampleUniform + PartialOrd>(min: T, max: T) -> T {
+    let mut rng = rand::thread_rng();
+    let range = min..=max;
+    rng.gen_range(range)
+}
