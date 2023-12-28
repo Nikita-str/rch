@@ -1,4 +1,5 @@
 <script setup>
+import CtrlLogo from './CtrlLogo.vue'
 import CtrlFormDone from './CtrlFormDone.vue'
 import CtrlOthersList from './CtrlOthersList.vue'
 import CtrlPwd from './CtrlPwd.vue'
@@ -40,6 +41,8 @@ function onSubmit() {
 </script>
 
 <template>
+    <CtrlLogo />
+
     <form class="ctrl-form" v-on:submit.prevent="onSubmit">
         <h4 class="ctrl-header">SHUTDOWN</h4>
         <CtrlPwd :form="form" :line="6" />

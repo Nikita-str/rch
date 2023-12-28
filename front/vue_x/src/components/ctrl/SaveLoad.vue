@@ -1,4 +1,5 @@
 <script setup>
+import CtrlLogo from './CtrlLogo.vue'
 import CtrlFormText from './CtrlFormText.vue'
 import CtrlFormCheckbox from './CtrlFormCheckbox.vue'
 import CtrlFormDone from './CtrlFormDone.vue'
@@ -70,6 +71,8 @@ function onSubmit() {
 </script>
 
 <template>
+    <CtrlLogo />
+
     <form class="ctrl-form" v-on:submit.prevent="onSubmit">
         <h4 class="ctrl-header" v-html="header" />
         <CtrlPwd :form="form" :line="lineN" />

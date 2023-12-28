@@ -57,7 +57,7 @@ export default {
 </template>
 
 
-<style scoped>
+<style>
 .b-head {
     width: 100%;
     text-align: center;
@@ -87,5 +87,4 @@ export default {
 .b-head-name {
     font-weight: 900;
 }
-
 </style>

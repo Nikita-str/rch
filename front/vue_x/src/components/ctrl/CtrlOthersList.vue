@@ -9,7 +9,7 @@ const last_url = computed(() => {
     return lastUrlSubPath(router.currentRoute.value.path)
 })
 
-const PATHS = ["full-load", "full-save", "shutdown", "add-board"]
+const PATHS = ["full-save", "full-load", "add-board", "shutdown",]
 </script>
 
 

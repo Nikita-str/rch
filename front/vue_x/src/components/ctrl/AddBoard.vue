@@ -1,4 +1,5 @@
 <script setup>
+import CtrlLogo from './CtrlLogo.vue'
 import CtrlFormText from './CtrlFormText.vue'
 import CtrlFormDone from './CtrlFormDone.vue'
 import CtrlOthersList from './CtrlOthersList.vue'
@@ -79,6 +80,7 @@ function onSubmit() {
 </script>
 
 <template>
+    <CtrlLogo />
     <form class="ctrl-form" v-on:submit.prevent="onSubmit">
         <h4 class="ctrl-header">ADD BOARD</h4>
         <CtrlPwd :form="form" :line="3" />

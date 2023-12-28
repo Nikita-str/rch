@@ -49,7 +49,11 @@ import PopBoards from './components/PopBoards.vue'
       <About msg="Ура-ура общение!" :open_boards="openBoard" :posting_speed="speedPost" :total_post="totalPost" />
       <br/>
       <PopBoards />
-      <router-link to="/tmp/">Invalid page :3</router-link>
+      <ul>
+        <li><router-link to="/tmp/">Invalid page :3</router-link></li>
+        <li><router-link to="/~~page~~/~~ctrl~~/full-save/">One of control page :3</router-link></li>
+      </ul>
+      <br/>
     </div>
   </div>
 </template>
