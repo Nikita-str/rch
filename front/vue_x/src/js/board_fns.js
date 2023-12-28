@@ -35,11 +35,18 @@ export function msgUnpack(bUrl, msg, nBoardOP) {
 
             const end_a = "></pkg>"
             const end_b = "/>"
+            const ends = [end_a, end_b]
+
             const find_end_from = i_start + start.length
             const i_end_a = msg.indexOf(end_a, find_end_from)
             const i_end_b = msg.indexOf(end_b, find_end_from)
-            const i_end = min_valid_index([i_end_a, i_end_b])
+            const ends_indexes = [i_end_a, i_end_b]
+            
+            const i_end = min_valid_index(ends_indexes)
             if (i_end < 0) break
+            
+            let index_of_i_end = ends_indexes.findIndex((x) => x === i_end)
+            let end = ends[index_of_i_end]
 
             ret += msg.substring(index, i_start)
             let info = msg.substring(i_start + start.length, i_end).split(' ')
