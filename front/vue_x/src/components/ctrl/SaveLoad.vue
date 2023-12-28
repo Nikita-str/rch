@@ -3,7 +3,7 @@ import CtrlFormText from './CtrlFormText.vue'
 import CtrlFormCheckbox from './CtrlFormCheckbox.vue'
 import CtrlFormDone from './CtrlFormDone.vue'
 import CtrlOthersList from './CtrlOthersList.vue'
-import LineN from './CtrlFormLine.vue'
+import CtrlPwd from './CtrlPwd.vue'
 import { ref, computed, defineProps } from 'vue'
 import { useStore } from 'vuex'
 import axios from 'axios'
@@ -77,10 +77,7 @@ function onSubmit() {
 <template>
     <form class="ctrl-form" v-on:submit.prevent="onSubmit">
         <h4 class="ctrl-header" v-html="header" />
-        <CtrlFormText v-model="form.pwd" :tab="1" :maxLen="8 + 1 + 12" placeholder="<nonce><space><pwd>">
-            nonce&amp;pwd<LineN :n="lineN" />:
-        </CtrlFormText>
-
+        <CtrlPwd :form="form" :line="lineN" />
         <CtrlFormText v-model="form.save_name" :tab="2">save name:</CtrlFormText>
         <CtrlFormCheckbox v-model="form.single_file" :tab="3">single_file:</CtrlFormCheckbox>
 
