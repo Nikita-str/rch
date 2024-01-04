@@ -25,12 +25,18 @@ mod fns {
     use tower_http::cors::CorsLayer;
     use std::sync::{Arc, RwLock};
 
+    #[inline(always)]
     pub(in crate) fn delay() {
-        std::thread::sleep(std::time::Duration::from_millis(1_500));
+        #[cfg(debug_assertions)]
+        delay_ms(1_500);
     }
-        
+    
+    #[inline]
     pub(in crate) fn delay_ms(ms: usize) {
-        std::thread::sleep(std::time::Duration::from_millis(ms as u64));
+        #[cfg(debug_assertions)] {
+            std::thread::sleep(std::time::Duration::from_millis(ms as u64));
+            println!("[DELAY({ms}ms)]");
+        }
     }
 
     fn upd_speed_post_loop(state: &api::common::all::HandlerState, upd_dt_sec: u32) -> tokio::task::JoinHandle<()> {
