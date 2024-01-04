@@ -60,6 +60,7 @@ pub async fn handler(
                 }
             }
         }
+        w_state.inc_post();
     }
 
     Json(())

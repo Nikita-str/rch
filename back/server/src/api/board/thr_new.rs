@@ -85,10 +85,16 @@ pub async fn handler(
 
     let n = {
         let mut w_state = state.write().unwrap();
-        w_state
+        let post_n = w_state
             .mut_open_boards()
             .board_mut(board_url)
-            .map(|board| board.new_thr_preproced(post_header, op_post, infinity))
+            .map(|board| board.new_thr_preproced(post_header, op_post, infinity));
+        
+        if post_n.is_some() {
+            w_state.inc_post();
+        }
+
+        post_n
     };
 
     Json(n)

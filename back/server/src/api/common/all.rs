@@ -15,13 +15,6 @@ pub async fn handler(
 ) -> Json<ResultOk> {
     crate::delay();
 
-    {
-        // change value in GET :|
-        // (it's just emul so it's okey, it's okey)
-        let mut w_state = state.write().unwrap();
-        (0..10).for_each(|_|w_state.inc_post());
-    }
-
     let value = {
         let r_state = state.read().unwrap();
         ResultOk {

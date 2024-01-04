@@ -12,6 +12,6 @@ export default {
 </script>
 
 <template>
-    <span v-if="val" style="font-weight:bold;">{{ val }}</span>
+    <span v-if="val != null" style="font-weight:bold;">{{ val }}</span>
     <span v-else style="font-weight:bold;">???</span>
 </template>
