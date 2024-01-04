@@ -19,7 +19,6 @@ static SHUTDOWN: std::sync::OnceLock<tokio::sync::mpsc::UnboundedSender<()>> = s
 #[allow(unused)] use fns::{delay, delay_ms};
 pub use fns::server;
 mod fns {
-    use crate::app_state::open_boards::Board;
     use super::{api, app_state, VUE_DIST_PATH};
     use axum::{Server, Router};
     use tower_http::services::{ServeDir, ServeFile};
@@ -50,141 +49,9 @@ mod fns {
     }
 
     pub async fn server() {
-        let deleted_board_post = 42;
+        let deleted_board_post = 0;
         let dt_sec = 60;
-        #[allow(unused_must_use)]
-        let open_boards = {
-            let std_thr_qty = 10; // 100;
-            let small_thr_qty = 5; // 20;
-
-            let mut open_boards = crate::app_state::OpenBoards::new(VUE_DIST_PATH);
-            let tag = crate::app_state::open_boards::BoardTag { tag: "Разное".into() };
-            let url = "b".into();
-            let name = "Бред".into();
-            let descr = "Бредим вместе!".into();
-            let post_qty = 243;
-            open_boards.add_board(
-                Board::new(url, name, descr, post_qty, std_thr_qty),
-                Some(tag.clone()),
-            );
-            let url = "soc".into();
-            let name = "Общение".into();
-            let descr = "бла-бла-бла и подобное".into();
-            let post_qty = 107;
-            open_boards.add_board(
-                Board::new(url, name, descr, post_qty, std_thr_qty),
-                Some(tag.clone()),
-            );
-
-            let tag = crate::app_state::open_boards::BoardTag { tag: "IT".into() };
-            let url = "pr".into();
-            let name = "Погроммммирование".into();
-            let descr = "Сидим. Кодим".into();
-            let post_qty = 23;
-            open_boards.add_board(
-                Board::new(url, name, descr, post_qty, std_thr_qty),
-                Some(tag.clone()),
-            );
-
-            let tag = crate::app_state::open_boards::BoardTag { tag: "Игры".into() };
-            let url = "bg".into();
-            let name = "Настольные игры".into();
-            let descr = "Игры на столе o_O?".into();
-            let post_qty = 6;
-            open_boards.add_board(
-                Board::new(url, name, descr, post_qty, small_thr_qty),
-                Some(tag.clone()),
-            );
-            let url = "vn".into();
-            let name = "Визуальные новеллы".into();
-            let descr = "*> baka\n*> ...".into();
-            let post_qty = 7;
-            open_boards.add_board(
-                Board::new(url, name, descr, post_qty, small_thr_qty),
-                Some(tag.clone()),
-            );
-            let url = "rp".into();
-            let name = "role play".into();
-            let descr = "кидани d20 на капчевание в часах!".into();
-            let post_qty = 7;
-            open_boards.add_board(
-                Board::new(url, name, descr, post_qty, small_thr_qty),
-                Some(tag.clone()),
-            );
-            
-            let tag = crate::app_state::open_boards::BoardTag { tag: "Всякое".into() };
-            let url = "car".into();
-            let name = "Автомобили".into();
-            let descr = "авто<s>боты</s>мобили".into();
-            let post_qty = 4;
-            open_boards.add_board(
-                Board::new(url, name, descr, post_qty, small_thr_qty),
-                Some(tag.clone()),
-            );
-            let url = "bik".into();
-            let name = "Велосипеды".into();
-            let descr = "А чо тут сказать? Ну педали крутим.".into();
-            let post_qty = 18;
-            open_boards.add_board(
-                Board::new(url, name, descr, post_qty, small_thr_qty),
-                Some(tag.clone()),
-            );
-            let url = "sp".into();
-            let name = "Спорт".into();
-            let descr = "Делай 200 отжиманий раз прочитал".into();
-            let post_qty = 18;
-            open_boards.add_board(
-                Board::new(url, name, descr, post_qty, small_thr_qty),
-                Some(tag.clone()),
-            );
-            
-            let tag = crate::app_state::open_boards::BoardTag { tag: "Япония".into() };
-            let url = "a".into();
-            let name = "Аниме".into();
-            let descr = "Японская анимация(мультики(для детей(детские)))\n( ´ ▽ ` )".into();
-            let post_qty = 29;
-            open_boards.add_board(
-                Board::new(url, name, descr, post_qty, std_thr_qty),
-                Some(tag.clone()),
-            );
-            let url = "ma".into();
-            let name = "Манга".into();
-            let descr = "Серьезное чтиво\n(；⌣̀_⌣́)".into();
-            let post_qty = 18;
-            open_boards.add_board(
-                Board::new(url, name, descr, post_qty, small_thr_qty),
-                Some(tag.clone()),
-            );
-            let url = "ja".into();
-            let name = "Японская культура".into();
-            let descr = "Школьницы школьницы школьницы".into();
-            let post_qty = 18;
-            open_boards.add_board(
-                Board::new(url, name, descr, post_qty, small_thr_qty),
-                Some(tag.clone()),
-            );
-
-            let tag = crate::app_state::open_boards::BoardTag { tag: "Политика".into() };
-            let url = "po".into();
-            let name = "П<s>о</s>лит<s>и</s>ка".into();
-            let descr = "Перекладываем".into();
-            let post_qty = 23;
-            open_boards.add_board(
-                Board::new(url, name, descr, post_qty, std_thr_qty),
-                Some(tag.clone()),
-            );
-
-            let url = "touhou".into();
-            let name = "Touhou".into();
-            let descr = "Выясняем ~~baaaka~~ ли Сырник?".into();
-            let post_qty = 2;
-            open_boards.add_board(
-                Board::new(url, name, descr, post_qty, small_thr_qty),
-                None,
-            );
-
-            open_boards
-        };
+        let open_boards = crate::app_state::OpenBoards::new(VUE_DIST_PATH);
         let speed_post = crate::app_state::SpeedPost::new(dt_sec, 0);
         let state_all = app_state::CommonInfoState::new(deleted_board_post, open_boards, speed_post);
         let pic_path_parent = state_all.pic_path_parent().to_owned();

@@ -9,4 +9,5 @@ test/REST/*
 !test/REST/create_b_threads.py
 !test/REST/create_rp.py
 
-saves/
+saves/*
+!saves/STD_SAVE_A.save
