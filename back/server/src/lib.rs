@@ -6,9 +6,7 @@ mod thread_usage_rate;
 mod preproc;
 pub mod utility;
 mod security;
-
-const VUE_DIST_PATH: &str = "../../front/vue_x/dist";
-// const PIC_PATH: &str = "../../front/vue_x/dist/imgs/pp"; // pp stands for post pics 
+mod config;
 
 const KB: usize = 1024;
 const MB: usize = 1024 * KB;
@@ -18,18 +16,19 @@ static SHUTDOWN: std::sync::OnceLock<tokio::sync::mpsc::UnboundedSender<()>> = s
 #[allow(unused)] use crate::utility::general::{delay, delay_ms};
 pub use fns::server;
 mod fns {
-    use super::{api, app_state, VUE_DIST_PATH};
+    use super::{api, app_state};
     use axum::{Server, Router};
     use tower_http::services::{ServeDir, ServeFile};
     use tower_http::cors::CorsLayer;
     use std::sync::{Arc, RwLock};
-
-    const CONFIG_PATH: &'static str = "Config.toml";
+    use crate::config::Config;
 
     pub async fn server() {
+        let vue_dist_path = Config::vue_dist_path();
+
         let deleted_board_post = 0;
         let dt_sec = 60;
-        let open_boards = crate::app_state::OpenBoards::new(VUE_DIST_PATH);
+        let open_boards = crate::app_state::OpenBoards::new(vue_dist_path);
         let speed_post = crate::app_state::SpeedPost::new(dt_sec, 0);
         let state_all = app_state::CommonInfoState::new(deleted_board_post, open_boards, speed_post);
         let pic_path_parent = state_all.pic_path_parent().to_owned();
@@ -52,8 +51,8 @@ mod fns {
         crate::SHUTDOWN.set(shoutdown_sx).unwrap();
 
         // std::fs::create_dir(PIC_PATH).unwrap();
-        let index_file = ServeFile::new(format!("{}/index.html", VUE_DIST_PATH));
-        let serve_dir = ServeDir::new(VUE_DIST_PATH).fallback(index_file);
+        let index_file = ServeFile::new(format!("{}/index.html", vue_dist_path));
+        let serve_dir = ServeDir::new(vue_dist_path).fallback(index_file);
 
         let mut methods = std::collections::HashSet::new();
         api::upd_allow_methods(&mut methods);
@@ -64,9 +63,7 @@ mod fns {
         let router = router.nest("/api", api::router(&state_all));
         let router = router.layer(cors).into_make_service();
 
-
-        let config = rch_config::Config::open(CONFIG_PATH).unwrap();
-        let addr = config.socket_addr().unwrap();
+        let addr = crate::config::addr();
         let server = Server::bind(&addr);
         let server = server.serve(router);
 

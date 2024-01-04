@@ -4,7 +4,6 @@ use crate::utility::save_load::Save;
 const H_TO_SEC: u64 = 60 * 60;
 const SAVE_LOOP_SECS: u64 = 4 * H_TO_SEC; // 30;
 pub const SAVE_LOOP_DUR: Duration = Duration::from_secs(SAVE_LOOP_SECS);
-pub const STD_SAVE_NAMES: &[&str] = &["auto_save_A", "auto_save_B", "auto_save_C"];
 pub const STD_CLOSE_SAVE_NAME: Option<&str> = Some("auto_save_X");
 
 //TODO:MAYBE: GenericType for `save_obj`
@@ -21,7 +20,7 @@ impl AutoSaver {
     pub fn new(
         save_obj: &crate::api::StdState,
         close_save_name: Option<impl Into<String>>,
-        save_names: &[&str],
+        save_names: &[impl ToString],
         single_file: bool,
         close_single_file: bool,
     ) -> Self {
@@ -37,7 +36,9 @@ impl AutoSaver {
     pub fn new_std(save_obj: &crate::api::StdState) -> Self {
         let single_file = false;
         let close_single_file = true;
-        Self::new(save_obj, STD_CLOSE_SAVE_NAME, STD_SAVE_NAMES, single_file, close_single_file)
+        let close_save_name = crate::config::Config::saves().close_save_name.clone();
+        let save_names = crate::config::Config::saves().save_names.as_slice();
+        Self::new(save_obj, close_save_name, save_names, single_file, close_single_file)
     }
 
     fn get_save_name(&mut self) -> String {

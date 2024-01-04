@@ -45,12 +45,12 @@ pub async fn handler(
     Query(params): Query<HandlerParams>,
     State(state): State<HandlerState>,
 ) -> Result<Json<ResultOk>, Error> {
-    pub const N_LOAD_MIN: usize = 10;
-    pub const N_LOAD_MAX: usize = 30;
+
+    let consts = &crate::config::Config::api().thr_load;
 
     let op_post_n = params.op_post_n;
     let from = params.from;
-    let n_load = params.n_load.min(N_LOAD_MAX).max(N_LOAD_MIN);
+    let n_load = params.n_load.min(consts.max_posts_load).max(consts.min_posts_load);
 
     crate::delay_ms(1000);
 

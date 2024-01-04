@@ -54,22 +54,26 @@ mod fns {
         }
     }
 
-    pub const SAVE_DIR: &str = "./saves";
+    #[inline]
+    fn save_dir() -> &'static str {
+        &crate::config::Config::saves().dir
+    }
 
     pub fn init_args(save_name: String, single_file: bool) -> StateInitArgs<'static> {
         StateInitArgs {
-            save_dir: SAVE_DIR,
+            save_dir: save_dir(),
             save_name,
             single_file,
         }
     }
 
     pub fn router(common_info_state: &HandlerStateCommon) -> Router {
-        const SAVE_AUX_DIR: &str = "aux";
-        const PWD_FILE_NAME: &str = "single_pwds.txt";
+        let save_dir = save_dir();
+        let aux_dir = &crate::config::Config::saves().aux_dir;
+        let pwd_file = &crate::config::Config::saves().single_use_pwd_file;
 
-        let _ = std::fs::create_dir_all(format!("{SAVE_DIR}/{SAVE_AUX_DIR}"));
-        let output_path = format!("{SAVE_DIR}/{SAVE_AUX_DIR}/{PWD_FILE_NAME}");
+        let _ = std::fs::create_dir_all(format!("{save_dir}/{aux_dir}", ));
+        let output_path = format!("{save_dir}/{aux_dir}/{pwd_file}");
 
         let state = Arc::new(RwLock::new(StateInner {
             state: Arc::clone(common_info_state),

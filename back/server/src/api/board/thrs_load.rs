@@ -35,13 +35,10 @@ pub async fn handler(
 ) -> Json<ResultOk>
 {
     crate::delay_ms(1500);
-    // println!("TODO:DEL:thrs_load:[{params:?}]");
 
-    pub const THR_FIRST_POSTS_QTY: usize = 3;
-    pub const MIN_LOAD: usize = 5;
-    pub const MAX_LOAD: usize = 30;
+    let consts = &crate::config::Config::api().thrs_load;
 
-    let load_n = params.load_n.max(MIN_LOAD).min(MAX_LOAD);
+    let load_n = params.load_n.max(consts.min_thrs_load).min(consts.max_thrs_load);
     let mut all_loaded = false;
 
     {
@@ -52,7 +49,7 @@ pub async fn handler(
         if let Some(board) = board {
             for thr in board.top_k_thrs_by_usage(load_n, &params.known_n) {
 
-                let mut posts = Vec::with_capacity(THR_FIRST_POSTS_QTY + 1);
+                let mut posts = Vec::with_capacity(consts.qty_show_post + 1);
                 let posts_qty = thr.post_qty();
 
                 if let Some(op_post) = thr.post(0) {
@@ -61,8 +58,8 @@ pub async fn handler(
                     println!("WARN: ALGO ERROR: THREAD WO OP")
                 }
 
-                let from = if posts_qty > THR_FIRST_POSTS_QTY { posts_qty - THR_FIRST_POSTS_QTY } else { 1 };
-                thr.posts(from, THR_FIRST_POSTS_QTY)
+                let from = if posts_qty > consts.qty_show_post { posts_qty - consts.qty_show_post } else { 1 };
+                thr.posts(from, consts.qty_show_post)
                     .into_iter()
                     .for_each(|x|posts.push(x.clone()));
                 

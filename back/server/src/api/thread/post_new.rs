@@ -1,6 +1,6 @@
 use crate::api::header_use::*;
 use crate::api::fns::create_img_load_info;
-use crate::api::MAX_PIC_AMOUNT;
+use crate::api::max_pic_qty;
 use crate::utility::img::PostImg;
 use crate::post::Post;
 
@@ -43,8 +43,8 @@ pub async fn handler(
     };
 
     // [+] IMGS
-    params.post_imgs.truncate(MAX_PIC_AMOUNT);
-    let imgs = create_img_load_info(&state, board_url, &params.post_imgs, MAX_PIC_AMOUNT);
+    params.post_imgs.truncate(max_pic_qty());
+    let imgs = create_img_load_info(&state, board_url, &params.post_imgs, max_pic_qty());
     // [-] IMGS
     
     let post = Post::new_anon(post_text, imgs);
@@ -67,10 +67,10 @@ pub async fn handler(
 }
 
 pub fn router(state: &HandlerState) -> Router {
-    const MAX_TOTAL_SZ: usize = super::super::board::thr_new::MAX_TOTAL_SZ;
+    let max_total_sz: usize = super::super::board::thr_new::max_total_sz();
     Router::new()
     .route("/post_new", routing::post(handler)
     .with_state(Arc::clone(state)))
     .layer(axum::extract::DefaultBodyLimit::disable())
-    .layer(tower_http::limit::RequestBodyLimitLayer::new(MAX_TOTAL_SZ))
+    .layer(tower_http::limit::RequestBodyLimitLayer::new(max_total_sz))
 }

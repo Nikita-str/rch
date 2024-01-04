@@ -6,7 +6,7 @@ const INITIAL_RATE: f32 = 100.;
 const STD_RATE_COEF: f32 = 5.;
 
 const SEC_IN_MIN: usize = 60;
-const SEC_IN_H: usize = 60 * 60;
+const SEC_IN_H: usize = 60 * SEC_IN_MIN;
 
 #[derive(serde::Serialize, serde::Deserialize)]
 #[derive(Debug)]

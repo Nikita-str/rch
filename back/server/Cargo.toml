@@ -23,6 +23,7 @@ futures = "0.3.30"
 pin-project-lite = "0.2.13"
 
 # workspace dependencies:
+toml = { workspace = true }
 serde = { workspace = true }
 anyhow = { workspace = true }
 

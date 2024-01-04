@@ -1,6 +1,6 @@
 use serde::Deserialize;
 use super::Base64;
-use crate::{KB, MB};
+use crate::config::Config;
 
 #[derive(Deserialize, Debug)]
 pub struct PostImg {
@@ -13,14 +13,13 @@ pub struct PostImg {
 }
 
 impl PostImg {
-    pub const MAX_PIC_SZ: usize = 2 * MB;
-    pub const MAX_MINI_PIC_SZ: usize = 50 * KB;
-
     pub fn size_verify(&self) -> bool {
-        if Self::MAX_MINI_PIC_SZ < crate::utility::img::base64_img_sz(&self.compressed_file) {
+        let max_sz = Config::max_mini_pic_sz();
+        if max_sz < crate::utility::img::base64_img_sz(&self.compressed_file) {
             return false
         }
-        if Self::MAX_PIC_SZ < crate::utility::img::base64_img_sz(&self.file) {
+        let max_sz = Config::max_pic_sz();
+        if max_sz < crate::utility::img::base64_img_sz(&self.file) {
             return false
         }
         return true

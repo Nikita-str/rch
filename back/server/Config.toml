@@ -2,3 +2,30 @@
 host = "127.0.0.1"
 port = 5173
 conn_type = 'Http'
+
+[vue]
+dist_path = "../../front/vue_x/dist"
+
+[imageboard]
+bump_limit = 300
+max_header_len = 60
+max_pic_qty = 4
+max_pic_size = 2048 # KB   # optional (default is 2MB)
+max_mini_pic_size = 50 # KB   # optional (default is 50KB)
+max_board_url_len = 16
+
+[imageboard.saves]
+dir = "./saves"
+aux_dir = "aux"
+single_use_pwd_file = "single_pwds.txt"
+save_names = ["auto_save_A", "auto_save_B", "auto_save_C"]
+close_save_name = "auto_save_XCL" # optional
+
+[imageboard.api.thrs_load]
+min_thrs_load = 5 
+max_thrs_load = 20
+qty_show_post = 3 # // how much posts shown after OP post in threads view
+
+[imageboard.api.thr_load]
+min_posts_load = 10 # // min qty of loaded posts in thread
+max_posts_load = 30 # // max qty of loaded posts in thread

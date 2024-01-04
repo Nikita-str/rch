@@ -282,9 +282,9 @@ impl OpenBoards {
     /// * `false` => url already used for other board 
     pub fn add_board(&mut self, board: Board, tag: Option<BoardTag>) -> anyhow::Result<()>
     {
-        const MAX_URL_LEN: usize = 16;
+        let max_url_len = crate::config::config().imageboard.max_board_url_len;
         if self.board_urls.contains_key(&board.url) { bail!("board url already used!") }
-        if board.url.len() > MAX_URL_LEN { bail!("too long board url :|") }
+        if board.url.len() > max_url_len { bail!("too long board url :|") }
 
         self.board_qty += 1;
         if tag.is_some() { self.pop_board_qty += 1; }

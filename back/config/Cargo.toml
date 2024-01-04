@@ -4,8 +4,8 @@ version = "0.1.0"
 edition = "2021"
 
 [dependencies]
-toml = "0.8.8"
 
 # workspace dependencies:
+toml = { workspace = true }
 serde = { workspace = true }
 anyhow = { workspace = true }

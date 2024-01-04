@@ -731,6 +731,7 @@ dependencies = [
  "strum",
  "strum_macros",
  "tokio",
+ "toml",
  "tower-http",
 ]
 

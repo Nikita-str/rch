@@ -1,6 +1,6 @@
 use crate::api::header_use::*;
 use crate::api::fns::create_img_load_info;
-use crate::api::MAX_PIC_AMOUNT;
+use crate::api::max_pic_qty;
 use crate::utility::img::PostImg;
 use crate::post::Post;
 use crate::KB;
@@ -41,15 +41,15 @@ pub async fn handler(
     }
 
     // [+] IMGS
-    params.post_imgs.truncate(MAX_PIC_AMOUNT);
-    let imgs = create_img_load_info(&state, board_url, &params.post_imgs, MAX_PIC_AMOUNT);
+    params.post_imgs.truncate(max_pic_qty());
+    let imgs = create_img_load_info(&state, board_url, &params.post_imgs, max_pic_qty());
     // [-] IMGS
 
     // [+] HEADER
     let post_header = {
         macro_rules! make_valid_s {
             ($s:expr) => {{
-                let to = $s.chars().take(crate::thread::MAX_HEADER_LEN).fold(0, |acc, c|acc + c.len_utf8());
+                let to = $s.chars().take(crate::thread::max_header_len()).fold(0, |acc, c|acc + c.len_utf8());
                 &$s[0..to]   
             }};
         }
@@ -57,7 +57,7 @@ pub async fn handler(
         // TODO: Pool of preproc?!
         let mut preproc = crate::preproc::HeadPreproc::new_by_board(board_url, true);
         let header = if let Some(header) = &params.post_header {
-            if header.len() > crate::thread::MAX_HEADER_LEN {
+            if header.len() > crate::thread::max_header_len() {
                 make_valid_s!(header)
             } else {
                 header
@@ -100,9 +100,14 @@ pub async fn handler(
     Json(n)
 }
 
-macro_rules! base64_coef { () => { 4 / 3 }; }
-const MAX_ADDITIONAL_SZ: usize = 25 * KB;
-pub const MAX_TOTAL_SZ: usize = (PostImg::MAX_PIC_SZ + PostImg::MAX_MINI_PIC_SZ) * MAX_PIC_AMOUNT * base64_coef!()  + MAX_ADDITIONAL_SZ;
+pub fn max_total_sz() -> usize {
+    macro_rules! base64_coef { () => { 4 / 3 }; }
+    const MAX_ADDITIONAL_SZ: usize = 25 * KB;
+
+    let max_pic_sz = crate::config::Config::max_pic_sz();
+    let max_mnini_pic_sz = crate::config::Config::max_mini_pic_sz();
+    (max_pic_sz + max_mnini_pic_sz) * max_pic_qty() * base64_coef!()  + MAX_ADDITIONAL_SZ
+}
 
 pub fn router(state: &HandlerState) -> Router {
     Router::new().route(
@@ -110,5 +115,5 @@ pub fn router(state: &HandlerState) -> Router {
         routing::post(handler).with_state(Arc::clone(state)),
     )
     .layer(axum::extract::DefaultBodyLimit::disable())
-    .layer(tower_http::limit::RequestBodyLimitLayer::new(MAX_TOTAL_SZ))
+    .layer(tower_http::limit::RequestBodyLimitLayer::new(max_total_sz()))
 }

@@ -5,23 +5,31 @@ use crate::utility::general as general;
 
 crate::define_id!(ThreadOpN: u64 [NO IMPL]);
 
-/// after this post qty thr will be auto saged  
-const BUMP_LIMIT: usize = 300;
 // /// after this post qty thr will be deleted
-// const DELETE_QTY: usize = WIPE_QTY * 2;
+//TODO:MAYBE: const DELETE_QTY: usize = WIPE_QTY * 2;
 
-pub const MAX_HEADER_LEN: usize = 42;
+#[inline]
+fn bump_limit() -> usize {
+    crate::config::config().imageboard.bump_limit
+}
+#[inline]
+pub fn max_header_len() -> usize {
+    crate::config::config().imageboard.max_header_len
+}
 
 #[derive(serde::Serialize, serde::Deserialize)]
 #[derive(Debug)]
 struct ThreadPosts {
+    //TODO: `bump_limit: usize`
+    //      | because of already exisiting save we cant just add it here: 
+    //      | we need version control for it 
     posts: VecDeque<Post>,
     posts_n: HashSet<PostN>,
 }
 impl ThreadPosts {
     pub fn __new_helper() -> Self {
-        let posts = VecDeque::with_capacity(BUMP_LIMIT);
-        let posts_n = HashSet::with_capacity(BUMP_LIMIT);        
+        let posts = VecDeque::with_capacity(bump_limit());
+        let posts_n = HashSet::with_capacity(bump_limit());        
         Self {
             posts,
             posts_n,
@@ -83,8 +91,8 @@ pub struct Thread {
 impl Thread {
     fn ctor_valid_header<S: Into<String> + AsRef<str>>(header: S) -> String {
         let h = header.as_ref();
-        if h.len() > MAX_HEADER_LEN {
-            let mut header: String = h.chars().take(MAX_HEADER_LEN).collect();
+        if h.len() > max_header_len() {
+            let mut header: String = h.chars().take(max_header_len()).collect();
             
             // correct split:
             let rest = &h[header.len()..];
@@ -137,7 +145,7 @@ impl Thread {
 
     pub fn add_post(&mut self, post: Post) {
         if self.infinity {
-            if self.posts.len() == BUMP_LIMIT {
+            if self.posts.len() >= bump_limit() {
                 // self.posts.pop_front();
                 // save open post:
                 self.posts.swap_remove_front(1);
@@ -183,7 +191,7 @@ impl Thread {
 
     pub fn is_bump_limit_reached(&self) -> bool {
         if self.infinity { false } 
-        else { self.posts.len() >= BUMP_LIMIT }
+        else { self.posts.len() >= bump_limit() }
     }
 
     pub fn bump_time(&self) -> general::Timestamp {

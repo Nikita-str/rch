@@ -62,5 +62,7 @@ mod header_use {
     pub use crate::api::error::*;
 }
 
-const MAX_PIC_AMOUNT: usize = 4;
+pub fn max_pic_qty() -> usize {
+    crate::config::config().imageboard.max_pic_qty
+}
 pub(in crate) use header_use::HandlerStateCommon as StdState;

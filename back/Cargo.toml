@@ -8,3 +8,4 @@ members = [
 [workspace.dependencies]
 serde = { version = "1.0.193", features = ["derive"] }
 anyhow = "1.0.75"
+toml = "0.8.8"
