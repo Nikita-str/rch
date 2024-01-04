@@ -5,7 +5,6 @@ mod thread;
 mod thread_usage_rate;
 mod preproc;
 pub mod utility;
-mod config;
 mod security;
 
 const VUE_DIST_PATH: &str = "../../front/vue_x/dist";
@@ -25,6 +24,8 @@ mod fns {
     use tower_http::cors::CorsLayer;
     use std::sync::{Arc, RwLock};
 
+    const CONFIG_PATH: &'static str = "Config.toml";
+
     #[inline(always)]
     pub(in crate) fn delay() {
         #[cfg(debug_assertions)]
@@ -32,10 +33,10 @@ mod fns {
     }
     
     #[inline]
-    pub(in crate) fn delay_ms(ms: usize) {
+    pub(in crate) fn delay_ms(_ms: usize) {
         #[cfg(debug_assertions)] {
-            std::thread::sleep(std::time::Duration::from_millis(ms as u64));
-            println!("[DELAY({ms}ms)]");
+            std::thread::sleep(std::time::Duration::from_millis(_ms as u64));
+            println!("[DELAY({_ms}ms)]");
         }
     }
 
@@ -90,8 +91,7 @@ mod fns {
         let router = router.layer(cors).into_make_service();
 
 
-        let config = crate::config::Config::open().unwrap();
-        config.gen_rest_test_py().unwrap();
+        let config = rch_config::Config::open(CONFIG_PATH).unwrap();
         let addr = config.socket_addr().unwrap();
         let server = Server::bind(&addr);
         let server = server.serve(router);

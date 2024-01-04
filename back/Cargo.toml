@@ -1,0 +1,10 @@
+[workspace]
+resolver = "2"
+members = [
+    "server",
+    "config",
+]
+
+[workspace.dependencies]
+serde = { version = "1.0.193", features = ["derive"] }
+anyhow = "1.0.75"

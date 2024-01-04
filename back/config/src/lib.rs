@@ -2,9 +2,6 @@ use serde::Deserialize;
 use anyhow::Result;
 use std::io::Write;
 
-const CONFIG_PATH: &'static str = "Config.toml";
-const REST_PY_CONFIG_PATH: &'static str = "test/REST/rest.py";
-
 #[derive(Debug, Deserialize)]
 enum ConnType {
     Http,
@@ -23,13 +20,13 @@ pub struct Config {
 }
 
 impl Config {
-    pub fn open() -> Result<Self> {
-        let config_str = std::fs::read_to_string(CONFIG_PATH)?;
+    pub fn open(config_path: impl AsRef<std::path::Path>) -> Result<Self> {
+        let config_str = std::fs::read_to_string(config_path)?;
         let config = toml::from_str(&config_str)?;
         Ok(config)
     }
-    pub fn gen_rest_test_py(&self) -> Result<()> {
-        let mut py = std::fs::File::create(REST_PY_CONFIG_PATH)?;
+    pub fn gen_rest_test_py(&self, rest_py_conf_path: impl AsRef<std::path::Path>) -> Result<()> {
+        let mut py = std::fs::File::create(rest_py_conf_path)?;
         match self.server.conn_type {
             ConnType::Http => {
                 let host = &self.server.host;

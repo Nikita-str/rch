@@ -1,0 +1,11 @@
+[package]
+name = "rch_config"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+toml = "0.8.8"
+
+# workspace dependencies:
+serde = { workspace = true }
+anyhow = { workspace = true }
