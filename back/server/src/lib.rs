@@ -15,7 +15,7 @@ const MB: usize = 1024 * KB;
 
 static SHUTDOWN: std::sync::OnceLock<tokio::sync::mpsc::UnboundedSender<()>> = std::sync::OnceLock::new();
 
-#[allow(unused)] use fns::{delay, delay_ms};
+#[allow(unused)] use crate::utility::general::{delay, delay_ms};
 pub use fns::server;
 mod fns {
     use super::{api, app_state, VUE_DIST_PATH};
@@ -25,35 +25,6 @@ mod fns {
     use std::sync::{Arc, RwLock};
 
     const CONFIG_PATH: &'static str = "Config.toml";
-
-    #[inline(always)]
-    pub(in crate) fn delay() {
-        #[cfg(debug_assertions)]
-        delay_ms(1_500);
-    }
-    
-    #[inline]
-    pub(in crate) fn delay_ms(_ms: usize) {
-        #[cfg(debug_assertions)] {
-            std::thread::sleep(std::time::Duration::from_millis(_ms as u64));
-            println!("[DELAY({_ms}ms)]");
-        }
-    }
-
-    fn upd_speed_post_loop(state: &api::common::all::HandlerState, upd_dt_sec: u32) -> tokio::task::JoinHandle<()> {
-        let state = Arc::clone(state);
-
-        tokio::task::spawn(async move {
-            let mut interval = tokio::time::interval(std::time::Duration::from_secs(upd_dt_sec as u64));
-            loop {
-                interval.tick().await;
-                {
-                    let mut w_state = state.write().unwrap();
-                    w_state.upd_speed_post();
-                }
-            }
-        })
-    }
 
     pub async fn server() {
         let deleted_board_post = 0;
@@ -65,6 +36,9 @@ mod fns {
         let state_all = Arc::new(RwLock::new(state_all));
 
         let mut loop_acts = crate::utility::action_loop::LoopActs::new();
+        let act = crate::utility::action_loop::SpeedPostUpdater::new(&state_all);
+        let dur =  std::time::Duration::from_secs((dt_sec / 2) as u64);
+        loop_acts.add(act, dur);
         let act = crate::utility::action_loop::file_deleter::FileDelState::new(pic_path_parent);
         let dur = crate::utility::action_loop::file_deleter::DELETE_LOOP_DUR;
         loop_acts.add(act, dur);
@@ -96,17 +70,9 @@ mod fns {
         let server = Server::bind(&addr);
         let server = server.serve(router);
 
-        let upd_speed_post_loop = upd_speed_post_loop(&state_all, dt_sec / 2);
-
         let graceful = server.with_graceful_shutdown(async { shoutdown_rx.recv().await; });
-        tokio::select!{
-            // _ = shoutdown_rx.recv() => { println!("[SHOUTDOWN]"); }
-            // _ = server => { }
-            _ = graceful => { println!("[SHOUTDOWN]"); }
-            _ = upd_speed_post_loop => {
-                println!("smth weird is occurs: turned out that inf loop isn't inf :|");
-            }
-        };
+        let _ = graceful.await;
+        println!("[SHOUTDOWN]");
         let _ = cmd_loop_ctrl.close_async().await;
         println!("[CLOSED]");
     }
