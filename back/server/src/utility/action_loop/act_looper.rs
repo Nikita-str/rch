@@ -8,6 +8,7 @@ pub struct ActionLooper {
 }
 
 impl ActionLooper {
+    #[allow(clippy::new_ret_no_self)]
     pub fn new(loop_acts: LoopActs) -> ActionLooperCtrl {
         let (cmd_end_sx, cmd_end_rx) = tokio::sync::mpsc::unbounded_channel::<()>();
         let (cmd_done_sx, cmd_done_rx) = tokio::sync::mpsc::unbounded_channel::<()>();

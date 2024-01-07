@@ -31,14 +31,14 @@ enum State {
 
 impl State {
     fn state_upd(self, token: &str) -> Self {
-        if token.chars().into_iter().all(|c| c.is_whitespace()) {
+        if token.chars().all(|c| c.is_whitespace()) {
             return match self {
                 Self::FromMinus | Self::ToMinus => Self::Err,
                 _ => self,
             }
         }
 
-        let is_num = token.chars().into_iter().all(|c| c.is_ascii_digit());
+        let is_num = token.chars().all(|c| c.is_ascii_digit());
 
         match self {
             Self::NotStarted if token == "random" => Self::WordRandom,
@@ -60,12 +60,12 @@ impl State {
 
     #[inline]
     fn is_err(self) -> bool {
-        return matches!(self, Self::Err)
+        matches!(self, Self::Err)
     }
 
     #[inline]
     fn is_ended(self) -> bool {
-        return matches!(self, Self::Close)
+        matches!(self, Self::Close)
     }
 }
 
@@ -136,10 +136,7 @@ impl Preproc for __InnerPreproc {
             self.state = state;
         }
         
-        if self.state.is_ended() {
-            return PreprocVerdict::Matched
-        }
-        return PreprocVerdict::Maybe
+        PreprocVerdict::new(self.state.is_ended())
     }
 }
 

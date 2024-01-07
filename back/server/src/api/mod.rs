@@ -41,8 +41,7 @@ mod fns {
             w_state.use_n_pic(img_preparer.n_pics(), board_url)
         };
     
-        let imgs = img_preparer.to_img_load_info(&pic_dir, pic_n);
-        imgs
+        img_preparer.to_img_load_info(&pic_dir, pic_n)
     }
 }
 

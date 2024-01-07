@@ -88,8 +88,7 @@ mod fns {
         let router = router.merge(del_post::router(&state));
         let router = router.merge(del_thr::router(&state));
         let router = router.merge(shutdown::router(&state));
-        let router = Router::new().nest("/~~ctrl~~", router);
-        router
+        Router::new().nest("/~~ctrl~~", router)
     }
     
     pub fn upd_allow_methods(methods: &mut HashSet<Method>) {

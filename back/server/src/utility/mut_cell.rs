@@ -17,14 +17,14 @@ impl<'x, T> MutCell<'x, T> {
     fn as_ref(&self) -> &T {
         match self {
             Self::Owned(value) => value,
-            Self::MutRef(value) => *value,
+            Self::MutRef(value) => value,
         }
     }
 
     fn as_mut(&mut self) -> &mut T {
         match self {
             Self::Owned(value) => value,
-            Self::MutRef(value) => *value,
+            Self::MutRef(value) => value,
         }
     }
 }

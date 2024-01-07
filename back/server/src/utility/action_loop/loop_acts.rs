@@ -10,16 +10,12 @@ struct LoopAct {
     dur: Duration,
 }
 
+#[derive(Default)]
 pub struct LoopActs {
     acts: Vec<LoopAct>,
 }
 
 impl LoopActs {
-    pub fn new() -> Self {
-        Self {
-            acts: Vec::new(),
-        }
-    }
     pub fn add(&mut self, act: impl LoopActor + 'static, dur: Duration) {
         self.acts.push(LoopAct{
             act: Box::new(act),
@@ -102,7 +98,7 @@ pub struct ConfigCtorArgs<'x, S: Into<String>> {
 
 impl<'x, S: Into<String>> crate::config::ConfigCtor<ConfigCtorArgs<'x, S>> for LoopActs {
     fn config_new(args: ConfigCtorArgs<S>) -> Self {
-        let mut loop_acts = LoopActs::new();
+        let mut loop_acts = LoopActs::default();
 
         let act = super::SpeedPostUpdater::new(args.state);
         let dur = super::SpeedPostUpdater::config_loop_dur();

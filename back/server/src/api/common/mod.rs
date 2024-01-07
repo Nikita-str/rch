@@ -12,8 +12,7 @@ mod fns {
         let router = Router::new();
         let router = router.merge(all::router(common_info_state));
         let router = router.merge(pop_boards::router(common_info_state));
-        let router = Router::new().nest("/common", router);
-        router
+        Router::new().nest("/common", router)
     }
     
     pub fn upd_allow_methods(methods: &mut HashSet<Method>) {

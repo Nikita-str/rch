@@ -14,7 +14,8 @@ impl ImgType {
         }
 
         let mut first_bytes = [0u8; 12]; // 6 * 16 / 8 = 12.0 == 12  =>  len estimate must be correct and there will be no error when call `decode_slice` 
-        if let Err(_) = base64::engine::general_purpose::STANDARD.decode_slice(&base64_data[0..MIN_LEN], &mut first_bytes) {
+        let decode_result = BASE64_STANDARD.decode_slice(&base64_data[0..MIN_LEN], &mut first_bytes);
+        if decode_result.is_err() {
             return None;
         };
         
@@ -45,13 +46,11 @@ impl ImgType {
 
         // JPG
         const JPG: &[u8] = &[0xFF, 0xD8, 0xFF,];
-        if &first_bytes[0..JPG.len()] == JPG {
-            if first_bytes[JPG.len()] >= 0xD0 {
-                return Some(Self::Jpg);
-            }
+        if &first_bytes[0..JPG.len()] == JPG && first_bytes[JPG.len()] >= 0xD0 {
+            return Some(Self::Jpg);
         }
 
-        return None;
+        None
     }
 
     #[allow(unused)]

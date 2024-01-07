@@ -67,7 +67,7 @@ impl<'s> MultiToken<'s> {
                 break
             }
         }
-        return  true
+        true
     }
 }
 

@@ -129,6 +129,7 @@ impl HeadPreproc {
             return PreprocResult::new_no_reply(input)
         }
         
+        #[allow(clippy::let_unit_value)]
         let state = ();
         let mut reply_to = HashSet::new();
         let mut output = Self::init_output(input); 

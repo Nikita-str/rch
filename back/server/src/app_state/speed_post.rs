@@ -32,7 +32,7 @@ impl SpeedPost {
 
         Self {
             post_times,
-            max_post_times_len: max_post_times_len, 
+            max_post_times_len, 
             speed_post,
             dt_sec,
         }

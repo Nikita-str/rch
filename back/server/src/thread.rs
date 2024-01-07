@@ -114,10 +114,9 @@ impl Thread {
     }
 
     pub fn preproc_header(header: Option<String>, op_post: &Post) -> String {
-        let header = header
-            .map(|h|Self::ctor_valid_header(h))
-            .unwrap_or_else(||Self::ctor_header_by_msg(op_post));
         header
+            .map(Self::ctor_valid_header)
+            .unwrap_or_else(||Self::ctor_header_by_msg(op_post))
     }
 
     #[allow(unused)]
@@ -144,12 +143,10 @@ impl Thread {
     }
 
     pub fn add_post(&mut self, post: Post) {
-        if self.infinity {
-            if self.posts.len() >= bump_limit() {
-                // self.posts.pop_front();
-                // save open post:
-                self.posts.swap_remove_front(1);
-            }
+        if self.infinity && (self.posts.len() >= bump_limit()) {
+            // self.posts.pop_front();
+            // save open post:
+            self.posts.swap_remove_front(1);
         }
         
         if !self.is_bump_limit_reached() {
@@ -228,7 +225,7 @@ impl Thread {
         let mut pics_info = Vec::new();
         self.posts.posts.iter()
             .for_each(|post|post.add_del_info(&mut pics_info));
-        if let Err(_) = crate::utility::global_file_deleter::add_del_pics_act(board_url.into(), pics_info) {
+        if crate::utility::global_file_deleter::add_del_pics_act(board_url.into(), pics_info).is_err() {
             println!("[WARN] cant add del pic act")
         }
     }

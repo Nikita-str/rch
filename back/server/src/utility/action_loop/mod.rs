@@ -1,12 +1,12 @@
 mod loop_acts;
-mod action_loop;
+mod act_looper;
 pub mod file_deleter;
 pub mod auto_saver;
 pub mod speed_post_updater;
 
 pub use loop_acts::LoopActs;
 pub use loop_acts::ConfigCtorArgs as LoopActsArgs;
-pub use action_loop::ActionLooper;
+pub use act_looper::ActionLooper;
 pub use speed_post_updater::SpeedPostUpdater;
 pub use file_deleter::global as global_file_deleter;
 

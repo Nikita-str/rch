@@ -47,7 +47,7 @@ pub async fn handler(
         let Some(board) = r_state.open_boards().board(&board_url) else { return Err(()) };
         
         let removed = |op_post_n: &&u64|!board.is_thr_exist(**op_post_n);
-        let removed_thrs = known_n.iter().filter(removed).map(|x|*x).collect();
+        let removed_thrs = known_n.iter().filter(removed).copied().collect();
         
         let only_new = |thr: &&Thread|!known_n.contains(&thr.op_n().into());
         let new_thrs = board.thr_iter().filter(only_new).map(|thr|{

@@ -73,24 +73,24 @@ impl State {
     }
 
     #[inline]
-    fn to_inner(&mut self) {
+    fn to_inner_mut(&mut self) {
         *self = Self::Inner
     }
 
     #[inline]
     fn is_err(self) -> bool {
-        return matches!(self, Self::Err)
+        matches!(self, Self::Err)
     }
 
     #[allow(unused)]
     #[inline]
     fn is_inner(self) -> bool {
-        return matches!(self, Self::Inner)
+        matches!(self, Self::Inner)
     }
     
     #[inline]
     fn is_ended(self) -> bool {
-        return matches!(self, Self::Close)
+        matches!(self, Self::Close)
     }
 }
 
@@ -122,7 +122,7 @@ impl<Inner: Preproc<InnerState> + Default> OpclPreproc<Inner> {
     pub fn new_ignore_mode() -> Self {
         let mut ret = Self::default();
         ret.set_ignore_mode(true);
-        return ret
+        ret
     }
 }
 
@@ -171,7 +171,7 @@ impl<Inner: Preproc<InnerState> + Default> Preproc for OpclPreproc<Inner> {
             if self.state.transfer_ctrl_to_inner(token) {
                 self.cur_inner = true;
                 self.cur_match_type = self.state.get_type();
-                self.state.to_inner();
+                self.state.to_inner_mut();
             }
         }
 
@@ -197,7 +197,7 @@ impl<Inner: Preproc<InnerState> + Default> Preproc for OpclPreproc<Inner> {
             }
         }
         
-        return PreprocVerdict::Maybe
+        PreprocVerdict::Maybe
     }
 
     fn action(&mut self, output: &mut String, matched_tokens: &str, _: ()) {
@@ -215,10 +215,8 @@ impl<Inner: Preproc<InnerState> + Default> Preproc for OpclPreproc<Inner> {
 
         if is_open {
             self.open_times += 1;
-        } else {
-            if self.open_times > 0 {
-                self.open_times -= 1;
-            }
+        } else if self.open_times > 0 {
+            self.open_times -= 1;
         }
     }
 }

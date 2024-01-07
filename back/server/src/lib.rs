@@ -36,8 +36,7 @@ mod fns {
     fn serve_dir() -> ServeDir<ServeFile> {
         let vue_dist_path = Config::vue_dist_path();
         let index_file = ServeFile::new(format!("{}/index.html", vue_dist_path));
-        let serve_dir = ServeDir::new(vue_dist_path).fallback(index_file);
-        serve_dir
+        ServeDir::new(vue_dist_path).fallback(index_file)
     }
 
     fn cors_layer() -> CorsLayer {
@@ -50,13 +49,13 @@ mod fns {
     fn router(state: &api::StdState) -> Router {
         let router = Router::new();
         let router = router.nest_service("/", serve_dir());
-        let router = router.nest("/api", api::router(&state));
+        let router = router.nest("/api", api::router(state));
         router
     }
 
     fn start_server(state: &api::StdState) -> impl Future {
         let cors = cors_layer();
-        let router = router(&state);
+        let router = router(state);
         let router = router.layer(cors).into_make_service();
 
         let addr = crate::config::addr();
@@ -110,14 +109,15 @@ macro_rules! define_id {
                 write!(f, "#{}", self.0)
             }
         }
-        impl Into<$ty> for $name {
-            fn into(self) -> $ty {
-                self.0
-            }
-        }
         impl From<$ty> for $name {
             fn from(value: $ty) -> Self {
                 Self(value)
+            }
+        }
+        // impl Into<$ty> for $name {
+        impl From<$name> for $ty {
+            fn from(x: $name) -> $ty {
+                x.0
             }
         }
     };

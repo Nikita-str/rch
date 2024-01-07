@@ -22,7 +22,7 @@ impl PostImg {
         if max_sz < crate::utility::img::base64_img_sz(&self.file) {
             return false
         }
-        return true
+        true
     }
 
     /// **!** name, not a file path

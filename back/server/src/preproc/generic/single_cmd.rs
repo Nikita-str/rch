@@ -31,24 +31,24 @@ impl State {
     }
 
     #[inline]
-    fn to_inner(&mut self) {
+    fn to_inner_mut(&mut self) {
         *self = Self::Inner
     }
 
     #[inline]
     fn is_err(self) -> bool {
-        return matches!(self, Self::Err)
+        matches!(self, Self::Err)
     }
 
     #[allow(unused)]
     #[inline]
     fn is_inner(self) -> bool {
-        return matches!(self, Self::Inner)
+        matches!(self, Self::Inner)
     }
     
     #[inline]
     fn is_ended(self) -> bool {
-        return matches!(self, Self::Close)
+        matches!(self, Self::Close)
     }
 }
 
@@ -101,7 +101,7 @@ impl<Inner: Preproc + Default> Preproc for SingleCmd<Inner> {
         if !self.cur_inner {
             if self.state.transfer_ctrl_to_inner() {
                 self.cur_inner = true;
-                self.state.to_inner();
+                self.state.to_inner_mut();
             }
         }
 
@@ -127,6 +127,6 @@ impl<Inner: Preproc + Default> Preproc for SingleCmd<Inner> {
             }
         }
         
-        return PreprocVerdict::Maybe
+        PreprocVerdict::Maybe
     } 
 }

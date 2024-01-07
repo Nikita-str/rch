@@ -34,15 +34,13 @@ impl Preproc for QuotePreproc {
             output.push_str("</div>"); // close
             self.is_new_line = true;
             self.open = false;
+        } else if self.is_new_line {
+            output.push_str("<div class=\"P-quote\">");
+            self.is_new_line = false;
+            self.open = true;
         } else {
-            if self.is_new_line {
-                output.push_str("<div class=\"P-quote\">");
-                self.is_new_line = false;
-                self.open = true;
-            } else {
-                self.is_new_line = true;
-                self.open = false;
-            }
+            self.is_new_line = true;
+            self.open = false;
         }
     }
     fn state_upd_str(&mut self, _: &str) -> PreprocVerdict {
@@ -66,7 +64,7 @@ impl Preproc for QuotePreproc {
                 PreprocVerdictInfo::new_by_verdict(PreprocVerdict::Maybe)
             }
             crate::preproc::tokenizer::SimpleTokenType::SpecialChar if self.is_new_line && t0.token() == ">" => {
-                return PreprocVerdictInfo::new_single_matched_no_propagate()
+                PreprocVerdictInfo::new_single_matched_no_propagate()
             }
             // crate::preproc::tokenizer::SimpleTokenType::Unkn => todo!(),
             _ => {

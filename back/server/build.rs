@@ -1,5 +1,5 @@
-const CONFIG_PATH: &'static str = "Config.toml";
-const REST_PY_CONFIG_PATH: &'static str = "test/REST/rest.py";
+const CONFIG_PATH: &str = "Config.toml";
+const REST_PY_CONFIG_PATH: &str = "test/REST/rest.py";
 
 fn main() {
     println!("cargo:rerun-if-changed=Config.toml");

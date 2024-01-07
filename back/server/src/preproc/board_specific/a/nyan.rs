@@ -42,12 +42,12 @@ impl State {
 
     #[inline]
     fn is_err(self) -> bool {
-        return matches!(self, Self::Err)
+        matches!(self, Self::Err)
     }
 
     #[inline]
     fn is_ended(self) -> bool {
-        return matches!(self, Self::Close2)
+        matches!(self, Self::Close2)
     }
 }
 
@@ -79,10 +79,6 @@ impl Preproc for NyanPreproc {
             return PreprocVerdict::No
         }
 
-        if self.state.is_ended() {
-            return PreprocVerdict::Matched
-        }
-
-        return PreprocVerdict::Maybe
+        PreprocVerdict::new(self.state.is_ended())
     } 
 }

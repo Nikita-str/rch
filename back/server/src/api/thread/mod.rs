@@ -12,8 +12,7 @@ mod fns {
         let router = Router::new();
         let router = router.merge(post_new::router(common_info_state));
         let router = router.merge(thr_load::router(common_info_state));
-        let router = Router::new().nest("/thread", router);
-        router
+        Router::new().nest("/thread", router)
     }
     
     pub fn upd_allow_methods(methods: &mut HashSet<Method>) {

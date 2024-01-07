@@ -75,7 +75,7 @@ impl Post {
             .into_iter()
             .map(|x|x.to_del_info())
             .collect();
-        if let Err(_) = crate::utility::global_file_deleter::add_del_pics_act(board_url.into(), pics_info) {
+        if crate::utility::global_file_deleter::add_del_pics_act(board_url.into(), pics_info).is_err() {
             println!("[WARN] cant add del pic act")
         }
     }

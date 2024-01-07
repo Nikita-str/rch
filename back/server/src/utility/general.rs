@@ -8,9 +8,9 @@ pub fn timestamp() -> Timestamp {
 
 pub fn create_dir<P: AsRef<std::path::Path>>(path: P) -> bool {
     match std::fs::create_dir(path) {
-        Ok(()) => { return true }
-        Err(e) if e.kind() == std::io::ErrorKind::AlreadyExists => { return true }
-        _ => { return false }
+        Ok(()) => { true }
+        Err(e) if e.kind() == std::io::ErrorKind::AlreadyExists => { true }
+        _ => { false }
     }
 }
 
@@ -21,7 +21,7 @@ pub fn rand_string(len: usize) -> String {
 
     let mut rng = rand::thread_rng();
     let rand_char = |_|CHARSET[rng.gen_range(RANGE)] as char;
-    (0..len).into_iter().map(rand_char).collect()
+    (0..len).map(rand_char).collect()
 }
 
 pub fn rand<T: rand::distributions::uniform::SampleUniform + PartialOrd>(min: T, max: T) -> T {

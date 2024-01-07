@@ -28,13 +28,13 @@ impl ImgProccesed {
         let path = format!("{dir}/{n}{postfix}.{ext}");
         
         let Ok(mut f) = std::fs::File::create(path) else { return false };
-        let Ok(_) = f.write_all(&bytes) else { return false };
+        let Ok(_) = f.write_all(bytes) else { return false };
         true
     }
 
     #[must_use]
     pub fn save(&self, dir: &str, n: u64) -> bool {
-        let compressed_save = self.compressed_img.as_ref().map_or(true, |img|Self::save_prepared(&img, dir, n, true));
+        let compressed_save = self.compressed_img.as_ref().map_or(true, |img|Self::save_prepared(img, dir, n, true));
         compressed_save && Self::save_prepared(&self.img, dir, n, false)
     }
 
@@ -42,14 +42,14 @@ impl ImgProccesed {
         if !img.size_verify() { return None }
 
         let compressed_img = if img.spoiler { None } else {
-            let Some((ty, bytes)) = base_to_img(&img.compressed_file) else { return None };
+            let (ty, bytes) = base_to_img(&img.compressed_file)?;
             Some(SingleImgProc::new(bytes, ty))
         };
 
-        let Some((ty, bytes)) = base_to_img(&img.file) else { return None };
+        let (ty, bytes) = base_to_img(&img.file)?;
         let img = SingleImgProc::new(bytes, ty);
 
-        return Some(ImgProccesed{
+        Some(ImgProccesed{
             img,
             compressed_img,
         })
@@ -94,10 +94,10 @@ impl ImgsPreparerSealed {
         for img in imgs {
             if valid.len() == max_imgs_n { break }
             let Some(img_p) = ImgProccesed::try_by_post_img(img) else { continue };
-            valid.push(SinglePreparedImg::new(img_p, &img))
+            valid.push(SinglePreparedImg::new(img_p, img))
         }
         
-        return Self{ valid }
+        Self{ valid }
     }
 
     /// return how many pic slots we need
@@ -109,7 +109,7 @@ impl ImgsPreparerSealed {
         let valid = self.valid;
         let mut imgs = Vec::with_capacity(valid.len());
         for (n, img) in pic_n.zip(valid.into_iter()) {
-            if img.save(&pic_dir, n) {
+            if img.save(pic_dir, n) {
                 imgs.push(ImgLoadInfo{
                     name: img.name,
                     n,

@@ -18,8 +18,7 @@ mod fns {
         let router = router.merge(thrs_load::router(common_info_state));
         let router = router.merge(thr_new::router(common_info_state));
         let router = router.merge(ctlg_load::router(common_info_state));
-        let router = Router::new().nest("/board", router);
-        router
+        Router::new().nest("/board", router)
     }
     
     pub fn upd_allow_methods(methods: &mut HashSet<Method>) {

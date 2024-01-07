@@ -36,7 +36,7 @@ impl ErrType for DelPostE {
             Self::E(x) => x.err_msg(),
             Self::UnknownBoardUrl(url) => format!("unknown board url `/{url}/`").into(),
             Self::UnknownThread(url, op_n) => format!("unknown thread `/{url}/{op_n}/`").into(),
-            Self::DelError => format!("error while delete post content").into(),
+            Self::DelError => "error while delete post content".into(),
         }
     }
 }
@@ -71,7 +71,7 @@ pub async fn handler(
         let mut x = x.state.write().map_err(|_|DelPostE::E(E::StateAccess(2)))?;
 
         let board = some_or_ret!(x.mut_open_boards().board_mut(&url) => DelPostE::UnknownBoardUrl(url));
-        let thr = some_or_ret!(board.thr_mut(op_post_n.into()) => DelPostE::UnknownThread(url, op_post_n));
+        let thr = some_or_ret!(board.thr_mut(op_post_n) => DelPostE::UnknownThread(url, op_post_n));
         thr.del_post_content(url, post_n).map_err(|e|DelPostE::DelError.detailed(e))?;
     }
 

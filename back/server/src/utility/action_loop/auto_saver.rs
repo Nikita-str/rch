@@ -28,7 +28,7 @@ impl AutoSaver {
         Self {
             save_obj: Arc::clone(save_obj),
             close_save_name: close_save_name.map(|x|x.into()),
-            save_names: save_names.into_iter().map(|x|x.to_string()).collect(),
+            save_names: save_names.iter().map(|x|x.to_string()).collect(),
             last_save_index: 0,
             single_file,
             close_single_file,

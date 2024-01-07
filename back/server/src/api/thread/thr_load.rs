@@ -65,8 +65,7 @@ pub async fn handler(
 
         let loaded_posts = thr
             .posts(from, n_load)
-            .into_iter()
-            .map(|x| x.clone())
+            .into_iter().cloned()
             .collect::<Vec<_>>();
 
         let all_loaded = from + n_load > thr.post_qty();

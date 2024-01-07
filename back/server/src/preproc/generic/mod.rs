@@ -10,8 +10,8 @@ pub(in crate::preproc) use single_cmd::SingleCmd as SingleCmdPreproc;
 #[macro_export(local_inner_macros)]
 macro_rules! define_opcl {
     [$prep_type_name:ident [$($expect_inner:literal);*] $open:literal / $close:literal] => {
-        use crate::preproc::{Preproc, PreprocVerdict};
-        use crate::preproc::generic::OpclInnerState as State;
+        use $crate::preproc::{Preproc, PreprocVerdict};
+        use $crate::preproc::generic::OpclInnerState as State;
 
         #[derive(Default)]
         pub struct __InnerPreproc;
@@ -45,12 +45,12 @@ macro_rules! define_opcl {
             }
         }
 
-        pub type $prep_type_name = crate::preproc::generic::OpclPreproc<__InnerPreproc>;
+        pub type $prep_type_name = $crate::preproc::generic::OpclPreproc<__InnerPreproc>;
     };
 
     [MULTI $prep_type_name:ident [$($expect_inner:literal);*] $open:literal / $close:literal] => {
-        use crate::preproc::{Preproc, PreprocVerdict};
-        use crate::preproc::generic::OpclInnerState as State;
+        use $crate::preproc::{Preproc, PreprocVerdict};
+        use $crate::preproc::generic::OpclInnerState as State;
 
         #[derive(Default)]
         pub struct __InnerPreproc;
@@ -84,7 +84,7 @@ macro_rules! define_opcl {
             }
         }
 
-        pub type $prep_type_name = crate::preproc::generic::OpclPreproc<__InnerPreproc>;
+        pub type $prep_type_name = $crate::preproc::generic::OpclPreproc<__InnerPreproc>;
     };
 }
 

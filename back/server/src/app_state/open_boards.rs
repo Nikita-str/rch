@@ -82,7 +82,8 @@ impl Board {
             ret.push(self.thrs.get(&n).unwrap());
             if ret.len() == k { break }
         }
-        return ret
+        
+        ret
     }
 
     pub fn top_thr_by_usage_n(&self, n: usize) -> Option<&Thread> {
@@ -275,11 +276,6 @@ impl OpenBoards {
         ret
     }
 
-    // TODO: return Result<_, ..>
-    #[must_use]
-    /// # Return value
-    /// * `true` => sucessfully added
-    /// * `false` => url already used for other board 
     pub fn add_board(&mut self, board: Board, tag: Option<BoardTag>) -> anyhow::Result<()>
     {
         let max_url_len = crate::config::config().imageboard.max_board_url_len;
@@ -394,7 +390,7 @@ pub mod save_load {
         fn load(load_args: &mut Args) -> anyhow::Result<Self> {
             match load_args {
                 Args::SingleFile(load_args) => {
-                    return Ok(load_args.read_and_deserialize()?)
+                    load_args.read_and_deserialize()
                 }
                 Args::BoardSplited { general_args, save_path } => {
                     let all_except_boards: RefOpenBoards = general_args.read_and_deserialize()?;
@@ -416,7 +412,7 @@ pub mod save_load {
                     }
                     let ignored = IgnoreOpenBoards { boards };
 
-                    return Ok(all_except_boards.merge(ignored))
+                    Ok(all_except_boards.merge(ignored))
                 }
             }
         }

@@ -53,7 +53,7 @@ impl<'s> SimpleTokenizer<'s> {
             span,
         };
         
-        return SimpleToken {
+        SimpleToken {
             token,
             ty: seq_type.unwrap_or(SimpleTokenType::Empty),
         }

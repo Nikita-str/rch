@@ -38,7 +38,7 @@ impl Preproc for ReplyPreproc {
         ]);
 
         match ok {
-            true => return PreprocVerdictInfo {
+            true => PreprocVerdictInfo {
                 verdict: PreprocVerdict::Matched,
                 n_tokens: 3,
                 propagate: false,

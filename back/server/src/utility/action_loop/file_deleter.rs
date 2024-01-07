@@ -12,14 +12,13 @@ type Acts = Vec<Act>;
 
 fn state_lock(state: &SharedActs) -> MutexGuard<'_, FileDelActs> {
     let state = state.lock();
-    let state = match state {
-        Ok(state) => { state },
+    match state {
+        Ok(state) => { state }
         Err(state) => {
             println!("[WARN] file state poisoned. it's ok?");
             state.into_inner()
         }
-    };
-    state
+    }
 }
 
 pub mod global {

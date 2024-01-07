@@ -2,7 +2,7 @@ use serde::Deserialize;
 use anyhow::Result;
 use crate::{KB, MB};
 
-const CONFIG_PATH: &'static str = "Config.toml";
+const CONFIG_PATH: &str = "Config.toml";
 static CONFIG: std::sync::OnceLock<Config> = std::sync::OnceLock::new();
 
 #[derive(Debug, Deserialize)]

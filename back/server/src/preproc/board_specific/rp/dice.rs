@@ -19,11 +19,11 @@ enum State {
 
 impl State {
     fn state_upd(self, token: &str) -> Self {
-        if token.chars().into_iter().all(|c| c.is_whitespace()) {
+        if token.chars().all(|c| c.is_whitespace()) {
             return self
         }
 
-        let is_num = token.chars().into_iter().all(|c| c.is_ascii_digit());
+        let is_num = token.chars().all(|c| c.is_ascii_digit());
         
         const VALID_DICE_IDENT: &[&str] = &["d", "D", "dice", "Dice"];
         match self {
@@ -37,12 +37,12 @@ impl State {
 
     #[inline]
     fn is_err(self) -> bool {
-        return matches!(self, Self::Err)
+        matches!(self, Self::Err)
     }
 
     #[inline]
     fn is_ended(self) -> bool {
-        return matches!(self, Self::N)
+        matches!(self, Self::N)
     }
 }
 
@@ -85,7 +85,7 @@ impl<D: Dices> Preproc for __InnerPreproc<D> {
             self.state = state;
         }
         
-        return PreprocVerdict::new(self.state.is_ended())
+        PreprocVerdict::new(self.state.is_ended())
     }
 }
 

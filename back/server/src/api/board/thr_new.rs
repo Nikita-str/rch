@@ -65,7 +65,7 @@ pub async fn handler(
         } else {
             make_valid_s!(&params.post_text)
         };
-        preproc.preproc(&header).output
+        preproc.preproc(header).output
     };
     // [-] HEADER
 
@@ -101,12 +101,12 @@ pub async fn handler(
 }
 
 pub fn max_total_sz() -> usize {
-    macro_rules! base64_coef { () => { 4 / 3 }; }
+    let base64_coef = |x| x * 4 / 3;
     const MAX_ADDITIONAL_SZ: usize = 25 * KB;
 
     let max_pic_sz = crate::config::Config::max_pic_sz();
     let max_mnini_pic_sz = crate::config::Config::max_mini_pic_sz();
-    (max_pic_sz + max_mnini_pic_sz) * max_pic_qty() * base64_coef!()  + MAX_ADDITIONAL_SZ
+    base64_coef((max_pic_sz + max_mnini_pic_sz) * max_pic_qty())  + MAX_ADDITIONAL_SZ
 }
 
 pub fn router(state: &HandlerState) -> Router {

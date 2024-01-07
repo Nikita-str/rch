@@ -149,6 +149,7 @@ impl AllPreproc {
             AllPreprocCtor::SupText { ignore } => all_preproc_new!(IGN SupText ignore),
             AllPreprocCtor::SubText { ignore } => all_preproc_new!(IGN SubText ignore),
 
+            #[allow(clippy::default_constructed_unit_structs)]
             AllPreprocCtor::ReservedSymbs => Self::ReservedSymbs(ReservedSymbs::default()),
             AllPreprocCtor::NewLine { space_mode } => {
                 let mut new_line = NewLine::default();

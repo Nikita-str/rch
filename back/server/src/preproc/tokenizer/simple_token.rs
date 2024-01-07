@@ -15,13 +15,7 @@ pub enum SimpleTokenType {
 
 impl SimpleTokenType {
     pub const fn is_single_char_seq(self) -> bool {
-        match self {
-            | Self::SpecialChar 
-            | Self::NewLine
-            => true,
-
-            _ => false,
-        }
+        matches!(self, Self::SpecialChar | Self::NewLine)
     }
 
     pub const fn is_number(self) -> bool {

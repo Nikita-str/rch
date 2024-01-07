@@ -100,9 +100,9 @@ impl SingleUsePwds {
         });
         if correct == Some(true) {
             unsafe { self.use_pwd_unchecked(act)?; }
-            return Ok(true)
+            Ok(true)
         } else {
-            return Ok(false)
+            Ok(false)
         }
     }
     // pub unsafe fn get_nonce_pwd(&self, act: Action) -> (&str, &str) {

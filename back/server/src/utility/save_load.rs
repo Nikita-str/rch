@@ -70,6 +70,7 @@ impl FileBufArgs {
         Ok(())
     }
 
+    #[allow(clippy::uninit_vec)]
     pub fn read_exact_n_bytes(&mut self, n: usize) -> anyhow::Result<()> {
         self.buf.reserve(n);
         unsafe { self.buf.set_len(n); }
