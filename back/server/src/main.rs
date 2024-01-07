@@ -1,8 +1,10 @@
 
 #[tokio::main]
 async fn main() {
-    rch_server::server().await
-
-    // TODO:CHECK:
-    // * RequestBodyLimitLayer::new(1024 * 1024 * 5 /* 5mb */),
+    let cli = rch_server::Cli::new();
+    let state = match cli.state() {
+        Ok(state) => state,
+        Err(e) => panic!("{e}"),
+    };
+    rch_server::server(state).await
 }

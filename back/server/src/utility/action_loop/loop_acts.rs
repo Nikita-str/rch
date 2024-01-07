@@ -91,21 +91,28 @@ impl Future for IndexAwaiter {
 }
 
 
-pub struct ConfigCtorArgs<'x, S: Into<String>> {
+pub struct ConfigCtorArgs<'x> {
     pub state: &'x crate::api::StdState,
-    pub pic_path_parent: S,
+    pub pic_path_parent: String,
 }
-
-impl<'x, S: Into<String>> crate::config::ConfigCtor<ConfigCtorArgs<'x, S>> for LoopActs {
-    fn config_new(args: ConfigCtorArgs<S>) -> Self {
+impl<'x> crate::config::ConfigCtor<&'x crate::api::StdState> for LoopActs {
+    fn config_new(args: &'x crate::api::StdState) -> Self {
+        let pic_path_parent = args.read().unwrap().pic_path_parent().to_owned();
+        Self::config_new(ConfigCtorArgs{
+            state: args,
+            pic_path_parent,
+        })
+    }
+}
+impl<'x> crate::config::ConfigCtor<ConfigCtorArgs<'x>> for LoopActs {
+    fn config_new(args: ConfigCtorArgs<'_>) -> Self {
         let mut loop_acts = LoopActs::default();
 
         let act = super::SpeedPostUpdater::new(args.state);
         let dur = super::SpeedPostUpdater::config_loop_dur();
         loop_acts.add(act, dur);
 
-        let pic_path_parent = args.pic_path_parent.into();
-        let act = super::file_deleter::FileDelState::new(pic_path_parent);
+        let act = super::file_deleter::FileDelState::new(args.pic_path_parent);
         let dur = super::file_deleter::FileDelState::config_loop_dur();
         loop_acts.add(act, dur);
 

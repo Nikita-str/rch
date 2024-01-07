@@ -7,6 +7,8 @@ mod preproc;
 pub mod utility;
 mod security;
 mod config;
+mod cli;
+pub use cli::Cli;
 
 const KB: usize = 1024;
 const MB: usize = 1024 * KB;
@@ -20,12 +22,11 @@ mod fns {
     use futures::Future;
     use tower_http::services::{ServeDir, ServeFile};
     use tower_http::cors::CorsLayer;
-    use std::sync::{Arc, RwLock};
 
-    use super::{api, app_state};
+    use crate::api;
 
     use crate::config::{Config, ConfigCtor};
-    use crate::utility::action_loop::{LoopActs, LoopActsArgs};
+    use crate::utility::action_loop::LoopActs;
 
     fn init_shutdown() -> tokio::sync::mpsc::UnboundedReceiver<()> {
         let (shutdown_sx, shutdown_rx) = tokio::sync::mpsc::unbounded_channel();
@@ -68,16 +69,8 @@ mod fns {
         graceful
     }
 
-    pub async fn server() {
-        let state = app_state::CommonInfoState::config_new(());
-        let pic_path_parent = state.pic_path_parent().to_owned();
-        let state = Arc::new(RwLock::new(state));
-
-        let loop_acts_args = LoopActsArgs {
-            state: &state,
-            pic_path_parent,
-        };
-        let loop_acts = LoopActs::config_new(loop_acts_args);
+    pub async fn server(state: api::StdState) {
+        let loop_acts = LoopActs::config_new(&state);
         let cmd_loop_ctrl = crate::utility::ActionLooper::new(loop_acts);
 
         let _ = start_server(&state).await;
