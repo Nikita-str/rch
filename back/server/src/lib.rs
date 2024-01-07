@@ -21,7 +21,8 @@ mod fns {
     use tower_http::services::{ServeDir, ServeFile};
     use tower_http::cors::CorsLayer;
     use std::sync::{Arc, RwLock};
-    use crate::config::Config;
+    use crate::config::{Config, ConfigCtor};
+    use crate::utility::action_loop::{LoopActs, LoopActsArgs};
 
     pub async fn server() {
         let vue_dist_path = Config::vue_dist_path();
@@ -34,17 +35,11 @@ mod fns {
         let pic_path_parent = state_all.pic_path_parent().to_owned();
         let state_all = Arc::new(RwLock::new(state_all));
 
-        let mut loop_acts = crate::utility::action_loop::LoopActs::new();
-        let act = crate::utility::action_loop::SpeedPostUpdater::new(&state_all);
-        let dur =  std::time::Duration::from_secs((dt_sec / 2) as u64);
-        loop_acts.add(act, dur);
-        let act = crate::utility::action_loop::file_deleter::FileDelState::new(pic_path_parent);
-        let dur = crate::utility::action_loop::file_deleter::DELETE_LOOP_DUR;
-        loop_acts.add(act, dur);
-        let act = crate::utility::action_loop::auto_saver::AutoSaver::new_std(&state_all);
-        let dur = crate::utility::action_loop::auto_saver::SAVE_LOOP_DUR;
-        loop_acts.add(act, dur);
-        loop_acts.init();
+        let loop_acts_args = LoopActsArgs {
+            state: &state_all,
+            pic_path_parent,
+        };
+        let loop_acts = LoopActs::config_new(loop_acts_args);
         let cmd_loop_ctrl = crate::utility::ActionLooper::new(loop_acts);
 
         let (shoutdown_sx, mut shoutdown_rx) = tokio::sync::mpsc::unbounded_channel();

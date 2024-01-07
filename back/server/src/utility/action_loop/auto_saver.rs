@@ -1,4 +1,5 @@
 use super::help::*;
+use super::LoopDur;
 use crate::utility::save_load::Save;
 
 const H_TO_SEC: u64 = 60 * 60;
@@ -79,4 +80,11 @@ impl LoopActor for AutoSaver {
     }
     
     fn init(&self) {} 
+}
+
+impl LoopDur for AutoSaver {
+    fn config_loop_dur() -> Duration {
+        let secs = crate::config::Config::loops().auto_save_dt_sec;
+        Duration::from_secs(secs)
+    }
 }

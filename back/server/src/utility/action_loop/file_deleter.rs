@@ -1,5 +1,6 @@
 use crate::utility::img::ImgDelInfo;
 use super::help::*;
+use super::LoopDur;
 
 const DELETE_LOOP_SECS: u64 = 300;
 pub const DELETE_LOOP_DUR: Duration = Duration::from_secs(DELETE_LOOP_SECS);
@@ -130,4 +131,11 @@ impl LoopActor for FileDelState {
     fn init(&self) {
         global::init_global(Arc::clone(&self.acts)).unwrap()
     } 
+}
+
+impl LoopDur for FileDelState {
+    fn config_loop_dur() -> Duration {
+        let secs = crate::config::Config::loops().auto_del_dt_sec;
+        Duration::from_secs(secs)
+    }
 }

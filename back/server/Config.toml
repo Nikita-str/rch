@@ -14,6 +14,11 @@ max_pic_size = 2048 # KB   # optional (default is 2MB)
 max_mini_pic_size = 50 # KB   # optional (default is 50KB)
 max_board_url_len = 16
 
+[imageboard.loops]
+auto_save_dt_sec = 14_400 # 4h (to sec)
+auto_del_dt_sec = 900 # 15min (to sec)
+rate_post_dt_sec = 60 # 1min (to sec)     # // length of one time segment of cur. posting rate
+
 [imageboard.saves]
 dir = "./saves"
 aux_dir = "aux"

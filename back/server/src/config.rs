@@ -20,6 +20,14 @@ pub struct Imageboard {
     pub max_board_url_len: usize,
     pub saves: Saves,
     pub api: Api,
+    pub loops: LoopInfo,
+}
+
+#[derive(Debug, Deserialize)]
+pub struct LoopInfo {
+    pub auto_save_dt_sec: u64,
+    pub auto_del_dt_sec: u64,
+    pub rate_post_dt_sec: u64,
 }
 
 #[derive(Debug, Deserialize)]
@@ -78,6 +86,9 @@ impl Config {
     pub fn api() -> &'static Api {
         &config().imageboard.api
     }
+    pub fn loops() -> &'static LoopInfo {
+        &config().imageboard.loops
+    }
 
     pub fn vue_dist_path() -> &'static str {
         &Self::config().vue.dist_path
@@ -102,3 +113,6 @@ pub fn config() -> &'static Config {
     Config::config()
 }
 
+pub trait ConfigCtor<Args = ()> {
+    fn config_new(args: Args) -> Self;
+}

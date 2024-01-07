@@ -3,6 +3,7 @@ use std::task::Poll;
 use futures::{StreamExt, Future};
 use futures::stream::FuturesUnordered;
 use super::help::*;
+use super::LoopDur;
 
 struct LoopAct {
     act: Box<dyn LoopActor>,
@@ -93,7 +94,30 @@ impl Future for IndexAwaiter {
     }
 }
 
-// pub struct LoopActsIndAwaiter<F: Future<Output = usize>, Map: Fn(usize, Duration) -> F> {
-//     index_futures: FuturesUnordered<F>,
-//     map: Map,
-// }
+
+pub struct ConfigCtorArgs<'x, S: Into<String>> {
+    pub state: &'x crate::api::StdState,
+    pub pic_path_parent: S,
+}
+
+impl<'x, S: Into<String>> crate::config::ConfigCtor<ConfigCtorArgs<'x, S>> for LoopActs {
+    fn config_new(args: ConfigCtorArgs<S>) -> Self {
+        let mut loop_acts = LoopActs::new();
+
+        let act = super::SpeedPostUpdater::new(args.state);
+        let dur = super::SpeedPostUpdater::config_loop_dur();
+        loop_acts.add(act, dur);
+
+        let pic_path_parent = args.pic_path_parent.into();
+        let act = super::file_deleter::FileDelState::new(pic_path_parent);
+        let dur = super::file_deleter::FileDelState::config_loop_dur();
+        loop_acts.add(act, dur);
+
+        let act = super::auto_saver::AutoSaver::new_std(args.state);
+        let dur = super::auto_saver::AutoSaver::config_loop_dur();
+        loop_acts.add(act, dur);
+
+        loop_acts.init();
+        loop_acts
+    }
+}

@@ -1,6 +1,7 @@
 use std::sync::Arc;
 use crate::api::common::all::HandlerState;
 use super::help::*;
+use super::LoopDur;
 
 const UPD_SECS: u64 = 30;
 pub const UPD_LOOP_DUR: Duration = Duration::from_secs(UPD_SECS);
@@ -33,5 +34,12 @@ impl LoopActor for SpeedPostUpdater {
 
     fn init(&self) {
         self.upd().unwrap()
+    }
+}
+
+impl LoopDur for SpeedPostUpdater {
+    fn config_loop_dur() -> Duration {
+        let secs = crate::config::Config::loops().rate_post_dt_sec;
+        Duration::from_secs(secs / 2)
     }
 }
