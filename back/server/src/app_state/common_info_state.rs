@@ -54,6 +54,15 @@ impl CommonInfoState {
     }
 }
 
+impl crate::config::ConfigCtor for CommonInfoState {
+    fn config_new(_: ()) -> Self {
+        let deleted_board_post = 0;
+        let open_boards = crate::config::ConfigCtor::config_new(());
+        let speed_post = crate::config::ConfigCtor::config_new(());
+        Self::new(deleted_board_post, open_boards, speed_post)
+    }
+}
+
 pub mod save_load {
     use super::*;
     use crate::utility::MutCell;

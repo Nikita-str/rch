@@ -95,6 +95,12 @@ impl SpeedPost {
     } 
 }
 
+impl crate::config::ConfigCtor for SpeedPost {
+    fn config_new(_: ()) -> Self {
+        let dt_sec = crate::config::Config::loops().rate_post_dt_sec;
+        Self::new(dt_sec as u32, 0)
+    }
+}
 
 mod save {
     use crate::utility::save_load::*;

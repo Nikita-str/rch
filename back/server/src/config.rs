@@ -116,3 +116,9 @@ pub fn config() -> &'static Config {
 pub trait ConfigCtor<Args = ()> {
     fn config_new(args: Args) -> Self;
 }
+
+// pub trait ConfigEmptyCtor: ConfigCtor<()> + Sized {
+//     fn config_new() -> Self {
+//         <Self as ConfigCtor>::config_new(())
+//     }
+// }

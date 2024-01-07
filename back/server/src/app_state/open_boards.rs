@@ -332,6 +332,12 @@ impl OpenBoards {
     }
 }
 
+impl crate::config::ConfigCtor for OpenBoards {
+    fn config_new(_: ()) -> Self {
+        let vue_dist_path = crate::config::Config::vue_dist_path();
+        Self::new(vue_dist_path)
+    }
+}
 
 pub mod save_load {
     use std::io::{Read, Write};
