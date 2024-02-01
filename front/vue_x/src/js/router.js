@@ -11,6 +11,7 @@ import PostingForm from '../components/PostingForm.vue'
 import DraggablePostingForm from '../components/DraggablePostingForm.vue'
 import PicCloseView from '../components/files/pics/PicCloseView.vue'
 
+import AllCtrlPages from '../components/ctrl/AllCtrlPages.vue'
 import SaveLoad from '../components/ctrl/SaveLoad.vue'
 import Shutdown from '../components/ctrl/Shutdown.vue'
 import AddBoard from '../components/ctrl/AddBoard.vue'
@@ -236,6 +237,10 @@ const routes = [
     },
     
 
+    {
+      path: '/~~page~~/~~ctrl~~/', 
+      component: AllCtrlPages,
+    },
     {
       path: '/~~page~~/~~ctrl~~/full-save/', 
       component: SaveLoad,
